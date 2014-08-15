@@ -20,9 +20,9 @@
     </license>
   </licenses>
   <scm>
-    <url>http://simpleweb.svn.sourceforge.net/viewvc/simpleweb.tags/simple-5.1.7</url>
-    <developerConnection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-5.1.7</developerConnection>
-    <connection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-5.1.7</connection>
+    <url>http://simpleweb.svn.sourceforge.net/viewvc/simpleweb.tags/simple-6.0</url>
+    <developerConnection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-6.0</developerConnection>
+    <connection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-6.0</connection>
   </scm>
   <developers>
     <developer>

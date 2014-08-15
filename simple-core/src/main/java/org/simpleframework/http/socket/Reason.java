@@ -83,4 +83,15 @@ public class Reason {
    public String getText() {
       return text;
    }
+   
+   /**
+    * This is used to provide a textual representation of the reason.
+    * For consistency this will only return the enumerated value for
+    * the close code, or if none exists a "null" text string.
+    * 
+    * @return this returns a string representation of the reason
+    */
+   public String toString() {
+      return String.valueOf(code);
+   }
 }
