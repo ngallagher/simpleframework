@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bond Semi Central</title>
+  <link href="font-awesome.min.css" rel="stylesheet">  
+  <link href="bootstrap.css" rel="stylesheet">
+  <script src="jquery-2.1.1.min.js"></script>
+  <script src="bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="w2ui-1.4.min.css" />
+  <script type="text/javascript" src="w2ui-1.4.min.js"></script>
+</head>
+<body>
+<div id="layout" style="width: 100%; height: 400px;"></div>
+<div id="grid" style="width: 100%; height: 350px;"></div>
+<script>
+$(function () {
+
+    // -- LAYOUT
+
+    var pstyle = 'background-color: #F5F6F7; overflow: hidden';
+    $('#layout').w2layout({
+        name: 'layout',
+        padding: 0,
+        panels: [
+            { type: 'left', size: '40%', style: pstyle, resizable: true },        
+            { type: 'right', size: '60%', style: pstyle, resizable: true }
+        ]
+    });
+
+    var pstyle = 'background-color: #F5F6F7; overflow: hidden';
+    $('#layout2').w2layout({
+        name: 'layout2',
+        padding: 0,
+        panels: [
+            { type: 'left', size: '50%', style: pstyle, resizable: true },        
+            { type: 'right', size: '50%', style: pstyle, resizable: true },
+            { type: 'bottom', size: '30%', style: pstyle, resizable: true }
+        ]
+    });
+    
+
+    // -- GRID
+
+    $().w2grid({ 
+        name: 'pinkGrid', 
+        sortData: [ { field: 'recid', direction: 'asc' } ],
+        columns: [                
+            { field: 'recid', caption: 'ID', size: '50px', sortable: true, resizable: true },
+            { field: 'lname', caption: 'Last Name', size: '30%', sortable: true, resizable: true },
+            { field: 'fname', caption: 'First Name', size: '30%', sortable: true, resizable: true },
+            { field: 'email', caption: 'Email', size: '40%', resizable: true, sortable: true },
+            { field: 'sdate', caption: 'Start Date', size: '120px', resizable: true },
+            { field: 'sdate', caption: 'End Date', size: '120px', resizable: true },
+            { field: 'sdate', caption: 'Release Date', size: '120px', resizable: true },
+        ],
+        records: [
+            { recid: 1, fname: 'John', lname: 'doe', email: 'vitali@gmail.com', sdate: '1/3/2012' },
+            { recid: 2, fname: 'Stuart', lname: 'Motzart', email: 'jdoe@gmail.com', sdate: '2/4/2012' },
+            { recid: 3, fname: 'Jin', lname: 'Franson', email: 'jdoe@gmail.com', sdate: '4/23/2012' },
+            { recid: 4, fname: 'Susan', lname: 'Ottie', email: 'jdoe@gmail.com', sdate: '5/3/2012' },
+            { recid: 5, fname: 'Kelly', lname: 'Silver', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 6, fname: 'Francis', lname: 'Gatos', email: 'vitali@gmail.com', sdate: '2/5/2012' },
+            { recid: 7, fname: 'Mark', lname: 'Welldo', email: 'jdoe@gmail.com', sdate: '8/25/2012' },
+            { recid: 8, fname: 'Thomas', lname: 'Bahh', email: 'jdoe@gmail.com', sdate: '9/3/2012' },
+            { recid: 9, fname: 'Sergei', lname: 'Rachmaninov', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 20, fname: 'Jill', lname: 'Doe', email: 'jdoe@gmail.com', sdate: '10/3/2012' },
+            { recid: 21, fname: 'Frank', lname: 'Motzart', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 22, fname: 'Peter', lname: 'Franson', email: 'vitali@gmail.com', sdate: '4/3/2012' },
+            { recid: 23, fname: 'Andrew', lname: 'Ottie', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 24, fname: 'Manny', lname: 'Silver', email: 'jim@gmail.com', sdate: '12/3/2012' },
+            { recid: 25, fname: 'Ben', lname: 'Gatos', email: 'jim@gmail.com', sdate: '4/3/2012' },
+            { recid: 26, fname: 'Doer', lname: 'Welldo', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 27, fname: 'Shashi', lname: 'bahh', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 28, fname: 'Av', lname: 'Rachmaninov', email: 'jdoe@gmail.com', sdate: '4/3/2012' }
+        ],
+        onClick: function (event) {
+            var rec = this.get(event.recid);
+            w2ui['form'].record = rec;
+            w2ui['form'].refresh();
+            event.onComplete = function () {
+                if (this.getSelection().length == 0) $('#delete').attr('disabled', true); else $('#delete').removeAttr('disabled');
+            }
+        }
+    });
+
+    $().w2grid({ 
+        name: 'blueOutrightGrid', 
+        sortData: [ { field: 'recid', direction: 'asc' } ],
+        columns: [                
+            { field: 'recid', caption: 'ID', size: '50px', sortable: true, resizable: true },
+            { field: 'lname', caption: 'Last Name', size: '30%', sortable: true, resizable: true },
+            { field: 'fname', caption: 'First Name', size: '30%', sortable: true, resizable: true },
+            { field: 'email', caption: 'Email', size: '40%', resizable: true, sortable: true },
+            { field: 'sdate', caption: 'Start Date', size: '120px', resizable: true },
+            { field: 'sdate', caption: 'End Date', size: '120px', resizable: true },
+            { field: 'sdate', caption: 'Release Date', size: '120px', resizable: true },
+        ],
+        records: [
+            { recid: 1, fname: 'John', lname: 'doe', email: 'vitali@gmail.com', sdate: '1/3/2012' },
+            { recid: 2, fname: 'Stuart', lname: 'Motzart', email: 'jdoe@gmail.com', sdate: '2/4/2012' },
+            { recid: 3, fname: 'Jin', lname: 'Franson', email: 'jdoe@gmail.com', sdate: '4/23/2012' },
+            { recid: 4, fname: 'Susan', lname: 'Ottie', email: 'jdoe@gmail.com', sdate: '5/3/2012' },
+            { recid: 5, fname: 'Kelly', lname: 'Silver', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 6, fname: 'Francis', lname: 'Gatos', email: 'vitali@gmail.com', sdate: '2/5/2012' },
+            { recid: 7, fname: 'Mark', lname: 'Welldo', email: 'jdoe@gmail.com', sdate: '8/25/2012' },
+            { recid: 8, fname: 'Thomas', lname: 'Bahh', email: 'jdoe@gmail.com', sdate: '9/3/2012' },
+            { recid: 9, fname: 'Sergei', lname: 'Rachmaninov', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 20, fname: 'Jill', lname: 'Doe', email: 'jdoe@gmail.com', sdate: '10/3/2012' },
+            { recid: 21, fname: 'Frank', lname: 'Motzart', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 22, fname: 'Peter', lname: 'Franson', email: 'vitali@gmail.com', sdate: '4/3/2012' },
+            { recid: 23, fname: 'Andrew', lname: 'Ottie', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 24, fname: 'Manny', lname: 'Silver', email: 'jim@gmail.com', sdate: '12/3/2012' },
+            { recid: 25, fname: 'Ben', lname: 'Gatos', email: 'jim@gmail.com', sdate: '4/3/2012' },
+            { recid: 26, fname: 'Doer', lname: 'Welldo', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 27, fname: 'Shashi', lname: 'bahh', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 28, fname: 'Av', lname: 'Rachmaninov', email: 'jdoe@gmail.com', sdate: '4/3/2012' }
+        ],
+        onClick: function (event) {
+            var rec = this.get(event.recid);
+            w2ui['form'].record = rec;
+            w2ui['form'].refresh();
+            event.onComplete = function () {
+                if (this.getSelection().length == 0) $('#delete').attr('disabled', true); else $('#delete').removeAttr('disabled');
+            }
+        }
+    });
+
+    $().w2grid({ 
+        name: 'blueSwitchGrid', 
+        sortData: [ { field: 'recid', direction: 'asc' } ],
+        columns: [                
+            { field: 'recid', caption: 'ID', size: '50px', sortable: true, resizable: true },
+            { field: 'lname', caption: 'Last Name', size: '30%', sortable: true, resizable: true },
+            { field: 'fname', caption: 'First Name', size: '30%', sortable: true, resizable: true },
+            { field: 'email', caption: 'Email', size: '40%', resizable: true, sortable: true },
+            { field: 'sdate', caption: 'Start Date', size: '120px', resizable: true },
+            { field: 'sdate', caption: 'End Date', size: '120px', resizable: true },
+            { field: 'sdate', caption: 'Release Date', size: '120px', resizable: true },
+        ],
+        records: [
+            { recid: 1, fname: 'John', lname: 'doe', email: 'vitali@gmail.com', sdate: '1/3/2012' },
+            { recid: 2, fname: 'Stuart', lname: 'Motzart', email: 'jdoe@gmail.com', sdate: '2/4/2012' },
+            { recid: 3, fname: 'Jin', lname: 'Franson', email: 'jdoe@gmail.com', sdate: '4/23/2012' },
+            { recid: 4, fname: 'Susan', lname: 'Ottie', email: 'jdoe@gmail.com', sdate: '5/3/2012' },
+            { recid: 5, fname: 'Kelly', lname: 'Silver', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 6, fname: 'Francis', lname: 'Gatos', email: 'vitali@gmail.com', sdate: '2/5/2012' },
+            { recid: 7, fname: 'Mark', lname: 'Welldo', email: 'jdoe@gmail.com', sdate: '8/25/2012' },
+            { recid: 8, fname: 'Thomas', lname: 'Bahh', email: 'jdoe@gmail.com', sdate: '9/3/2012' },
+            { recid: 9, fname: 'Sergei', lname: 'Rachmaninov', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 20, fname: 'Jill', lname: 'Doe', email: 'jdoe@gmail.com', sdate: '10/3/2012' },
+            { recid: 21, fname: 'Frank', lname: 'Motzart', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 22, fname: 'Peter', lname: 'Franson', email: 'vitali@gmail.com', sdate: '4/3/2012' },
+            { recid: 23, fname: 'Andrew', lname: 'Ottie', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 24, fname: 'Manny', lname: 'Silver', email: 'jim@gmail.com', sdate: '12/3/2012' },
+            { recid: 25, fname: 'Ben', lname: 'Gatos', email: 'jim@gmail.com', sdate: '4/3/2012' },
+            { recid: 26, fname: 'Doer', lname: 'Welldo', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 27, fname: 'Shashi', lname: 'bahh', email: 'jdoe@gmail.com', sdate: '4/3/2012' },
+            { recid: 28, fname: 'Av', lname: 'Rachmaninov', email: 'jdoe@gmail.com', sdate: '4/3/2012' }
+        ],
+        onClick: function (event) {
+            var rec = this.get(event.recid);
+            w2ui['form'].record = rec;
+            w2ui['form'].refresh();
+            event.onComplete = function () {
+                if (this.getSelection().length == 0) $('#delete').attr('disabled', true); else $('#delete').removeAttr('disabled');
+            }
+        }
+    });
+
+    w2ui['layout'].content('left', w2ui['pinkGrid']);
+    w2ui['layout'].content('right', w2ui['layout2']);
+    w2ui['layout2'].content('left', w2ui['blueOutrightGrid']);    
+    w2ui['layout2'].content('right', w2ui['blueSwitchGrid']);    
+    w2ui['pinkGrid'].get(1).getCell(1).style = 'bgcolor: #ff0000';
+});
+</script>
+</head>
+<body>
+    <div id="layout" style="width: 100%; height: 500px;"></div>
+</body>
+</html>
+

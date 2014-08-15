@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>WebSocket Echo Test</title>
+        <script>
+            function init() {
+            websocket = new WebSocket("ws://localhost:6060/talk");
+
+            websocket.onopen = function() { document.getElementById("output").innerHTML += "<p>> CONNECTED</p>"; };
+
+            websocket.onmessage = function(evt) { document.getElementById("output").innerHTML += "<p style='color: blue;'>> RECEIVE: " + evt.data + "</p>"; };
+
+            websocket.onerror = function(evt) { document.getElementById("output").innerHTML += "<p style='color: red;'>> ERROR: " + evt.data + "</p>"; };
+            }
+
+            function sendMessage(message) {
+            document.getElementById("output").innerHTML += "<p>> SEND: " + message + "</p>";
+
+            websocket.send(message);
+            }
+
+            window.addEventListener("load", init, false);
+        </script>
+    </head>
+    <body>
+        <h2>Welcome %1</h2><small>Refresh browser to clear page and resubscribe</small><br/><br/>
+        <input onkeypress="if(this.value) {if (window.event.keyCode == 13) { sendMessage(this.value); this.value = null; }}"/>  
+        <div id="output"></div>
+    </body>
+</html>

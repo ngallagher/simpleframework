@@ -1,0 +1,230 @@
+/*
+ * FrameProcessor.java February 2014
+ *
+ * Copyright (C) 2014, Niall Gallagher <niallg@users.sf.net>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+ * implied. See the License for the specific language governing 
+ * permissions and limitations under the License.
+ */
+
+package org.simpleframework.http.socket.service;
+
+import static org.simpleframework.http.socket.CloseCode.INTERNAL_SERVER_ERROR;
+import static org.simpleframework.http.socket.CloseCode.NORMAL_CLOSURE;
+import static org.simpleframework.http.socket.service.ServiceEvent.READ_FRAME;
+import static org.simpleframework.http.socket.service.ServiceEvent.READ_PING;
+import static org.simpleframework.http.socket.service.ServiceEvent.READ_PONG;
+import static org.simpleframework.http.socket.service.ServiceEvent.WRITE_PONG;
+
+import java.io.IOException;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.simpleframework.http.socket.Frame;
+import org.simpleframework.http.socket.FrameListener;
+import org.simpleframework.http.socket.FrameType;
+import org.simpleframework.http.socket.Reason;
+import org.simpleframework.http.socket.Session;
+import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.transport.Channel;
+import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.trace.Trace;
+
+/**
+ * The <code>FrameProcessor</code> object is used to process incoming
+ * data and dispatch that data as WebSocket frames. Dispatching of the
+ * frames is done by making a callback to <code>FrameListener</code>
+ * objects registered. In addition to frames this will also notify of
+ * any errors that occur or on connection closure.
+ * 
+ * @author Niall Gallagher
+ * 
+ * @see org.simpleframework.http.socket.service.FrameConsumer
+ */
+class FrameProcessor {
+   
+   /**
+    * This is the set of listeners to dispatch frames to.
+    */
+   private final Set<FrameListener> listeners;
+   
+   /**
+    * This is used to extract the reason description from a frame.
+    */
+   private final ReasonExtractor extractor;
+   
+   /**
+    * This is used to consume the frames from the underling channel.
+    */
+   private final FrameConsumer consumer;
+   
+   /**
+    * This is the actual WebSocket associated with this processor.
+    */
+   private final WebSocket socket;
+   
+   /**
+    * This is the session associated with the WebSocket connection.
+    */
+   private final Session session;
+   
+   /**
+    * This is the reason message used for a normal closure.
+    */
+   private final Reason normal;
+   
+   /**
+    * This is the reason message used for an internal failure.
+    */
+   private final Reason error;
+   
+   /**
+    * This is the cursor used to maintain a read seek position.
+    */
+   private final Cursor cursor;
+   
+   /**
+    * This is used to trace the events that occur on the channel.
+    */
+   private final Trace trace;
+   
+   /**
+    * Constructor for the <code>FrameProcessor</code> object. This is
+    * used to create a processor that can consume and dispatch frames
+    * as defined by RFC 6455 to a set of registered listeners. 
+    * 
+    * @param session this is the session associated with the channel
+    * @param channel this is the channel to read frames from
+    */
+   public FrameProcessor(Session session, Channel channel) {
+      this.listeners = new CopyOnWriteArraySet<FrameListener>();
+      this.error = new Reason(INTERNAL_SERVER_ERROR);
+      this.normal = new Reason(NORMAL_CLOSURE);
+      this.extractor = new ReasonExtractor();
+      this.consumer = new FrameConsumer();
+      this.socket = session.getSocket();
+      this.cursor = channel.getCursor();
+      this.trace = channel.getTrace();
+      this.session = session;
+   }   
+   
+   /**
+    * This is used to register a <code>FrameListener</code> to this
+    * instance. The registered listener will receive all user frames
+    * and control frames sent from the client. Also, when the frame
+    * is closed or when an unexpected error occurs the listener is
+    * notified. Any number of listeners can be registered at any time.
+    * 
+    * @param listener this is the listener that is to be registered
+    */
+   public void register(FrameListener listener) {
+      listeners.add(listener);
+   }   
+
+   /**
+    * This is used to remove a <code>FrameListener</code> from this
+    * instance. After removal the listener will no longer receive
+    * any user frames or control messages from this specific instance.
+    * 
+    * @param listener this is the listener to be removed
+    */
+   public void remove(FrameListener listener) {
+      listeners.remove(listener);
+   }
+
+   /**
+    * This is used to process frames consumed from the underlying TCP
+    * connection. It will respond to control frames such as pings and
+    * will also handle close frames. Each frame, regardless of its
+    * type will be dispatched to any <code>FrameListener</code> objects
+    * that are registered with the processor. If an a close frame is
+    * received it will echo that close frame, with the same close code
+    * and back to the sender as suggested by RFC 6455 section 5.5.1.
+    */
+   public void process() throws IOException {
+      if(cursor.isReady()) {
+         consumer.consume(cursor);
+         
+         if(consumer.isFinished()) {
+            Frame frame = consumer.getFrame();
+            FrameType type = frame.getType();
+            
+            trace.trace(READ_FRAME, type);
+            
+            if(type.isPong()) {
+               trace.trace(READ_PONG);               
+            }
+            if(type.isPing()){
+               Frame response = frame.getFrame(FrameType.PONG);
+               
+               trace.trace(READ_PING);
+               socket.send(response);
+               trace.trace(WRITE_PONG);
+            }            
+            for(FrameListener listener : listeners) {
+               listener.onFrame(session, frame);
+            }             
+            if(type.isClose()){
+               Reason reason = extractor.extract(frame);
+               
+               close(reason); 
+               socket.send(frame);               
+            } 
+            consumer.clear();           
+         }
+      }
+   }
+   
+   /**
+    * This is used to report failures back to the client. Any I/O
+    * or frame processing exception is reported back to all of the
+    * registered listeners so that they can take action. The
+    * underlying TCP connection is closed after any failure. 
+    * 
+    * @param cause this is the cause of the failure
+    */
+   public void failure(Exception cause) throws IOException {
+      for(FrameListener listener : listeners) {
+         listener.onError(session, cause);
+      }      
+      socket.close(error);
+      
+   }
+   
+   /**
+    * This is used to close the connection without a specific reason.
+    * The close reason will be sent as a control frame before the
+    * TCP connection is terminated. All registered listeners will be
+    * notified of the close event.
+    * 
+    * @param reason this is the reason for the connection closure
+    */  
+   public void close(Reason reason) throws IOException{      
+      for(FrameListener listener : listeners) {
+         listener.onClose(session, reason);
+      }
+      socket.close(reason);
+   }   
+   
+   /**
+    * This is used to close the connection without a specific reason.
+    * The close reason will be sent as a control frame before the
+    * TCP connection is terminated. All registered listeners will be
+    * notified of the close event.
+    */   
+   public void close() throws IOException{      
+      for(FrameListener listener : listeners) {
+         listener.onClose(session, normal);
+      }
+      socket.close(normal);
+   }
+}

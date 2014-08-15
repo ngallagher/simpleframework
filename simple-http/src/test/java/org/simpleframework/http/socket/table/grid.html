@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bond Semi Central</title>
+  <link href="font-awesome.min.css" rel="stylesheet">  
+  <link href="bootstrap.css" rel="stylesheet">
+  <script src="jquery-2.1.1.min.js"></script>
+  <script src="bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="w2ui-1.4.min.css" />
+  <script type="text/javascript" src="w2ui-1.4.js"></script>
+  <script type="text/javascript" src="delta.js"></script>  
+</head>
+<style>
+.update {
+	background-color: #5cacee;
+}
+.highlight {
+	background-color: #00ff00;
+}
+#grid_mainGrid_body > .w2ui-grid-records table tr.w2ui-even {
+	background-color: #ffddf1;
+}
+#grid_mainGrid_body > .w2ui-grid-records table tr.w2ui-odd {
+	background-color: #ffc0cb;
+}
+#grid_litEFPGrid_body > .w2ui-grid-records table tr.w2ui-even {
+	background-color: #0000ee;
+}
+#grid_litEFPGrid_body > .w2ui-grid-records table tr.w2ui-odd {
+	background-color: #0000cd;
+}
+#grid_litSwitchGrid_body > .w2ui-grid-records table tr.w2ui-even {
+	background-color: #0000ee;
+}
+#grid_litSwitchGrid_body > .w2ui-grid-records table tr.w2ui-odd {
+	background-color: #0000cd;
+}
+</style>
+<body style="height: 100%; margin: 0; background-color: #ff0000;">
+<div id="mainLayout" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px;"></div>
+<script>
+$(function () {
+
+    // -- LAYOUT
+
+    var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
+    $('#mainLayout').w2layout({
+        name: 'mainLayout',
+        padding: 0,
+        panels: [
+            { type: 'left', size: '40%', style: pstyle, resizable: true },        
+            { type: 'right', size: '60%', style: pstyle, resizable: true },
+            { type: 'bottom', size: '25px', style: pstyle, resizable: true }            
+        ]
+    });
+
+    var pstyle = 'background-color: #F5F6F7; overflow: hidden;';
+    $('#blueLayout').w2layout({
+        name: 'blueLayout',
+        padding: 0,
+        panels: [
+            { type: 'left', size: '50%', style: pstyle, resizable: true },        
+            { type: 'right', size: '50%', style: pstyle, resizable: true },
+            { type: 'bottom', size: '30%', style: pstyle, resizable: true,
+                tabs: {
+                    active: 'tab1',
+                    tabs: [
+                        { id: 'tab1', caption: 'Market Monitor' },
+                        { id: 'tab2', caption: 'Blotter' }
+                    ],
+                    onClick: function (event) {
+                        this.owner.content('main', event);
+                    }
+                }
+            }            
+        ]
+    });
+
+    $().w2grid({ 
+        name: 'mainGrid'
+    });
+    
+    $().w2grid({ 
+        name: 'litEFPGrid'
+    });
+    
+    $().w2grid({ 
+        name: 'litSwitchGrid'
+    });          
+
+    w2ui['mainLayout'].content('left', w2ui['mainGrid']);
+    w2ui['mainLayout'].content('right', w2ui['blueLayout']);
+    
+    w2ui['blueLayout'].content('left', w2ui['litEFPGrid']);   
+    w2ui['blueLayout'].content('right', w2ui['litSwitchGrid']);
+        
+    w2ui['mainLayout'].content('bottom', '<div style="background-color: #eee; padding: 2px 2px; font-family: Verdana,Arial,sans-serif; font-size: 11px;"> <span id="connection"><img style="max-width: 100%; max-height: 100%; padding-top: 4px; padding-bottom: 4px;" src="failure.png"/></span> Rows - <span id="rows"></span> Changes - <span id="changes"></span> Duration - <span id="duration"></span></div>');    
+    
+});
+</script> 
+</body>
+</html>
+

@@ -1,0 +1,347 @@
+<html>
+   <head>
+      <style type="text/css">
+         .page {
+            background-color: #ebebeb;
+         }
+         .grid {
+            table-layout:fixed;
+            font-family: verdana,arial,sans-serif;
+            font-size:11px;
+            color:#333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+         }
+         .header {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;            
+            white-space: nowrap;
+            word-break: keep-all;
+            font-weight: bold;            
+         }          
+         .normal {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+            white-space: nowrap;
+            word-break: keep-all;
+            font-weight: normal;            
+         } 
+         .highlight {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #efefef;
+            white-space: nowrap;
+            word-break: keep-all;
+            font-weight: normal;            
+         }           
+         .update {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #5cacee;
+            white-space: nowrap;
+            word-break: keep-all;
+            font-weight: normal;              
+         } 
+         .input {
+            border: 1px solid #666666; 
+            padding: 5px; 
+            font-family: verdana,arial,sans-serif; 
+            font-size:11px;            
+          }
+          .label {
+            font-family: verdana,arial,sans-serif; 
+            font-size:14px;   
+            font-weight: normal;           
+          }
+         .debug {
+            width: 800px; 
+            height: 120px; 
+            border: 1px solid #666666; 
+            padding: 5px; 
+            font-family: verdana,arial,sans-serif; 
+            font-size:11px;                    
+         }                 
+      </style>
+      <title>Table Subscription</title>
+      <script>
+         var translate = new Array();
+         var dirty = new Array();
+         var connections = 0;
+         var attempts = 0;
+         var total = 1;
+         
+         function connect() {         
+            socket = new WebSocket("ws://localhost:9090/update");
+         
+            socket.onopen = function () {
+               attempts = 1;
+               connections++;
+               reportStatus("CONNECTED", "0", "0", "0", "0");
+            };
+         
+            socket.onerror = function (message) {
+               reportStatus("ERROR", "0", "0", "0", "0");
+            };
+            
+            socket.onclose = function (message) {
+               var exponent = Math.pow(2, attempts++);
+               var interval = (exponent - 1) * 1000;
+               var reference = connect();
+      
+               if (interval > 30 * 1000) {
+                  interval = 30 * 1000; 
+               }
+               setTimeout(reference, interval);
+               reportStatus("CLOSED", "0", "0", "0", "0");
+            };
+         
+            socket.onmessage = function (message) {
+               var table = document.getElementById("grid");
+               var data = message.data.substring(1);
+               
+               if (message.data.charAt(0) == 'D') {
+                  deltaUpdate(table, data);
+               } else if (message.data.charAt(0) == 'S') {
+                  schemaUpdate(table, data);
+               }
+            };
+         }
+         
+         function reportDebug(tag, text) {          
+            document.getElementById("debug").value = text;        
+         }
+         
+         function reportStatus(status, height, delta, change, duration) {   
+            document.getElementById("connection").innerHTML = status;
+            document.getElementById("rows").innerHTML = height;
+            document.getElementById("delta").innerHTML = delta;
+            document.getElementById("changes").innerHTML = change;
+            document.getElementById("duration").innerHTML = duration;            
+         }
+         
+         function schemaUpdate(table, message) {
+            var cells = message.split(',');
+            var height = table.rows.length;
+         
+            if (height < 1) {
+               expandHeight(table, 1);
+            }
+            var width = table.rows[0].cells.length;
+            var minimum = cells.length;
+         
+            if (width <= minimum) {
+               expandWidth(table, minimum);
+            }
+            for (var i = 0; i < cells.length; i++) {
+               table.rows[0].cells[i].innerHTML = cells[i];
+               table.rows[0].cells[i].className = 'header'
+            }
+         }
+         
+         function deltaUpdate(table, message) {
+            var rows = message.split('|');
+            var length = message.length;
+            var start = currentTime();
+            
+            clearHighlight(table);
+            updateTable(table, rows);
+            
+            var finish = currentTime();
+            var duration = finish - start;
+            var height = table.rows.length;
+            var change = rows.length;
+            
+            reportDebug("Delta", message);
+            reportStatus("CONNECTED", height, length, change, duration);
+         }
+         
+         function currentTime() {
+            var date = new Date()
+            return date.getTime();
+         }
+         
+         function translateRow(row) {
+            if (translate[row] === undefined) {
+               translate[row] = total++;
+            }
+            return translate[row];
+         }
+         
+         function updateTable(table, rows) {
+            for (var i = 0; i < rows.length; i++) {
+               var row = rows[i];
+               var pair = row.split(':');
+               var index = pair[0];
+         
+               if (index > 0) {
+                  index = translateRow(index);
+         
+                  if (pair != null && pair.length > 1) {
+                     var cells = pair[1].split(',');
+         
+                     if (cells.length > 0) {
+                        updateRow(table, index, cells);
+                     }
+                  }
+               }
+            }
+         }
+         
+         function updateRow(table, row, cells) {
+            var height = table.rows.length;
+         
+            if (height <= row) {
+               expandHeight(table, row);
+            }
+            var width = table.rows[row].cells.length;
+            var minimum = cells.length;
+         
+            if (width <= minimum) {
+               expandWidth(table, minimum);
+            }
+            dirty[row] = 'dirty';
+            
+            for (var i = 0; i < cells.length; i++) {
+               var cell = cells[i].split('=');
+               var column = cell[0];
+               var value = cell[1];
+               var decoded = decodeValue(value);
+         
+               if (table.rows[row].cells.length < column) {
+                  expandWidth(table, column);
+               }
+               table.rows[row].cells[column].innerHTML = decoded;
+         
+               if (row > 0) {
+                  table.rows[row].cells[column].className = 'update';
+               }
+            }
+         }
+         
+         function decodeValue(value) {
+            var text = value.substring(1);
+
+            if(value.charAt(0) == '<') {
+               var encoded = text.toString();
+               var decoded = '';
+
+               for (var i = 0; i < encoded.length; i += 2) {
+                  var char = encoded.substr(i, 2);
+                  var decimal = parseInt(char, 16);
+                  
+                  decoded += String.fromCharCode(decimal);
+               }
+               return decoded;
+            }             
+            return text;
+         }         
+         
+         function clearHighlight(table) {
+            var height = table.rows.length;
+         
+            for (var i = 0; i < height; i++) {
+               if(dirty[i] === undefined || dirty[i] == 'dirty') {
+                  var width = table.rows[i].cells.length;
+         
+                  for (var j = 0; j < width; j++) {
+                     if (i > 0) {
+                        if (i % 2 == 0) {
+                           table.rows[i].cells[j].className = 'highlight';
+                        } else {
+                           table.rows[i].cells[j].className = 'normal';
+                        }
+                     } else {
+                        table.rows[i].cells[j].className = 'header';
+                     }
+                  }
+                  dirty[i] = 'clean';
+               }
+            }
+         }
+         
+         function expandHeight(table, row) {
+            var height = table.rows.length;
+         
+            for (var i = height; i <= row; i++) {
+               table.insertRow(i);
+         
+               if (i > 0) {
+                  var width = table.rows[i - 1].cells.length;
+         
+                  for (var j = 0; j < width; j++) {
+                     table.rows[i].insertCell(j);
+                  }
+               }
+            }
+         }
+         
+         function expandWidth(table, column) {
+            for (var i = 0; i < table.rows.length; i++) {
+               var width = table.rows[i].cells.length;
+         
+               for (var j = width; j < column; j++) {
+                  table.rows[i].insertCell(j);
+         
+                  if (i > 0) {
+                     table.rows[i].cells[j].className = 'header';
+                  }
+               }
+            }
+         }
+         window.addEventListener("load", connect, false);
+      </script>
+   </head>
+   <body class="page">
+      <form action='/table' method='POST'>
+        <table>
+            <tr>
+               <td class="label">Type</td>
+            </tr>
+            <tr>
+               <td><input class="input" size='100' type='text' name='type' value='${type}'/></td>
+            </tr>
+            <tr>
+               <td class="label">Predicate</td>
+            </tr>
+            <tr>
+               <td><input class="input" size='100' type='text' name='predicate' value='${predicate}'/><input type='submit' value='Change'/></td>
+            </tr>
+            <tr>
+               <td class="label">Delta</td>
+            </tr>
+            <tr>
+               <td><textarea id="debug" class="debug"></textarea></td>
+            </tr>                          
+         </table>
+      </form>             
+      <table class="grid">
+        <tr>
+          <td class="header">connection</td>
+          <td class="header">rows</td>
+          <td class="header">delta</td>
+          <td class="header">changes</td>
+          <td class="header">duration</td>                                                                          
+        </tr>
+        <tr>
+          <td class="normal" id="connection"></td>
+          <td class="normal" id="rows"></td>
+          <td class="normal" id="delta"></td>
+          <td class="normal" id="changes"></td>
+          <td class="normal" id="duration"></td>                                                                          
+        </tr>    
+      </table>
+      <br/>
+      <table id="grid" class="grid"/>
+   </body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bond Semi Central</title>
+  <link href="font-awesome.min.css" rel="stylesheet">  
+  <link href="bootstrap.css" rel="stylesheet">
+  <script src="jquery-2.1.1.min.js"></script>
+  <script src="bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="w2ui-1.4.min.css" />
+  <script type="text/javascript" src="w2ui-1.4.min.js"></script>
+</head>
+<body>
+<div id="layout" style="width: 100%; height: 400px;"></div>
+<div id="grid" style="width: 100%; height: 350px;"></div>
+<script type="text/javascript">
+$(function () {
+    var pstyle = 'border: 1px solid #dfdfdf; padding: 5px;';
+    $('#layout').w2layout({
+        name: 'layout',
+        panels: [
+            { type: 'left', size: 200, resizable: true, style: pstyle, content: 'left' },
+            { type: 'main', style: pstyle, content: 'main' },
+            { type: 'right', size: 200, resizable: true, style: pstyle, content: 'right' }       
+        ]
+    });
+});
+$(function () {
+    $('#grid').w2grid({ 
+        name: 'grid', 
+        url: 'data/list2.json',
+        columns: [                
+            { field: 'fname', caption: 'First Name', size: '30%' },
+            { field: 'lname', caption: 'Last Name', size: '70%' },
+            { field: 'sdate', caption: 'Dates', size: '120px', attr: "align=center" },
+        ]
+    });    
+});
+</script>
+</body>
+</html>
