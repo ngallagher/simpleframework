@@ -61,16 +61,11 @@
     <constructor-arg value="INTERNAL_SERVER_ERROR" />
   </bean>
 
-  <bean id="ChatRoom" class="org.simpleframework.demo.chat.ChatRoom" init-method="start" />
-
-  <bean id="ChatRoomLogin" class="org.simpleframework.demo.chat.ChatRoomLogin">
-    <constructor-arg ref="FileSystemResource" />
-  </bean>
+  <bean id="GraphPlotter" class="org.simpleframework.demo.graph.GraphPlotter" init-method="start" />
 
   <bean id="ResourceEngine" class="org.simpleframework.demo.http.resource.RegularExpressionEngine">
     <constructor-arg>
       <map>
-        <entry key="/login.html" value-ref="ChatRoomLogin" />
         <entry key=".*favicon.ico" value-ref="NotFoundResource" />
         <entry key=".*.html" value-ref="FileSystemResource" />
         <entry key=".*.png" value-ref="FileSystemResource" />
@@ -93,7 +88,7 @@
   </bean>
 
   <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.SingletonRouter">
-    <constructor-arg ref="ChatRoom" />
+    <constructor-arg ref="GraphPlotter" />
   </bean>
 
   <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer" init-method="start">
