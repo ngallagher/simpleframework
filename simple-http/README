@@ -1,5 +1,0 @@
-mvn -DcreateChecksum=true install
-sftp niallg,simpleweb@web.sourceforge.net
-svn copy https://niallg@simpleweb.svn.sourceforge.net/svnroot/simpleweb/trunk https://niallg@simpleweb.svn.sourceforge.net/svnroot/simpleweb/branches/4.0.3/ssl -m "Create branch to work on SSL"
-scp -r -v build niallg,simpleweb@web.sourceforge.net:/home/groups/s/si/simpleweb/htdocs/.
-mvn clean site cobertura:cobertura
