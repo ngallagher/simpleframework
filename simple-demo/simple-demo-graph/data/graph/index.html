@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
     <script type="text/javascript">
         window.onload = function() {
@@ -8,47 +9,45 @@
             var threadCount = [];
 
             var heapUsedChart = new CanvasJS.Chart("heapUsed", {
-            	creditText: "",  
-				backgroundColor: "#f5deb3",            	          
-                title: {                
+                creditText: "",
+                backgroundColor: "#f5deb3",
+                title: {
                     text: "Heap Used"
                 },
                 data: [{
-                 	color: "#ff0000",                   
+                    color: "#ff0000",
                     type: "line",
                     dataPoints: heapUsed
                 }]
             });
             var heapFreeChart = new CanvasJS.Chart("heapFree", {
-            	creditText: "",            
-				backgroundColor: "#f5aaff",            	
-                title: {                                   
+                creditText: "",
+                backgroundColor: "#f5aaff",
+                title: {
                     text: "Heap Free"
                 },
                 data: [{
-                 	color: "#000000",                
+                    color: "#000000",
                     type: "line",
                     dataPoints: heapFree
-                },
-                {
-                 	color: "#00ff00",                   
+                }, {
+                    color: "#00ff00",
                     type: "line",
                     dataPoints: heapUsed
-                },                
-                ]
+                }, ]
             });
             var threadCountChart = new CanvasJS.Chart("threadCount", {
-            	creditText: "",
-				backgroundColor: "#f5aa23",            	
+                creditText: "",
+                backgroundColor: "#f5aa23",
                 title: {
                     text: "Thread Count"
                 },
                 data: [{
-                 	color: "#0000ff",                   
+                    color: "#0000ff",
                     type: "line",
                     dataPoints: threadCount
                 }]
-            });            
+            });
             websocket = new WebSocket("ws://localhost:6060/plot");
 
             websocket.onmessage = function(evt) {
@@ -63,15 +62,15 @@
                 }
                 if (data[0] == 'heapFree') {
                     chart = heapFreeChart;
-                    series = heapFree;                  
+                    series = heapFree;
                 }
                 if (data[0] == 'threadCount') {
                     chart = threadCountChart;
-                    series = threadCount;                 
-                }                
+                    series = threadCount;
+                }
                 series.push({
                     x: parseFloat(point[0]),
-                    y: parseFloat(point[1]),               
+                    y: parseFloat(point[1]),
                 });
 
                 if (series.length > 500) {
@@ -90,7 +89,7 @@
     <div id="heapFree" style="height: 300px; width:100%;">
     </div>
     <div id="threadCount" style="height: 300px; width:100%;">
-    </div>    
+    </div>
 </body>
 
 </html>

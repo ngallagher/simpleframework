@@ -53,8 +53,9 @@ public class GraphPlotter extends Thread implements Service {
                   socket.send(heapFreePoint);
                   socket.send(threadCountPoint);                   
                } catch (Exception e) {
+                  sockets.remove(socket);
                   LOG.info("Problem sending point", e);
-               }
+               } 
             }
             Thread.sleep(50);
          } catch (Exception e) {

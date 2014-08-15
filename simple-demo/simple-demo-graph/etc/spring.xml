@@ -84,7 +84,7 @@
 
   <bean id="WebContainer" class="org.simpleframework.demo.http.WebContainer">
     <constructor-arg ref="ResourceContainer" />
-    <constructor-arg value="Chat/1.0" />
+    <constructor-arg value="Graph/1.0" />
   </bean>
 
   <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.SingletonRouter">
