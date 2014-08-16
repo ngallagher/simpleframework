@@ -44,7 +44,7 @@ public class TableUpdater extends Thread implements Service {
       
       while(true) {
          try {
-            Thread.sleep(200);
+            Thread.sleep(100);
             
             for(TableSubscription subscription : subscriptions) {
                WebSocket socket = subscription.getSocket();            

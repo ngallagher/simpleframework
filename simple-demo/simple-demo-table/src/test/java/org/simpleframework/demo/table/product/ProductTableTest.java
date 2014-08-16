@@ -3,6 +3,8 @@ package org.simpleframework.demo.table.product;
 import java.util.Arrays;
 import java.util.List;
 
+import org.simpleframework.demo.table.extract.Client;
+
 import junit.framework.TestCase;
 
 public class ProductTableTest extends TestCase {
@@ -10,7 +12,8 @@ public class ProductTableTest extends TestCase {
    public void testDepth() throws Exception {
       ProductTable table = new ProductTable();
       DepthProcessor processor = new DepthProcessor(table);
-      ProductSubscription cursor = new ProductSubscription("john@hsbc.com", "HSBC", Arrays.asList("DB", "ANZ", "HSBC"));
+      Client client = new Client("john@hsbc.com", "HSBC", Arrays.asList("DB", "ANZ", "HSBC"));
+      ProductBuilder cursor = new ProductBuilder(client);
       
       processor.update(new Price("X", PriceType.EFP, Side.BID, "HSBC", 10.1, 100000L));
       processor.update(new Price("X", PriceType.EFP, Side.OFFER, "ANZ", 11.1, 100000L));

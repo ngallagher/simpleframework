@@ -5,31 +5,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.simpleframework.demo.table.extract.Client;
+
 public class ProductFilter {
 
-   private final List<String> include;
-   private final List<String> company;
+   private final Client client;
    
-   public ProductFilter(String company, List<String> include) {
-      this.company = Collections.singletonList(company);
-      this.include = include;
+   public ProductFilter(Client client) {
+      this.client = client;
    }
    
    public Product filter(Depth depth) {
-      Map<PriceType, PricePair> bestPrices = new HashMap<PriceType, PricePair>();
-      Map<PriceType, PricePair> companyPrices = new HashMap<PriceType, PricePair>();      
+      String company = client.getCompany();
+      List<String> inclusive = client.getPartners();
+      List<String> exclusive = Collections.singletonList(company);
       
-      for(PriceType type : PriceType.values()) {
-         PricePair bestPrice = filter(depth, type, include);
-         PricePair companyPrice = filter(depth, type, company);
+      if(!inclusive.isEmpty()) {
+         Map<PriceType, PricePair> bestPrices = new HashMap<PriceType, PricePair>();
+         Map<PriceType, PricePair> companyPrices = new HashMap<PriceType, PricePair>();      
          
-         bestPrices.put(type, bestPrice);
-         companyPrices.put(type, companyPrice);
+         for(PriceType type : PriceType.values()) {
+            PricePair bestPrice = filter(depth, type, inclusive);
+            PricePair companyPrice = filter(depth, type, exclusive);
+            
+            bestPrices.put(type, bestPrice);
+            companyPrices.put(type, companyPrice);
+         }
+         String security = depth.getSecurity();
+         long version = depth.getVersion();
+         
+         return new Product(security, bestPrices, companyPrices, version);
       }
-      String security = depth.getSecurity();
-      long version = depth.getVersion();
-      
-      return new Product(security, bestPrices, companyPrices, version);
+      return null;
    }
    
    private PricePair filter(Depth depth, PriceType type, List<String> include) {

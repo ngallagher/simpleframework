@@ -1,9 +1,9 @@
 package org.simpleframework.demo.table.extract;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -76,19 +76,19 @@ public class RowMergerTest extends TestCase {
      extractors.put("bidPriceBackground", new PredicateCellExtractor("bid.company == bestBid.company", "highlightBest", "highlightNormal"));
      extractors.put("offerPriceBackground", new PredicateCellExtractor("offer.company == bestOffer.company", "highlightBest", "highlightNormal"));
      
-     Set<String> columns = new HashSet<String>();
-     TableSchema schema = new TableSchema(columns);
-     RowMerger merger = new RowMerger(schema);
+     List<ColumnStyle> columns = new ArrayList<ColumnStyle>();
+     TableSchema schema = new TableSchema("exampleProduct", columns);
+     RowMerger merger = new RowMerger(schema, 1);
      RowExtractor extractor = new RowExtractor(extractors);
      
-     columns.add("bidPrice");
-     columns.add("offerPrice");
-     columns.add("bestBidPrice");
-     columns.add("bestOfferPrice");
-     columns.add("bestBidCompany");     
-     columns.add("bestOfferCompany");
-     columns.add("bidPriceBackground");
-     columns.add("offerPriceBackground");     
+     columns.add(new StringColumnStyle("bidPrice", "{bidPrice}"));
+     columns.add(new StringColumnStyle("offerPrice","{offerPrice}"));
+     columns.add(new StringColumnStyle("bestBidPrice","{bestBidPrice}"));
+     columns.add(new StringColumnStyle("bestOfferPrice","{bestOfferPrice}"));
+     columns.add(new StringColumnStyle("bestBidCompany","{bestBidCompany}"));     
+     columns.add(new StringColumnStyle("bestOfferCompany","{bestOfferCompany}"));
+     columns.add(new StringColumnStyle("bidPriceBackground","{bidPriceBackground}"));
+     columns.add(new StringColumnStyle("offerPriceBackground","{offerPriceBackground}"));     
      
      Map<String, Object> row1 = extractor.extract(product1);
     

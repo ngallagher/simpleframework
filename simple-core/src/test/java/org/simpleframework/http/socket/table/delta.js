@@ -34,7 +34,7 @@ function connect() {
 		var data = message.data.substring(1);
 		var table = w2ui['mainGrid'];
 
-		if (message.data.charAt(0) == 'D') {
+		if (message.data.charAt(0) == 'T') {
 			deltaUpdate(this, table, data, updateTable);
 		} else if (message.data.charAt(0) == 'H') {
 			deltaUpdate(this, table, data, highlightTable);				

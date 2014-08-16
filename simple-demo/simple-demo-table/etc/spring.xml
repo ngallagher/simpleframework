@@ -20,11 +20,11 @@
     </constructor-arg>
   </bean>
 
-  <bean id="FileManager" class="org.simpleframework.demo.http.resource.FileManager">
+  <bean id="FileManager" class="org.simpleframework.demo.io.FileManager">
     <constructor-arg value="data/${context.path}" />
   </bean>
 
-  <bean id="FileResolver" class="org.simpleframework.demo.http.resource.FileResolver">
+  <bean id="FileResolver" class="org.simpleframework.demo.io.FileResolver">
     <constructor-arg ref="FileManager" />
     <constructor-arg value="index.html" />
     <constructor-arg value="index.html" />
@@ -61,120 +61,230 @@
     <constructor-arg value="INTERNAL_SERVER_ERROR" />
   </bean>
 
-  <bean id="TableSchema" class="org.simpleframework.demo.table.TableSchema">
+  <bean id="ProductTableSchema" class="org.simpleframework.demo.table.extract.TableSchema">
+    <constructor-arg value="mainGrid" />
+    <constructor-arg>
+      <list>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="bidOutrightVolume" />
+          <constructor-arg value="&lt;div style='font-weight: bold; text-decoration: underline;'&gt;{bidOutrightVolume}&lt;/a&gt;" />
+          <constructor-arg value="{bidOutrightHighlight}" />
+          <constructor-arg value="$ B" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="bidOutright" />
+          <constructor-arg value="&lt;div style='font-weight: bold; text-decoration: underline;'&gt;{bidOutright}&lt;/a&gt;" />
+          <constructor-arg value="{bidOutrightHighlight}" />
+          <constructor-arg value="Bid" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="offerOutright" />
+          <constructor-arg value="&lt;div style='font-weight: bold; text-decoration: underline;'&gt;{offerOutright}&lt;/a&gt;" />
+          <constructor-arg value="{offerOutrightHighlight}" />
+          <constructor-arg value="Offer" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="offerOutrightVolume" />
+          <constructor-arg value="&lt;div style='font-weight: bold; ext-decoration: underline;'&gt;{offerOutrightVolume}&lt;/a&gt;" />
+          <constructor-arg value="{offerOutrightHighlight}" />
+          <constructor-arg value="$ O" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="product" />
+          <constructor-arg value="&lt;div style='font-weight: bold;'&gt;{product}&lt;/div&gt;" />
+          <constructor-arg value="" />
+          <constructor-arg value="Security" />
+          <constructor-arg value="true" />
+          <constructor-arg value="true" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="bidEFPVolume" />
+          <constructor-arg value="&lt;div style='font-weight: bold; text-decoration: underline;'&gt;{bidEFPVolume}&lt;/a&gt;" />
+          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="$ B" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="bidEFP" />
+          <constructor-arg value="&lt;div style='font-weight: bold; text-decoration: underline;'&gt;{bidEFP}&lt;/a&gt;" />
+          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="Bid" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="offerEFP" />
+          <constructor-arg value="&lt;div style='font-weight: bold; text-decoration: underline;'&gt;{offerEFP}&lt;/a&gt;" />
+          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="Offer" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="offerEFPVolume" />
+          <constructor-arg value="&lt;div style='font-weight: bold; text-decoration: underline;'&gt;{offerEFPVolume}&lt;/a&gt;" />
+          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="$ O" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.StringColumnStyle">
+          <constructor-arg value="reference" />
+          <constructor-arg value="{reference}" />
+          <constructor-arg value="" />
+          <constructor-arg value="Ref" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.HiddenColumnStyle">
+          <constructor-arg value="bidEFPHighlight" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.HiddenColumnStyle">
+          <constructor-arg value="offerEFPHighlight" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.HiddenColumnStyle">
+          <constructor-arg value="bidOutrightHighlight" />
+        </bean>
+        <bean class="org.simpleframework.demo.table.extract.HiddenColumnStyle">
+          <constructor-arg value="offerOutrightHighlight" />
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="ProductRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
     <constructor-arg>
       <map>
-        <entry key="id">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="id" />
-            <constructor-arg value="Id" />
-            <constructor-arg value="{id}" />
-            <constructor-arg value="true" />
-            <constructor-arg value="true" />
-          </bean>
-        </entry>
-        <entry key="bidOutrightVolume">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="bidOutrightVolume" />
-            <constructor-arg value="$ B" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #0000ff; text-decoration: underline;'&gt;{bidOutrightVolume}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
-          </bean>
-        </entry>
-        <entry key="bidOutright">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="bidOutright" />
-            <constructor-arg value="Bid" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #0000ff; text-decoration: underline;'&gt;{bidOutright}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
-          </bean>
-        </entry>
-        <entry key="offerOutright">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="offerOutright" />
-            <constructor-arg value="Offer" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #ff0000; text-decoration: underline;'&gt;{offerOutright}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
-          </bean>
-        </entry>
-        <entry key="offerOutrightVolume">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="offerOutrightVolume" />
-            <constructor-arg value="$ O" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #ff0000; text-decoration: underline;'&gt;{offerOutrightVolume}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
-          </bean>
-        </entry>
-        <entry key="product">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="product" />
-            <constructor-arg value="Security" />
-            <constructor-arg value="&lt;div style='font-weight: bold;'&gt;{product}&lt;/div&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="true" />
-          </bean>
-        </entry>
-        <entry key="bidEFPVolume">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="bidEFPVolume" />
-            <constructor-arg value="$ B" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #0000ff; text-decoration: underline;'&gt;{bidEFPVolume}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
-          </bean>
-        </entry>
         <entry key="bidEFP">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="bidEFP" />
-            <constructor-arg value="Bid" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #0000ff; text-decoration: underline;'&gt;{bidEFP}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestEFP.bid.price" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFP">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="offerEFP" />
-            <constructor-arg value="Offer" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #ff0000; text-decoration: underline;'&gt;{offerEFP}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestEFP.offer.price" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
+          </bean>
+        </entry>
+        <entry key="bidEFPVolume">
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestEFP.bid.volume" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFPVolume">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="offerEFPVolume" />
-            <constructor-arg value="$ O" />
-            <constructor-arg value="&lt;div style='font-weight: bold; color: #ff0000; text-decoration: underline;'&gt;{offerEFPVolume}&lt;/a&gt;" />
-            <constructor-arg value="true" />
-            <constructor-arg value="false" />
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestEFP.offer.volume" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
+          </bean>
+        </entry>
+        <entry key="bidOutright">
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestOutright.bid.price" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
+          </bean>
+        </entry>
+        <entry key="offerOutright">
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestOutright.offer.price" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
+          </bean>
+        </entry>
+        <entry key="bidOutrightVolume">
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestOutright.bid.volume" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
+          </bean>
+        </entry>
+        <entry key="offerOutrightVolume">
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="bestOutright.offer.volume" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
+          </bean>
+        </entry>
+        <entry key="product">
+          <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
+            <constructor-arg value="security" />
+            <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="reference">
-          <bean class="org.simpleframework.demo.table.TableColumnStyle">
-            <constructor-arg value="reference" />
-            <constructor-arg value="Ref" />
-            <constructor-arg value="{reference}" />
-            <constructor-arg value="true" />
-            <constructor-arg value="true" />
+          <bean class="org.simpleframework.demo.table.extract.StaticCellExtractor">
+            <constructor-arg value="3ySep" />
+          </bean>
+        </entry>
+        <entry key="bidEFPHighlight">
+          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
+            <constructor-arg value="companyEFP.bid.company == bestEFP.bid.company &amp;&amp; companyEFP.bid.company != 'null'" />
+            <constructor-arg value="background-color: #008500; color: #ffffff;" />
+            <constructor-arg value="color: #0000ff;" />
+          </bean>
+        </entry>
+        <entry key="offerEFPHighlight">
+          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
+            <constructor-arg value="companyEFP.offer.company == bestEFP.offer.company &amp;&amp; companyEFP.offer.company != 'null'" />
+            <constructor-arg value="background-color: #008500; color: #ffffff; " />
+            <constructor-arg value="color: #ff0000;" />
+          </bean>
+        </entry>
+        <entry key="bidOutrightHighlight">
+          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
+            <constructor-arg value="companyOutright.bid.company == bestOutright.bid.company &amp;&amp; companyOutright.bid.company != 'null'" />
+            <constructor-arg value="background-color: #008500; color: #ffffff;" />
+            <constructor-arg value="color: #0000ff;" />
+          </bean>
+        </entry>
+        <entry key="offerOutrightHighlight">
+          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
+            <constructor-arg value="companyOutright.offer.company == bestOutright.offer.company &amp;&amp; companyOutright.offer.company != 'null'" />
+            <constructor-arg value="background-color: #008500; color: #ffffff;" />
+            <constructor-arg value="color: #ff0000;" />
           </bean>
         </entry>
       </map>
     </constructor-arg>
   </bean>
 
-  <bean id="TableRowAnnotator" class="org.simpleframework.demo.table.TableRowAnnotator">
-    <constructor-arg ref="TableSchema" />
+  <bean id="ProductTable" class="org.simpleframework.demo.table.product.ProductTable" />
+
+  <bean id="ProductTableModel" class="org.simpleframework.demo.table.product.ProductTableModel">
+    <constructor-arg ref="ProductTable" />
   </bean>
 
-  <bean id="TableUpdater" class="org.simpleframework.demo.table.TableUpdater" init-method="start">
-    <constructor-arg value="id" />
-    <constructor-arg ref="TableSchema" />
-    <constructor-arg ref="TableRowAnnotator" />
+  <bean id="ProductDepthProcessor" class="org.simpleframework.demo.table.product.DepthProcessor">
+    <constructor-arg>
+      <list>
+        <ref bean="ProductTable" />
+        <ref bean="ProductDepthDebugger" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="ProductTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+    <constructor-arg ref="ProductTableModel" />
+    <constructor-arg ref="ProductTableSchema" />
+    <constructor-arg ref="ProductRowExtractor" />
+  </bean>
+
+  <bean id="ProductTableService" class="org.simpleframework.demo.table.message.TableService">
+    <constructor-arg ref="ProductTableUpdater" />
+  </bean>
+
+  <bean id="ProductStaticSource" class="org.simpleframework.demo.table.product.ProductStaticSource" />
+
+  <bean id="ProductDepthGenerator" class="org.simpleframework.demo.table.product.DepthGenerator" init-method="start">
+    <constructor-arg ref="ProductDepthProcessor" />
+    <constructor-arg ref="ProductStaticSource" />
+    <constructor-arg>
+      <list>
+        <value>HSBC</value>
+        <value>DB</value>
+        <value>JPM</value>
+        <value>ANZ</value>
+        <value>UBS</value>
+        <value>CITI</value>
+        <value>GS</value>
+      </list>
+    </constructor-arg>
+    <constructor-arg value="10" />
+  </bean>
+
+  <bean id="ProductDepthDebugger" class="org.simpleframework.demo.table.product.DepthDebugger" />
+
+  <bean id="ProductTableTester" class="org.simpleframework.demo.table.message.TableTester" init-method="start">
+    <constructor-arg ref="ProductTableUpdater" />
   </bean>
 
   <bean id="ScriptCompiler" class="org.simpleframework.demo.js.ScriptCompiler">
@@ -186,20 +296,49 @@
     <constructor-arg value="data/${context.path}" />
   </bean>
 
-  <bean id="ScriptResource" class="org.simpleframework.demo.http.resource.ScriptResource">
+  <bean id="ScriptResource" class="org.simpleframework.demo.js.ScriptResource">
     <constructor-arg ref="ScriptProcessor" />
     <constructor-arg value="text/javascript" />
     <constructor-arg value="gzip" />
   </bean>
 
+  <bean id="TemplateEngine" class="org.simpleframework.demo.template.velocity.VelocityTemplateEngine">
+    <constructor-arg ref="FileResolver" />
+    <constructor-arg value="" />
+    <constructor-arg value=".vm" />
+  </bean>
+
+  <bean id="TemplateContext" class="org.simpleframework.demo.template.TemplateContext">
+    <constructor-arg>
+      <map>
+        <entry key="source" value-ref="ProductStaticSource" />
+        <entry key="schema" value-ref="ProductTableSchema" />
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <bean id="Template" class="org.simpleframework.demo.template.Template">
+    <constructor-arg ref="TemplateEngine" />
+    <constructor-arg value="index" />
+  </bean>
+
+
+  <bean id="TemplateResource" class="org.simpleframework.demo.template.TemplateResource">
+    <constructor-arg ref="Template" />
+    <constructor-arg ref="TemplateContext"/>
+    <constructor-arg value="text/html" />
+  </bean>
+
   <bean id="ResourceEngine" class="org.simpleframework.demo.http.resource.RegularExpressionEngine">
     <constructor-arg>
       <map>
+        <entry key="/index.vm" value-ref="TemplateResource"/>
         <entry key=".*favicon.ico" value-ref="NotFoundResource" />
         <entry key=".*.html" value-ref="FileSystemResource" />
         <entry key=".*.png" value-ref="FileSystemResource" />
         <entry key=".*.css" value-ref="FileSystemResource" />
-        <entry key=".*.js" value-ref="ScriptResource" />
+        <!-- entry key=".*.js" value-ref="ScriptResource" /-->
+        <entry key=".*.js" value-ref="FileSystemResource" />
         <entry key="/" value-ref="RedirectResource" />
       </map>
     </constructor-arg>
@@ -217,7 +356,7 @@
   </bean>
 
   <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.SingletonRouter">
-    <constructor-arg ref="TableUpdater" />
+    <constructor-arg ref="ProductTableService" />
   </bean>
 
   <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer" init-method="start">

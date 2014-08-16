@@ -3,7 +3,6 @@ package org.simpleframework.demo.table.extract;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +55,7 @@ public class TableCursorTest extends TestCase {
       }
    }
    
-   public static class ExampleProductTableModel implements TableModel {
+   public static class ExampleProductTableModel implements TableSubscription {
       
       private final Map<String, ExampleProduct> products;
       private final Map<String, Long> versions;
@@ -79,7 +78,7 @@ public class TableCursorTest extends TestCase {
       }
 
       @Override
-      public List<Row> build() {
+      public List<Row> next() {
          Set<String> keys = products.keySet();
          
          if(!keys.isEmpty()) {
@@ -136,19 +135,19 @@ public class TableCursorTest extends TestCase {
      extractors.put("bidPriceBackground", new PredicateCellExtractor("bid.company == bestBid.company", "highlightBest", "highlightNormal"));
      extractors.put("offerPriceBackground", new PredicateCellExtractor("offer.company == bestOffer.company", "highlightBest", "highlightNormal"));
      
-     Set<String> columns = new HashSet<String>();
-     TableSchema schema = new TableSchema(columns);     
+     List<ColumnStyle> columns = new ArrayList<ColumnStyle>();
+     TableSchema schema = new TableSchema("exampleProduct", columns);     
      RowExtractor extractor = new RowExtractor(extractors);
      TableCursor cursor = new TableCursor(model, schema, extractor);
      
-     columns.add("bidPrice");
-     columns.add("offerPrice");
-     columns.add("bestBidPrice");
-     columns.add("bestOfferPrice");
-     columns.add("bestBidCompany");     
-     columns.add("bestOfferCompany");
-     columns.add("bidPriceBackground");
-     columns.add("offerPriceBackground");     
+     columns.add(new StringColumnStyle("bidPrice", "{bidPrice}"));
+     columns.add(new StringColumnStyle("offerPrice","{offerPrice}"));
+     columns.add(new StringColumnStyle("bestBidPrice","{bestBidPrice}"));
+     columns.add(new StringColumnStyle("bestOfferPrice","{bestOfferPrice}"));
+     columns.add(new StringColumnStyle("bestBidCompany","{bestBidCompany}"));     
+     columns.add(new StringColumnStyle("bestOfferCompany","{bestOfferCompany}"));
+     columns.add(new StringColumnStyle("bidPriceBackground","{bidPriceBackground}"));
+     columns.add(new StringColumnStyle("offerPriceBackground","{offerPriceBackground}"));           
      
      List<RowChange> changes1 = cursor.update();
      

@@ -18,7 +18,10 @@ public class ValueEncoder {
             return buffer.toString();
          }
       }
-      return ">" + value;
+      if(value != null) {
+         return ">" + value;
+      }
+      return ">";
    }
    
    public String decode(String text) {

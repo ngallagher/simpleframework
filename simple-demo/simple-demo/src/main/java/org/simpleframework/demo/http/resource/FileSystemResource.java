@@ -6,6 +6,7 @@ import static org.simpleframework.http.Status.OK;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 
+import org.simpleframework.demo.io.FileResolver;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;

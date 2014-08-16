@@ -1,4 +1,4 @@
-package org.simpleframework.demo.http.resource;
+package org.simpleframework.demo.io;
 
 import java.io.File;
 import java.io.FileInputStream;

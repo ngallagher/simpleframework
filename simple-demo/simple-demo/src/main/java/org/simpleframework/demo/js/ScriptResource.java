@@ -1,4 +1,4 @@
-package org.simpleframework.demo.http.resource;
+package org.simpleframework.demo.js;
 
 import static org.simpleframework.http.Protocol.CONTENT_ENCODING;
 import static org.simpleframework.http.Protocol.CONTENT_TYPE;
@@ -6,7 +6,7 @@ import static org.simpleframework.http.Status.OK;
 
 import java.io.OutputStream;
 
-import org.simpleframework.demo.js.ScriptProcessor;
+import org.simpleframework.demo.http.resource.Resource;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;

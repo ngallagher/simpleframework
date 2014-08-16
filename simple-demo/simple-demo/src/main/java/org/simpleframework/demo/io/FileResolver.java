@@ -1,4 +1,4 @@
-package org.simpleframework.demo.http.resource;
+package org.simpleframework.demo.io;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+
 
 public class FileResolver {
 

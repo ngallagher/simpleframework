@@ -1,21 +1,18 @@
 package org.simpleframework.demo.table.product;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ProductSubscription {
+import org.simpleframework.demo.table.extract.Client;
+
+public class ProductBuilder {
 
    private final Map<String, Product> cache;
    private final ProductFilter builder;
-   private final String company;
-   private final String user;
    
-   public ProductSubscription(String user, String company, List<String> include) {
+   public ProductBuilder(Client client) {
       this.cache = new ConcurrentHashMap<String, Product>();
-      this.builder = new ProductFilter(company, include);
-      this.company = company;    
-      this.user = user;
+      this.builder = new ProductFilter(client);
    }   
    
    public Product getProduct(Depth depth) {
@@ -39,12 +36,4 @@ public class ProductSubscription {
       }
       return current;   
    }   
-   
-   public String getUser() {
-      return user;
-   }
-   
-   public String getCompany() {
-      return company;
-   }
 }

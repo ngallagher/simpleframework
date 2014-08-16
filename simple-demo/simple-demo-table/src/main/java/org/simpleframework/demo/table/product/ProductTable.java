@@ -20,7 +20,7 @@ public class ProductTable implements DepthListener {
       this.version = new AtomicLong();
    }
    
-   public List<Product> extract(ProductSubscription subscription) {
+   public List<Product> extract(ProductBuilder subscription) {
       List<Product> list = new LinkedList<Product>();
       
       for(String security : securities) {

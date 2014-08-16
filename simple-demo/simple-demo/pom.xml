@@ -58,7 +58,12 @@
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
       <version>v20140730</version>
-    </dependency>      
+    </dependency>  
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
+    </dependency>       
   </dependencies>
   <reporting>
     <plugins>

@@ -221,14 +221,14 @@ public class PredicateParser extends Parser implements Predicate {
    }
 
    private void token(Token token) {
+      System.err.println(new String(source, off, count-off));
       if (quotes.open(source[off])) {
          token.type = STRING;         
          token.off++;
          off++;
 
          while (off < count) {
-            if (quotes.close(source[off])) {
-               
+            if (quotes.close(source[off])) {               
                off++;
                break;
             }

@@ -10,20 +10,20 @@ public class TableCursor {
 
    private final Map<Integer, RowMerger> mergers;
    private final Map<Integer, Long> versions;
+   private final TableSubscription subscription;
    private final RowExtractor extractor;
    private final TableSchema schema;
-   private final TableModel model;
    
-   public TableCursor(TableModel model, TableSchema schema, RowExtractor extractor) {
+   public TableCursor(TableSubscription subscription, TableSchema schema, RowExtractor extractor) {
       this.mergers = new ConcurrentHashMap<Integer, RowMerger>();
       this.versions = new ConcurrentHashMap<Integer, Long>();
+      this.subscription = subscription;
       this.extractor = extractor;
       this.schema = schema;
-      this.model = model;
    }
    
    public List<RowChange> update() {
-      List<Row> rows = model.build();
+      List<Row> rows = subscription.next();
       
       if(!rows.isEmpty()) {
          List<RowChange> changes = new LinkedList<RowChange>();
@@ -55,7 +55,7 @@ public class TableCursor {
       RowMerger merger = mergers.get(index);
       
       if(merger == null) {
-         merger = new RowMerger(schema);
+         merger = new RowMerger(schema, index);
          mergers.put(index, merger);
       }
       return merger;
