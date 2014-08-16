@@ -106,40 +106,58 @@ public class Table {
       return null;
    }
    
-   public String calculateHighlight(long since) {
+   public String calculateHighlight(Set<Integer> missedUpdates, long since) {
       StringBuilder builder = new StringBuilder();
       String delim = "";
       int size = rows.size();
       
       for(int i = 0; i < size; i++) {
-         TableRow row = rows.get(i);
-         long time = since;         
-         String text = annotator.calculateHighlight(row, time);
-         
-         if(text != null && text.length() > 0) {
-            builder.append(delim);
-            builder.append(text);
-            delim = "|";            
+         if(!missedUpdates.contains(i)) {
+            TableRow row = rows.get(i);
+            long time = since;         
+            String text = annotator.calculateHighlight(row, time);
+            
+            if(text != null && text.length() > 0) {
+               builder.append(delim);
+               builder.append(text);
+               delim = "|";            
+            }         
          }         
       }
       return builder.toString();
    }
    
-   public String calculateChange(long since) {
+   public String calculateChange(Set<Integer> missedUpdates, long since, int maxRows) {
       StringBuilder builder = new StringBuilder();
       String delim = "";
       int size = rows.size();
+      int count = 0;
       
       for(int i = 0; i < size; i++) {
          TableRow row = rows.get(i);
-         long time = since;         
-         String text = row.calculateChange(time);
+         long time = since;     
          
-         if(text != null && text.length() > 0) {
-            builder.append(delim);
-            builder.append(text);
-            delim = "|";            
-         }         
+         if(missedUpdates.contains(i)) {
+            time = 0;
+         }
+         if(count < maxRows) {
+            String text = row.calculateChange(time);
+            
+            if(text != null && text.length() > 0) {
+               if(count++ < maxRows) {
+                  builder.append(delim);
+                  builder.append(text);
+                  delim = "|";         
+                  missedUpdates.remove(i);
+               } else {
+                  missedUpdates.add(i);
+               }
+            } else {
+               missedUpdates.remove(i);
+            }
+         } else {
+            missedUpdates.add(i);
+         }
       }
       return builder.toString();
    }   

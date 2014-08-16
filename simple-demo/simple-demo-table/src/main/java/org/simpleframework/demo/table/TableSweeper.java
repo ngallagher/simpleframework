@@ -2,6 +2,7 @@ package org.simpleframework.demo.table;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class TableSweeper {
 
@@ -11,7 +12,7 @@ public class TableSweeper {
       this.table = table;     
    }
 
-   public Map<TableUpdateType, String> sweep(long time, long count) {
+   public Map<TableUpdateType, String> sweep(Set<Integer> missedUpdates, long time, long count) {
       Map<TableUpdateType, String> messages = new LinkedHashMap<TableUpdateType, String>();
       
       if(count <= 1) {
@@ -19,8 +20,8 @@ public class TableSweeper {
          String schemaUpdate = schema.createStyle();
          messages.put(TableUpdateType.SCHEMA, schemaUpdate);
       }
-      String highlightUpdate = table.calculateHighlight(time);
-      String deltaUpdate = table.calculateChange(time);// really should only take small batches...
+      String deltaUpdate = table.calculateChange(missedUpdates, time, 10);
+      String highlightUpdate = table.calculateHighlight(missedUpdates, time);
       
       highlightUpdate = count + "@" + System.currentTimeMillis() + ":" + highlightUpdate;
       deltaUpdate = count + "@" + System.currentTimeMillis() + ":" + deltaUpdate;

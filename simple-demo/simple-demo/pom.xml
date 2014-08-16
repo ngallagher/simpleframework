@@ -53,7 +53,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
       <version>3.2.2.RELEASE</version>
-    </dependency>  
+    </dependency>
+    <dependency>
+      <groupId>com.google.javascript</groupId>
+      <artifactId>closure-compiler</artifactId>
+      <version>v20140730</version>
+    </dependency>      
   </dependencies>
   <reporting>
     <plugins>

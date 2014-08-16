@@ -35,11 +35,6 @@
     <constructor-arg ref="ContentTypeResolver" />
   </bean>
 
-  <bean id="CompilerResource" class="org.simpleframework.demo.table.js.CompilerResource">
-    <constructor-arg ref="FileResolver" />
-    <constructor-arg ref="ContentTypeResolver" />
-  </bean>
-
   <bean id="NotFoundResource" class="org.simpleframework.demo.http.resource.StringResource">
     <constructor-arg value="Resource could not be found!!" />
     <constructor-arg value="text/plain; charset=UTF-8" />
@@ -182,6 +177,21 @@
     <constructor-arg ref="TableRowAnnotator" />
   </bean>
 
+  <bean id="ScriptCompiler" class="org.simpleframework.demo.js.ScriptCompiler">
+    <constructor-arg value="SIMPLE_OPTIMIZATIONS" />
+  </bean>
+
+  <bean id="ScriptProcessor" class="org.simpleframework.demo.js.ScriptProcessor">
+    <constructor-arg ref="ScriptCompiler" />
+    <constructor-arg value="data/${context.path}" />
+  </bean>
+
+  <bean id="ScriptResource" class="org.simpleframework.demo.http.resource.ScriptResource">
+    <constructor-arg ref="ScriptProcessor" />
+    <constructor-arg value="text/javascript" />
+    <constructor-arg value="gzip" />
+  </bean>
+
   <bean id="ResourceEngine" class="org.simpleframework.demo.http.resource.RegularExpressionEngine">
     <constructor-arg>
       <map>
@@ -189,7 +199,7 @@
         <entry key=".*.html" value-ref="FileSystemResource" />
         <entry key=".*.png" value-ref="FileSystemResource" />
         <entry key=".*.css" value-ref="FileSystemResource" />
-        <entry key=".*.js" value-ref="CompilerResource" />
+        <entry key=".*.js" value-ref="ScriptResource" />
         <entry key="/" value-ref="RedirectResource" />
       </map>
     </constructor-arg>

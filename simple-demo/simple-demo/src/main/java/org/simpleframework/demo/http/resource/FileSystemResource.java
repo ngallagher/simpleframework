@@ -37,8 +37,7 @@ public class FileSystemResource implements Resource {
       WritableByteChannel output = response.getByteChannel();
       long length = channel.size();
 
-      response.setCode(status.code);
-      response.setDescription(status.description);
+      response.setStatus(status);
       response.setValue(CONTENT_TYPE, type);
       response.setContentLength(length);
       channel.transferTo(0, length, output);

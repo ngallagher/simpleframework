@@ -39,7 +39,7 @@ public class TableRowChanger extends Thread {
       while(true) {
          try {     
             int rows = products.size();
-            long randomWait = random.nextInt(50) + 40;
+            long randomWait = random.nextInt(200) + 40;
             int randomRow = random.nextInt(rows);
             int randomBid = random.nextInt(50) + 1;
             int randomOffer = random.nextInt(50) + 1;

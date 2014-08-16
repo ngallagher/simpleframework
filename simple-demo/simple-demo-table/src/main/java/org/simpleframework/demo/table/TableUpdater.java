@@ -55,7 +55,8 @@ public class TableUpdater extends Thread implements Service {
                long count = sendCount.get();
            
                try {                   
-                  Map<TableUpdateType, String> messages = sweeper.sweep(time - 1000, count);
+                  Set<Integer> missedUpdates = subscription.getMissedUpdates();
+                  Map<TableUpdateType, String> messages = sweeper.sweep(missedUpdates, time - 1000, count);
                   Set<TableUpdateType> updates = messages.keySet();
                   
                   for(TableUpdateType update : updates) {
