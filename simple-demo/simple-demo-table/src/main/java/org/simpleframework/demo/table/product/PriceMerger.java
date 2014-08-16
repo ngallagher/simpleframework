@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class PriceSorter {
+public class PriceMerger {
 
    private final Map<String, Price> prices;
    private final PriceComparator comparator;
    private final Set<Price> sorted;
    
-   public PriceSorter(int capacity) {
+   public PriceMerger(int capacity) {
       this.comparator = new PriceComparator();
       this.sorted = new TreeSet<Price>(comparator);
       this.prices = new HashMap<String, Price>();
@@ -23,7 +23,7 @@ public class PriceSorter {
       return new ArrayList<Price>(sorted);
    }
    
-   public boolean update(Price update) {
+   public boolean merge(Price update) {
       String company = update.getCompany();
       Price existing = prices.remove(company);
       

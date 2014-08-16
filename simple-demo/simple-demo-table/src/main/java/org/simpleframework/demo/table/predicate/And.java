@@ -1,4 +1,4 @@
-package org.simpleframework.demo.predicate;
+package org.simpleframework.demo.table.predicate;
 
 public class And implements Predicate {
 

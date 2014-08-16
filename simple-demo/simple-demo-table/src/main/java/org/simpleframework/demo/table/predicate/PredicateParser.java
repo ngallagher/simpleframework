@@ -1,8 +1,8 @@
-package org.simpleframework.demo.predicate;
+package org.simpleframework.demo.table.predicate;
 
-import static org.simpleframework.demo.predicate.Type.ARGUMENT;
-import static org.simpleframework.demo.predicate.Type.NUMBER;
-import static org.simpleframework.demo.predicate.Type.STRING;
+import static org.simpleframework.demo.table.predicate.Type.ARGUMENT;
+import static org.simpleframework.demo.table.predicate.Type.NUMBER;
+import static org.simpleframework.demo.table.predicate.Type.STRING;
 
 import java.util.concurrent.atomic.AtomicReference;
 

@@ -1,4 +1,4 @@
-package org.simpleframework.demo.predicate;
+package org.simpleframework.demo.table.predicate;
 
 /**
  * A predicate is used to evaluate an expression based on the attributes of the

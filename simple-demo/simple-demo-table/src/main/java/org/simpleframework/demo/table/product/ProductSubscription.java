@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ProductQuery {
+public class ProductSubscription {
 
    private final Map<String, Product> cache;
    private final ProductFilter builder;
    private final String company;
    private final String user;
    
-   public ProductQuery(String user, String company, List<String> include) {
+   public ProductSubscription(String user, String company, List<String> include) {
       this.cache = new ConcurrentHashMap<String, Product>();
       this.builder = new ProductFilter(company, include);
       this.company = company;    

@@ -10,7 +10,7 @@ public class ProductTableTest extends TestCase {
    public void testDepth() throws Exception {
       ProductTable table = new ProductTable();
       DepthProcessor processor = new DepthProcessor(table);
-      ProductQuery query = new ProductQuery("john@hsbc.com", "HSBC", Arrays.asList("DB", "ANZ", "HSBC"));
+      ProductSubscription cursor = new ProductSubscription("john@hsbc.com", "HSBC", Arrays.asList("DB", "ANZ", "HSBC"));
       
       processor.update(new Price("X", PriceType.EFP, Side.BID, "HSBC", 10.1, 100000L));
       processor.update(new Price("X", PriceType.EFP, Side.OFFER, "ANZ", 11.1, 100000L));
@@ -20,7 +20,7 @@ public class ProductTableTest extends TestCase {
       processor.update(new Price("X", PriceType.EFP, Side.BID, "ANZ", 8.1, 100000L));
       processor.update(new Price("X", PriceType.EFP, Side.OFFER, "HSBC", 12.0, 100000L));  
       
-      List<Product> product = table.query(query);
+      List<Product> product = table.extract(cursor);
       
       assertEquals(product.size(), 1);
       assertEquals(product.get(0).getSecurity(), "X");

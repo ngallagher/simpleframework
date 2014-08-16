@@ -1,6 +1,6 @@
-package org.simpleframework.demo.predicate;
+package org.simpleframework.demo.table.predicate;
 
-import static org.simpleframework.demo.predicate.Type.ARGUMENT;
+import static org.simpleframework.demo.table.predicate.Type.ARGUMENT;
 
 /**
  * An evaluation is used to provide a predicate that can leverage a set of
@@ -11,7 +11,7 @@ import static org.simpleframework.demo.predicate.Type.ARGUMENT;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.demo.predicate.Operator
+ * @see org.simpleframework.demo.table.predicate.Operator
  */
 public class Evaluation implements Predicate {
 

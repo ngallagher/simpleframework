@@ -8,16 +8,17 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RowMerger {
 
    private final Map<String, Object> cache;
-   private final Set<String> columns;
+   private final TableSchema schema;
    private final AtomicLong revision;
    
-   public RowMerger(Set<String> columns) {
+   public RowMerger(TableSchema schema) {
       this.cache = new HashMap<String, Object>();
-      this.revision = new AtomicLong();
-      this.columns = columns;
+      this.revision = new AtomicLong(-1);
+      this.schema = schema;
    }
    
-   public synchronized Map<String, Object> merge(Map<String, Object> row, long version) {
+   public synchronized RowChange merge(Map<String, Object> row, long version) {
+      Set<String> columns = schema.getColumns();
       int expect = columns.size();
       int actual = row.size();
       
@@ -50,6 +51,9 @@ public class RowMerger {
             }
          }
       }
-      return difference;
+      if(!difference.isEmpty()) {
+         return new RowChange(difference, version);
+      }
+      return null;
    }
 }

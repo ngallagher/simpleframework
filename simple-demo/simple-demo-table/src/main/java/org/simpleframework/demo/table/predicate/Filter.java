@@ -1,4 +1,4 @@
-package org.simpleframework.demo.predicate;
+package org.simpleframework.demo.table.predicate;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

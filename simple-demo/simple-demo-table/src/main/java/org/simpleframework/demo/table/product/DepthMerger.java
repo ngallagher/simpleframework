@@ -8,8 +8,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class DepthMerger {
    
-   private final Map<PriceType, PriceSorter> bid;
-   private final Map<PriceType, PriceSorter> offer;
+   private final Map<PriceType, PriceMerger> bid;
+   private final Map<PriceType, PriceMerger> offer;
    private final AtomicLong counter;
    private final String security;
    private final int capacity;
@@ -19,8 +19,8 @@ public class DepthMerger {
    }
    
    public DepthMerger(String security, int capacity) {     
-      this.bid = new HashMap<PriceType, PriceSorter>();
-      this.offer = new HashMap<PriceType, PriceSorter>();
+      this.bid = new HashMap<PriceType, PriceMerger>();
+      this.offer = new HashMap<PriceType, PriceMerger>();
       this.counter = new AtomicLong();
       this.security = security;
       this.capacity = capacity;
@@ -29,9 +29,9 @@ public class DepthMerger {
    public synchronized Depth merge(Price price) {      
       Side side = price.getSide();
       PriceType type = price.getType();
-      PriceSorter sorter = sort(side, type);
+      PriceMerger merger = merge(side, type);
       
-      if(sorter.update(price)) {  
+      if(merger.merge(price)) {  
          Map<PriceType, List<Price>> bid = extract(Side.BID);
          Map<PriceType, List<Price>> offer = extract(Side.OFFER);
          long version = counter.getAndIncrement();
@@ -56,8 +56,8 @@ public class DepthMerger {
    }
    
    private synchronized List<Price> extract(Side side, PriceType type) {
-      PriceSorter sorter = sort(side, type);
-      List<Price> list = sorter.sort();
+      PriceMerger merger = merge(side, type);
+      List<Price> list = merger.sort();
       
       if(list.isEmpty()) {
          return Collections.emptyList();
@@ -65,23 +65,23 @@ public class DepthMerger {
       return list;
    }
    
-   private synchronized PriceSorter sort(Side side, PriceType type) {      
+   private synchronized PriceMerger merge(Side side, PriceType type) {      
       if(side == Side.BID) {
-         PriceSorter series = bid.get(type);
+         PriceMerger merger = bid.get(type);
          
-         if(series == null) {
-            series = new PriceSorter(capacity);
-            bid.put(type, series);
+         if(merger == null) {
+            merger = new PriceMerger(capacity);
+            bid.put(type, merger);
          }
-         return series;
+         return merger;
       }
-      PriceSorter series = offer.get(type);
+      PriceMerger merger = offer.get(type);
       
-      if(series == null) {
-         series = new PriceSorter(capacity);
-         offer.put(type, series);
+      if(merger == null) {
+         merger = new PriceMerger(capacity);
+         offer.put(type, merger);
       }
-      return series;
+      return merger;
    }
 
 }

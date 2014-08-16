@@ -1,16 +1,22 @@
 package org.simpleframework.demo.table.product;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DepthProcessor implements PriceListener {
 
    private final Map<String, DepthMerger> mergers; 
-   private final DepthListener listener;  
-   
+   private final List<DepthListener> listeners;  
+
    public DepthProcessor(DepthListener listener) {
+      this(Arrays.asList(listener));
+   }
+   
+   public DepthProcessor(List<DepthListener> listeners) {
       this.mergers = new ConcurrentHashMap<String, DepthMerger>();
-      this.listener = listener;
+      this.listeners = listeners;
    }
 
    @Override
@@ -20,7 +26,9 @@ public class DepthProcessor implements PriceListener {
       Depth depth = merger.merge(price);
       
       if(depth != null) {
-         listener.update(depth);
+         for(DepthListener listener : listeners) {
+            listener.update(depth);
+         }
       }
    }
    

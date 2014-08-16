@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.simpleframework.demo.predicate.Predicate;
-import org.simpleframework.demo.predicate.PredicateParser;
-import org.simpleframework.demo.predicate.PropertyArgument;
+import org.simpleframework.demo.table.predicate.Predicate;
+import org.simpleframework.demo.table.predicate.PredicateParser;
+import org.simpleframework.demo.table.predicate.PropertyArgument;
 import org.simpleframework.demo.table.reflect.PropertyBinder;
 
 public class PredicateCellExtractor implements CellExtractor {
