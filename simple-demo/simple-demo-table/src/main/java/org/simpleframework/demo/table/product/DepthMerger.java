@@ -1,8 +1,6 @@
 package org.simpleframework.demo.table.product;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -32,8 +30,8 @@ public class DepthMerger {
       PriceMerger merger = merge(side, type);
       
       if(merger.merge(price)) {  
-         Map<PriceType, List<Price>> bid = extract(Side.BID);
-         Map<PriceType, List<Price>> offer = extract(Side.OFFER);
+         Map<PriceType, PriceSeries> bid = extract(Side.BID);
+         Map<PriceType, PriceSeries> offer = extract(Side.OFFER);
          long version = counter.getAndIncrement();
          
          return new Depth(security, bid, offer, version);
@@ -41,31 +39,19 @@ public class DepthMerger {
       return null;
    }
    
-   private synchronized Map<PriceType, List<Price>> extract(Side side) {
-      Map<PriceType, List<Price>> prices = new HashMap<PriceType, List<Price>>();
+   private synchronized Map<PriceType, PriceSeries> extract(Side side) {
+      Map<PriceType, PriceSeries> prices = new HashMap<PriceType, PriceSeries>();
       
       for(PriceType type : PriceType.values()) {
-         List<Price> values = extract(side, type);
+         PriceMerger merger = merge(side, type);
+         PriceSeries series = merger.sort();
          
-         if(values == null) {
-            values = Collections.emptyList();
-         }
-         prices.put(type, values);         
+         prices.put(type, series);
       }
       return prices;
    }
    
-   private synchronized List<Price> extract(Side side, PriceType type) {
-      PriceMerger merger = merge(side, type);
-      List<Price> list = merger.sort();
-      
-      if(list.isEmpty()) {
-         return Collections.emptyList();
-      }
-      return list;
-   }
-   
-   private synchronized PriceMerger merge(Side side, PriceType type) {      
+   private synchronized PriceMerger merge(Side side, PriceType type) { 
       if(side == Side.BID) {
          PriceMerger merger = bid.get(type);
          
@@ -75,13 +61,16 @@ public class DepthMerger {
          }
          return merger;
       }
-      PriceMerger merger = offer.get(type);
-      
-      if(merger == null) {
-         merger = new PriceMerger(capacity);
-         offer.put(type, merger);
+      if(side == Side.OFFER) {
+         PriceMerger merger = offer.get(type);
+         
+         if(merger == null) {
+            merger = new PriceMerger(capacity);
+            offer.put(type, merger);
+         }
+         return merger;
       }
-      return merger;
+      return null;
    }
 
 }

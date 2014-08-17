@@ -12,9 +12,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import junit.framework.TestCase;
 
+import org.simpleframework.demo.table.Row;
+import org.simpleframework.demo.table.TableCursor;
+import org.simpleframework.demo.table.TableSubscription;
 import org.simpleframework.demo.table.product.Price;
 import org.simpleframework.demo.table.product.PriceType;
 import org.simpleframework.demo.table.product.Side;
+import org.simpleframework.demo.table.schema.ColumnStyle;
+import org.simpleframework.demo.table.schema.StringColumnStyle;
+import org.simpleframework.demo.table.schema.TableSchema;
 
 public class TableCursorTest extends TestCase {
    
@@ -104,7 +110,7 @@ public class TableCursorTest extends TestCase {
    }
   
    
-   public void testRowExtractor() {
+   public void testRowExtractor() throws Exception {
      ExampleProduct productX = new ExampleProduct(
            "X",
            new Price("X", PriceType.EFP, Side.BID, "HSBC", 11.1, 100000L),

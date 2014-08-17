@@ -1,10 +1,15 @@
-package org.simpleframework.demo.table.extract;
+package org.simpleframework.demo.table;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.simpleframework.demo.table.extract.RowChange;
+import org.simpleframework.demo.table.extract.RowExtractor;
+import org.simpleframework.demo.table.extract.RowMerger;
+import org.simpleframework.demo.table.schema.TableSchema;
 
 public class TableCursor {
 

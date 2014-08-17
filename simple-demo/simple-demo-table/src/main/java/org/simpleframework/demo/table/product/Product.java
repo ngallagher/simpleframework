@@ -1,19 +1,17 @@
 package org.simpleframework.demo.table.product;
 
-import java.util.Map;
-
 public class Product {
    
-   private final Map<PriceType, PricePair> best;
-   private final Map<PriceType, PricePair> user;
+   private final Depth companyDepth;
+   private final Depth marketDepth;
    private final String security;
    private final long version;
    
-   public Product(String security, Map<PriceType, PricePair> best, Map<PriceType, PricePair> company, long version) {
+   public Product(String security, Depth marketDepth, Depth companyDepth, long version) {
+      this.companyDepth = companyDepth;
+      this.marketDepth = marketDepth;
       this.version = version;
       this.security = security;
-      this.best = best;
-      this.user = company;
    }
    
    public long getVersion() {
@@ -24,19 +22,11 @@ public class Product {
       return security;
    }
 
-   public PricePair getBestEFP() {
-      return best.get(PriceType.EFP);
+   public Depth getMarketDepth() {
+      return marketDepth;
    }
    
-   public PricePair getBestOutright() {
-      return best.get(PriceType.OUTRIGHT);
-   }   
-   
-   public PricePair getCompanyEFP() {
-      return user.get(PriceType.EFP);
-   }
-   
-   public PricePair getCompanyOutright() {
-      return user.get(PriceType.OUTRIGHT);
-   }   
+   public Depth getCompanyDepth() {
+      return companyDepth;
+   }  
 }

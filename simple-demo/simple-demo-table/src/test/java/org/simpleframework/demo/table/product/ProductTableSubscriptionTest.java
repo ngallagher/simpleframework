@@ -8,16 +8,16 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.simpleframework.demo.table.Query;
+import org.simpleframework.demo.table.TableCursor;
 import org.simpleframework.demo.table.extract.CellExtractor;
-import org.simpleframework.demo.table.extract.Client;
-import org.simpleframework.demo.table.extract.ColumnStyle;
 import org.simpleframework.demo.table.extract.PredicateCellExtractor;
 import org.simpleframework.demo.table.extract.PropertyCellExtractor;
 import org.simpleframework.demo.table.extract.RowChange;
 import org.simpleframework.demo.table.extract.RowExtractor;
-import org.simpleframework.demo.table.extract.StringColumnStyle;
-import org.simpleframework.demo.table.extract.TableCursor;
-import org.simpleframework.demo.table.extract.TableSchema;
+import org.simpleframework.demo.table.schema.ColumnStyle;
+import org.simpleframework.demo.table.schema.StringColumnStyle;
+import org.simpleframework.demo.table.schema.TableSchema;
 
 public class ProductTableSubscriptionTest extends TestCase {
 
@@ -30,7 +30,7 @@ public class ProductTableSubscriptionTest extends TestCase {
       listeners.add(table);
       
       DepthProcessor processor = new DepthProcessor(listeners);
-      Client client = new Client("john@hsbc.com", "HSBC", Arrays.asList("DB", "ANZ", "HSBC"));
+      Query client = new Query("john@hsbc.com", "HSBC", Arrays.asList("DB", "ANZ", "HSBC"));
       ProductTableSubscription subscription = new ProductTableSubscription(table, client);
       
       processor.update(new Price("X", PriceType.EFP, Side.BID, "HSBC", 10.1, 100000L));
@@ -43,17 +43,17 @@ public class ProductTableSubscriptionTest extends TestCase {
       
       Map<String, CellExtractor> extractors = new HashMap<String, CellExtractor>();     
       
-      extractors.put("bidEFPPrice", new PropertyCellExtractor("companyEFP.bid.price", Product.class));
-      extractors.put("offerEFPPrice", new PropertyCellExtractor("companyEFP.offer.price", Product.class));
+      extractors.put("bidEFPPrice", new PropertyCellExtractor("companyDepth.bid[EFP].top.price", Product.class));
+      extractors.put("offerEFPPrice", new PropertyCellExtractor("companyDepth.offer[EFP].top.price", Product.class));
       
-      extractors.put("bestBidEFPPrice", new PropertyCellExtractor("bestEFP.bid.price", Product.class));
-      extractors.put("bestOfferEFPPrice", new PropertyCellExtractor("bestEFP.offer.price", Product.class));
+      extractors.put("bestBidEFPPrice", new PropertyCellExtractor("marketDepth.bid[EFP].top.price", Product.class));
+      extractors.put("bestOfferEFPPrice", new PropertyCellExtractor("marketDepth.offer[EFP].top.price", Product.class));
       
-      extractors.put("bestBidEFPCompany", new PropertyCellExtractor("bestEFP.bid.company", Product.class));
-      extractors.put("bestOfferEFPCompany", new PropertyCellExtractor("bestEFP.offer.company", Product.class));
+      extractors.put("bestBidEFPCompany", new PropertyCellExtractor("marketDepth.bid[EFP].top.company", Product.class));
+      extractors.put("bestOfferEFPCompany", new PropertyCellExtractor("marketDepth.offer[EFP].top.company", Product.class));
       
-      extractors.put("bidPriceEFPBackground", new PredicateCellExtractor("companyEFP.bid.company == bestEFP.bid.company && companyEFP.bid.company != 'null'", "highlightBest", "highlightNormal"));
-      extractors.put("offerPriceEFPBackground", new PredicateCellExtractor("companyEFP.offer.company == bestEFP.offer.company && companyEFP.offer.company != 'null'", "highlightBest", "highlightNormal"));
+      extractors.put("bidPriceEFPBackground", new PredicateCellExtractor("companyDepth.bid[EFP].top.company == marketDepth.bid[EFP].top.company && companyDepth.bid[EFP].top.company != 'null'", "highlightBest", "highlightNormal"));
+      extractors.put("offerPriceEFPBackground", new PredicateCellExtractor("companyDepth.offer[EFP].top.company == marketDepth.offer[EFP].top.company && companyDepth.offer[EFP].top.company != 'null'", "highlightBest", "highlightNormal"));
       
       List<ColumnStyle> columns = new ArrayList<ColumnStyle>();
       TableSchema schema = new TableSchema("product", columns);     

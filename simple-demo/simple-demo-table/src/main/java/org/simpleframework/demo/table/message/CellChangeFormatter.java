@@ -11,12 +11,15 @@ public class CellChangeFormatter {
    }
    
    public String formatCell(Object value) {
-      if(value instanceof Double) {
-         return format.format(value);
+      if(value != null) {
+         if(value instanceof Double) {
+            return format.format(value);
+         }
+         if(value instanceof Float) {
+            return format.format(value);
+         }
+         return String.valueOf(value);
       }
-      if(value instanceof Float) {
-         return format.format(value);
-      }
-      return String.valueOf(value);
+      return "";
    }
 }

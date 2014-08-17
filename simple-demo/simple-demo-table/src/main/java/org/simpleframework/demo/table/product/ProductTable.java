@@ -20,14 +20,16 @@ public class ProductTable implements DepthListener {
       this.version = new AtomicLong();
    }
    
-   public List<Product> extract(ProductBuilder subscription) {
+   public List<Product> query(ProductQuery query) {
       List<Product> list = new LinkedList<Product>();
       
       for(String security : securities) {
          Depth depth = products.get(security);        
-         Product product = subscription.getProduct(depth);
+         Product product = query.query(depth);
              
-         list.add(product);
+         if(product != null) {
+            list.add(product);
+         }
       }
       return list;
    }

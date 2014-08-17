@@ -3,10 +3,10 @@ package org.simpleframework.demo.table.message;
 import java.util.List;
 import java.util.Map;
 
-import org.simpleframework.demo.table.extract.Column;
 import org.simpleframework.demo.table.extract.RowChange;
-import org.simpleframework.demo.table.extract.TableSchema;
 import org.simpleframework.demo.table.extract.ValueEncoder;
+import org.simpleframework.demo.table.schema.Column;
+import org.simpleframework.demo.table.schema.TableSchema;
 
 public class RowChangeFormatter {
 

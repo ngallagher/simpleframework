@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.simpleframework.demo.table.schema.Column;
+import org.simpleframework.demo.table.schema.TableSchema;
+
 public class RowMerger {
 
    private final Map<String, Object> cache;

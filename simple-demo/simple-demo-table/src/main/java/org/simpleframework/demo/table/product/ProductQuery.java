@@ -3,31 +3,31 @@ package org.simpleframework.demo.table.product;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.simpleframework.demo.table.extract.Client;
+import org.simpleframework.demo.table.Query;
 
-public class ProductBuilder {
+public class ProductQuery {
 
    private final Map<String, Product> cache;
    private final ProductFilter builder;
    
-   public ProductBuilder(Client client) {
+   public ProductQuery(Query client) {
       this.cache = new ConcurrentHashMap<String, Product>();
       this.builder = new ProductFilter(client);
    }   
    
-   public Product getProduct(Depth depth) {
+   public Product query(Depth depth) {
       String security = depth.getSecurity();
-      Product previous = cache.get(security);
+      Product product = cache.get(security);
       
-      if(previous != null) {
-         long previousVersion = previous.getVersion();      
-         long currentVersion = depth.getVersion();
+      if(product != null) {
+         long version = product.getVersion();      
+         long update = depth.getVersion();
          
-         if(previousVersion == currentVersion) {
-            return previous;
+         if(version == update) {
+            return product;
          }
       }      
-      Product current = builder.filter(depth);
+      Product current = builder.filterDepth(depth);
          
       if(current != null) {
          cache.put(security, current);

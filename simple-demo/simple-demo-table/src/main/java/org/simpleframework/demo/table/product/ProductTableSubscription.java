@@ -6,24 +6,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.simpleframework.demo.table.extract.Client;
-import org.simpleframework.demo.table.extract.Row;
-import org.simpleframework.demo.table.extract.TableSubscription;
+import org.simpleframework.demo.table.Query;
+import org.simpleframework.demo.table.Row;
+import org.simpleframework.demo.table.TableSubscription;
 
 public class ProductTableSubscription implements TableSubscription {
    
    private final Map<String, Integer> indexes;
-   private final ProductBuilder builder;
+   private final ProductQuery builder;
    private final ProductTable table;
    
-   public ProductTableSubscription(ProductTable table, Client client) {
+   public ProductTableSubscription(ProductTable table, Query client) {
       this.indexes = new ConcurrentHashMap<String, Integer>();
-      this.builder = new ProductBuilder(client);
+      this.builder = new ProductQuery(client);
       this.table = table;
    }
    
    public List<Row> next() {
-      List<Product> products = table.extract(builder);
+      List<Product> products = table.query(builder);
       
       if(!products.isEmpty()) {
          List<Row> rows = new ArrayList<Row>();

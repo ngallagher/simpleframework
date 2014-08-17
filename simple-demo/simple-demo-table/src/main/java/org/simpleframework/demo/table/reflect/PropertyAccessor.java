@@ -25,7 +25,7 @@ public class PropertyAccessor implements Accessor {
       }
    }
 
-   private static Method getMethod(String name, Class type) {
+   protected static Method getMethod(String name, Class type) {
       Method method = getMethod(name, type, Prefix.GET);
 
       if (method == null) {
@@ -37,9 +37,10 @@ public class PropertyAccessor implements Accessor {
       return method;
    }
 
-   private static Method getMethod(String name, Class type, Prefix prefix) {
+   protected static Method getMethod(String name, Class type, Prefix prefix) {
       Method[] methods = type.getDeclaredMethods();
       String property = prefix.getProperty(name);
+      Method match = null;
 
       for (Method method : methods) {
          Class[] parameterTypes = method.getParameterTypes();
@@ -50,8 +51,13 @@ public class PropertyAccessor implements Accessor {
                return method;
             }
          }
+         if (parameterTypes.length == 1) {
+            if(methodName.equals(property)) {
+               match = method;
+            }
+         }
       }
-      return null;
+      return match;
    }
 
    private static enum Prefix {

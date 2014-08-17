@@ -91,7 +91,7 @@
             var expression = "[\\?&]user=([^&#]*)";
             var regex = new RegExp(expression);
             var results = regex.exec(window.location.href);
-            var websocket = new WebSocket("ws://localhost:6060/telemetry?user=" + results[1]);
+            var websocket = new WebSocket("ws://localhost:6060/performance?user=" + results[1]);
 
             websocket.onmessage = function(evt) {
                 var data = evt.data.split(":");

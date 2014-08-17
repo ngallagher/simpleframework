@@ -1,8 +1,8 @@
 package org.simpleframework.demo.table.product;
 
-import org.simpleframework.demo.table.extract.Client;
-import org.simpleframework.demo.table.extract.TableModel;
-import org.simpleframework.demo.table.extract.TableSubscription;
+import org.simpleframework.demo.table.Query;
+import org.simpleframework.demo.table.TableModel;
+import org.simpleframework.demo.table.TableSubscription;
 
 public class ProductTableModel implements TableModel {
    
@@ -12,7 +12,7 @@ public class ProductTableModel implements TableModel {
       this.table = table;
    }
    
-   public TableSubscription subscribe(Client client) {
+   public TableSubscription subscribe(Query client) {
       return new ProductTableSubscription(table, client);
    }
 }

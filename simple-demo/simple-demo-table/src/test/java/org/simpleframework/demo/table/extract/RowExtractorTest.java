@@ -48,7 +48,7 @@ public class RowExtractorTest extends TestCase {
       }
    }
    
-   public void testRowExtractor() {
+   public void testRowExtractor() throws Exception {
      Map<String, CellExtractor> extractors = new HashMap<String, CellExtractor>();
      ExampleProduct product = new ExampleProduct(
            "X",

@@ -3,12 +3,12 @@ package org.simpleframework.demo.table.message;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.simpleframework.demo.table.extract.Client;
+import org.simpleframework.demo.table.Query;
+import org.simpleframework.demo.table.TableCursor;
+import org.simpleframework.demo.table.TableModel;
+import org.simpleframework.demo.table.TableSubscription;
 import org.simpleframework.demo.table.extract.RowExtractor;
-import org.simpleframework.demo.table.extract.TableCursor;
-import org.simpleframework.demo.table.extract.TableModel;
-import org.simpleframework.demo.table.extract.TableSchema;
-import org.simpleframework.demo.table.extract.TableSubscription;
+import org.simpleframework.demo.table.schema.TableSchema;
 import org.simpleframework.http.socket.WebSocket;
 
 public class TableUpdater extends Thread {   
@@ -36,7 +36,7 @@ public class TableUpdater extends Thread {
    }
   
 
-   public void subscribe(WebSocket socket, Client client) {
+   public void subscribe(WebSocket socket, Query client) {
       TableSubscription subscription = model.subscribe(client);
       
       if(subscription != null) {

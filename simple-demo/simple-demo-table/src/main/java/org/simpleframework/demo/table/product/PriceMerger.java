@@ -1,8 +1,6 @@
 package org.simpleframework.demo.table.product;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -13,14 +11,18 @@ public class PriceMerger {
    private final PriceComparator comparator;
    private final Set<Price> sorted;
    
+   public PriceMerger() {
+      this(20);
+   }
+   
    public PriceMerger(int capacity) {
       this.comparator = new PriceComparator();
       this.sorted = new TreeSet<Price>(comparator);
       this.prices = new HashMap<String, Price>();
    }
    
-   public List<Price> sort() {
-      return new ArrayList<Price>(sorted);
+   public PriceSeries sort() {
+      return new PriceSeries(sorted);
    }
    
    public boolean merge(Price update) {

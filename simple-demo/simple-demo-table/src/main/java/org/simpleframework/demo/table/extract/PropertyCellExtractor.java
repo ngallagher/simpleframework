@@ -6,7 +6,7 @@ public class PropertyCellExtractor implements CellExtractor {
 
    private final PropertyPathAccessor accessor;
    
-   public PropertyCellExtractor(String path, Class type) {
+   public PropertyCellExtractor(String path, Class type) throws Exception {
       this.accessor = new PropertyPathAccessor(path, type);
    }
 

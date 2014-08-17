@@ -2,9 +2,9 @@ package org.simpleframework.demo.table.message;
 
 import java.util.List;
 
-import org.simpleframework.demo.table.extract.Column;
-import org.simpleframework.demo.table.extract.ColumnStyle;
-import org.simpleframework.demo.table.extract.TableSchema;
+import org.simpleframework.demo.table.schema.Column;
+import org.simpleframework.demo.table.schema.ColumnStyle;
+import org.simpleframework.demo.table.schema.TableSchema;
 
 public class SchemaFormatter {
    

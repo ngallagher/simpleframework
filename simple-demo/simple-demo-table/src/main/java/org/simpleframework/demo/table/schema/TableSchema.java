@@ -1,4 +1,4 @@
-package org.simpleframework.demo.table.extract;
+package org.simpleframework.demo.table.schema;
 
 import java.util.ArrayList;
 import java.util.Collections;

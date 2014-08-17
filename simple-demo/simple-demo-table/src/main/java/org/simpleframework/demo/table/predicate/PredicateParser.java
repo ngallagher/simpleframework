@@ -313,7 +313,6 @@ public class PredicateParser extends Parser implements Predicate {
       case '>': case '=':
       case '(': case ')':
       case '{': case '}':
-      case '[': case ']':
          return true;
       }
       return false;

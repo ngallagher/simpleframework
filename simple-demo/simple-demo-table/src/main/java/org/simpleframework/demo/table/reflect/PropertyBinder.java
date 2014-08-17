@@ -19,13 +19,18 @@ public class PropertyBinder {
    
    public Object getValue(String property, Object source) {
       Class type = source.getClass(); 
-      PropertyExtractor extractor = extractors.fetch(type);
       
-      if(extractor == null) {
-         extractor = new PropertyExtractor(type, capacity);
-         extractors.cache(type, extractor);
+      try {
+         PropertyExtractor extractor = extractors.fetch(type);
+         
+         if(extractor == null) {
+            extractor = new PropertyExtractor(type, capacity);
+            extractors.cache(type, extractor);
+         }
+         return extractor.getValue(property, source);
+      } catch(Exception e) {
+         throw new RuntimeException("Could not accessor property " + property + " on " + type);
       }
-      return extractor.getValue(property, source);
    }
 
    
@@ -39,7 +44,7 @@ public class PropertyBinder {
          this.type = type;
       }
       
-      public Object getValue(String property, Object source) {
+      public Object getValue(String property, Object source) throws Exception {
          Accessor accessor = accessors.fetch(property);     
          
          if(accessor == null) {

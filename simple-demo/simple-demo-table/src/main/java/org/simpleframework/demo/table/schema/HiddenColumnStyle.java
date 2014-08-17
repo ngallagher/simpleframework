@@ -1,4 +1,4 @@
-package org.simpleframework.demo.table.extract;
+package org.simpleframework.demo.table.schema;
 
 public class HiddenColumnStyle implements ColumnStyle {
 

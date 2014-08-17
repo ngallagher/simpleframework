@@ -7,8 +7,9 @@ var total = 1;
 
 function connect() {
 	var user = extractParameter("user");
-	var company = extractParameter("company");	
-	var socket = new WebSocket("ws://localhost:6060/table?user=" + user + "&company=" + company);
+	var company = extractParameter("company");
+	var products = extractParameter("products");		
+	var socket = new WebSocket("ws://localhost:6060/depthEFP?user=" + user + "&company=" + company + "&products=" + products);
 
 	socket.onopen = function() {
 		attempts = 1;
@@ -79,7 +80,7 @@ function schemaUpdate(socket, message) {
 	var table = document.getElementById(address);
 	
 	if(table != null) {
-		var minimum = parts.length;
+		var minimum = parts.length - 1;
 		var width = schema.length;	
 		
 		for ( var i = 1; i < parts.length; i++) {
@@ -122,7 +123,7 @@ function extractParameter(name) {
 	var results = regex.exec(window.location.href);
 	
 	if( results == null ) {
-		return null;
+		return "";
 	}  
 	return results[1];
 }
@@ -219,6 +220,7 @@ function drawRow(table, row, template) {
 		var name = schema[i].name;
 		var cell = table.rows[row].cells[i];
 		
+		cell.id = table.id + "_" + name + "_" + row;
 		cell.style.cssText = template.style[i];
 		cell.innerHTML = template[name];
 	}

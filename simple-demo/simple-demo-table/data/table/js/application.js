@@ -7,8 +7,9 @@ var total = 1;
 
 function connect() {
 	var user = extractParameter("user");
-	var company = extractParameter("company");	
-	var socket = new WebSocket("ws://localhost:6060/table?user=" + user + "&company=" + company);
+	var company = extractParameter("company");
+	var products = extractParameter("products");		
+	var socket = new WebSocket("ws://localhost:6060/best?user=" + user + "&company=" + company + "&products=" + products);
 
 	socket.onopen = function() {
 		attempts = 1;
@@ -83,7 +84,7 @@ function schemaUpdate(socket, message) {
 	var table = w2ui[address];
 	
 	if(table != null) {
-		var minimum = parts.length;
+		var minimum = parts.length - 1;
 		var width = table.columns.length;	
 		
 		if(width == 0) {
@@ -133,7 +134,7 @@ function extractParameter(name) {
 	var results = regex.exec(window.location.href);
 	
 	if( results == null ) {
-		return null;
+		return "";
 	}  
 	return results[1];
 }

@@ -19,10 +19,10 @@ public class DepthDebugger implements DepthListener  {
       builder.append("|Bid EFP        |Offer EFP      |Bid Outright   |Offer Outright |\r\n");
       builder.append("+---------------------------------------------------------------+\r\n");
       
-      List<Price> bidEFP = depth.getBid(PriceType.EFP);
-      List<Price> offerEFP = depth.getOffer(PriceType.EFP);
-      List<Price> bidOutright = depth.getBid(PriceType.OUTRIGHT);
-      List<Price> offerOutright = depth.getOffer(PriceType.OUTRIGHT);    
+      PriceSeries bidEFP = depth.getBid(PriceType.EFP);
+      PriceSeries offerEFP = depth.getOffer(PriceType.EFP);
+      PriceSeries bidOutright = depth.getBid(PriceType.OUTRIGHT);
+      PriceSeries offerOutright = depth.getOffer(PriceType.OUTRIGHT);    
       
       for(int i = 0; i < 10; i++) {
          builder.append("|");
@@ -39,13 +39,13 @@ public class DepthDebugger implements DepthListener  {
       System.err.println(builder);
    }
    
-   public String format(List<Price> prices, int level) {
+   public String format(PriceSeries prices, int level) {
       StringBuilder builder = new StringBuilder();
       DecimalFormat format = new DecimalFormat("###.##");
       int depth = prices.size();
       
       if(depth > level) {
-         Price price = prices.get(level);
+         Price price = prices.getAt(level);
          Double value = price.getPrice();
          String company = price.getCompany();
          String text = format.format(value);

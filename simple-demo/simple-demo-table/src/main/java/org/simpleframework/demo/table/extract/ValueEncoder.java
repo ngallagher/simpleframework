@@ -3,25 +3,23 @@ package org.simpleframework.demo.table.extract;
 public class ValueEncoder {
 
    public String encode(Object value) {
-      if(value instanceof String) {
-         String text = String.valueOf(value);
-      
-         if(containsAnyOf(text, "<>|:=,")) {            
-            StringBuffer buffer = new StringBuffer("<");
+      if(value == null) {
+         return ">";
+      }
+      String text = String.valueOf(value);
+   
+      if(containsAnyOf(text, "<>|:=,")) {            
+         StringBuffer buffer = new StringBuffer("<");
+         
+         for(int i = 0; i < text.length(); i++){
+            char ch = text.charAt(i);
+            String hex = Integer.toHexString(ch);
             
-            for(int i = 0; i < text.length(); i++){
-               char ch = text.charAt(i);
-               String hex = Integer.toHexString(ch);
-               
-               buffer.append(hex);
-            }        
-            return buffer.toString();
-         }
+            buffer.append(hex);
+         }        
+         return buffer.toString();
       }
-      if(value != null) {
-         return ">" + value;
-      }
-      return ">";
+      return ">" + text;
    }
    
    public String decode(String text) {

@@ -2,8 +2,9 @@ package org.simpleframework.demo.table.message;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
-import org.simpleframework.demo.table.extract.Client;
+import org.simpleframework.demo.table.Query;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.Reason;
@@ -19,7 +20,7 @@ public class TableTester extends Thread implements WebSocket {
    
    public void run() {
       try {
-         updater.subscribe(this, new Client("john@hsbc.com", "HSBC", Arrays.asList("DB", "ANZ", "HSBC")));
+         updater.subscribe(this, new Query("john@hsbc.com", "HSBC", Collections.EMPTY_LIST, Collections.EMPTY_LIST));
       } catch(Exception e){
          e.printStackTrace();
       }

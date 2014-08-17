@@ -9,15 +9,15 @@ import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.WebSocket;
 import org.simpleframework.http.socket.service.Service;
 
-public class StatisticsService implements Service {
+public class PerformanceAnalyzer implements Service {
 
-   private static final Logger LOG = Logger.getLogger(StatisticsService.class);
+   private static final Logger LOG = Logger.getLogger(PerformanceAnalyzer.class);
 
    private final SampleAverager averageRoundTrip;
    private final SampleAverager averagePaint;
    private final Set<Session> sessions;
 
-   public StatisticsService() {
+   public PerformanceAnalyzer() {
       this.sessions = new CopyOnWriteArraySet<Session>();
       this.averagePaint = new SampleAverager();
       this.averageRoundTrip = new SampleAverager();

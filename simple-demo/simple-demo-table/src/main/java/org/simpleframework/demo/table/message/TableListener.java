@@ -1,6 +1,6 @@
 package org.simpleframework.demo.table.message;
 
-import org.simpleframework.demo.table.telemetry.StatisticsService;
+import org.simpleframework.demo.table.telemetry.PerformanceAnalyzer;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.FrameType;
@@ -9,10 +9,10 @@ import org.simpleframework.http.socket.Session;
 
 public class TableListener implements FrameListener {
    
-   private final StatisticsService service;
+   private final PerformanceAnalyzer service;
    private final TableUpdater updater;
    
-   public TableListener(TableUpdater updater, StatisticsService service) {
+   public TableListener(TableUpdater updater, PerformanceAnalyzer service) {
       this.service = service;
       this.updater = updater;
    }
@@ -41,22 +41,24 @@ public class TableListener implements FrameListener {
                   if(operation.equals("refresh")) {
                      updater.refresh();
                   }else if(operation.equals("status")) {
-                     if(pair[0].equals("sequence")) {
-                        if(pair[1].indexOf("@") != -1) {
-                           String time = pair[1].split("@")[1];
-                           long sent = Long.parseLong(time);
-                           roundTripTime = (System.currentTimeMillis() - sent);                           
-                        }                        
+                     if(pair.length > 1) {
+                        if(pair[0].equals("sequence")) {
+                           if(pair[1].indexOf("@") != -1) {
+                              String time = pair[1].split("@")[1];
+                              long sent = Long.parseLong(time);
+                              roundTripTime = (System.currentTimeMillis() - sent);                           
+                           }                        
+                        }
+                        if(pair[0].equals("duration")) {
+                           paintTime = Long.parseLong(pair[1]);                        
+                        }
+                        if(pair[0].equals("change")) {
+                           rowChanges = Long.parseLong(pair[1]);                        
+                        }
+                        if(pair[0].equals("user")) {
+                           user = pair[1];                        
+                        }                    
                      }
-                     if(pair[0].equals("duration")) {
-                        paintTime = Long.parseLong(pair[1]);                        
-                     }
-                     if(pair[0].equals("change")) {
-                        rowChanges = Long.parseLong(pair[1]);                        
-                     }
-                     if(pair[0].equals("user")) {
-                        user = pair[1];                        
-                     }                       
                   }
                }
                if(text != null && text.startsWith("status:")) {

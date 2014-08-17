@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.simpleframework.demo.table.TableCursor;
 import org.simpleframework.demo.table.extract.RowChange;
-import org.simpleframework.demo.table.extract.TableCursor;
-import org.simpleframework.demo.table.extract.TableSchema;
+import org.simpleframework.demo.table.schema.TableSchema;
 import org.simpleframework.http.socket.WebSocket;
 
 public class TableConnection {
@@ -21,11 +21,17 @@ public class TableConnection {
       this.schemaFormatter = new SchemaFormatter(schema);
       this.session = session;
       this.cursor = cursor;
-   }   
+   }
    
    public void update() throws IOException {
-      updateSchema();
-      updateTable();
+      AtomicLong counter = session.getSendCount();     
+       
+      try {
+         updateSchema();
+         updateTable();
+      } finally {
+         counter.getAndIncrement();
+      }
    }
    
    public void updateSchema() throws IOException {
@@ -53,7 +59,6 @@ public class TableConnection {
          long count = counter.get();
       
          socket.send(ChangeType.TABLE.code + count + "@" + time + ":" + message);
-         counter.getAndIncrement();
       }
    }   
    

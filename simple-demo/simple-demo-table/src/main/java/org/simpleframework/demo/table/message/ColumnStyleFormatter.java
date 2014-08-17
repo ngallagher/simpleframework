@@ -1,7 +1,7 @@
 package org.simpleframework.demo.table.message;
 
-import org.simpleframework.demo.table.extract.ColumnStyle;
 import org.simpleframework.demo.table.extract.ValueEncoder;
+import org.simpleframework.demo.table.schema.ColumnStyle;
 
 public class ColumnStyleFormatter {
    
