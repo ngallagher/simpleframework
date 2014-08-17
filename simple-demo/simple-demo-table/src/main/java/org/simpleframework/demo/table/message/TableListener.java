@@ -1,5 +1,6 @@
 package org.simpleframework.demo.table.message;
 
+import org.simpleframework.demo.table.telemetry.StatisticsService;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.FrameType;
@@ -8,9 +9,11 @@ import org.simpleframework.http.socket.Session;
 
 public class TableListener implements FrameListener {
    
+   private final StatisticsService service;
    private final TableUpdater updater;
    
-   public TableListener(TableUpdater updater) {
+   public TableListener(TableUpdater updater, StatisticsService service) {
+      this.service = service;
       this.updater = updater;
    }
 
@@ -27,23 +30,37 @@ public class TableListener implements FrameListener {
             String[] values = parameters.split(",");
             
             if(values.length > 0) {
+               String user = null;
+               long roundTripTime = 0;
+               long paintTime = 0;
+               long rowChanges = 0;
+               
                for(String value : values) {
                   String[] pair = value.split("=");
                   
                   if(operation.equals("refresh")) {
                      updater.refresh();
                   }else if(operation.equals("status")) {
-                     System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + value);
-                     
                      if(pair[0].equals("sequence")) {
                         if(pair[1].indexOf("@") != -1) {
                            String time = pair[1].split("@")[1];
-                           Long sent = Long.parseLong(time);
-                        
-                           System.err.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TIME RTT: " + (System.currentTimeMillis() - sent));
-                        }
+                           long sent = Long.parseLong(time);
+                           roundTripTime = (System.currentTimeMillis() - sent);                           
+                        }                        
                      }
+                     if(pair[0].equals("duration")) {
+                        paintTime = Long.parseLong(pair[1]);                        
+                     }
+                     if(pair[0].equals("change")) {
+                        rowChanges = Long.parseLong(pair[1]);                        
+                     }
+                     if(pair[0].equals("user")) {
+                        user = pair[1];                        
+                     }                       
                   }
+               }
+               if(text != null && text.startsWith("status:")) {
+                  service.update(user, paintTime, roundTripTime, rowChanges);
                }
             }
          }

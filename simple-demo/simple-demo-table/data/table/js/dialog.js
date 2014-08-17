@@ -1,6 +1,6 @@
-var templates = {};
-var records = {};
-var schemas = {};
+var templates = [];
+var records = [];
+var schema = [];
 var connections = 0;
 var attempts = 0;
 var total = 1;
@@ -68,11 +68,7 @@ function reportStatus(socket, status, height, delta, change, duration, sequence,
 	image += ' padding-left: 4px;';
     image += ' padding-right: 8px;';    
 	image += '"/>';
-	
-    document.getElementById("connection").innerHTML = image;
-    document.getElementById("rows").innerHTML = height;
-    document.getElementById("changes").innerHTML = change;
-    document.getElementById("duration").innerHTML = duration;  
+	 
 	socket.send("status:rows="+height+",change="+change+",duration="+duration+",sequence="+sequence+",address="+address+",user="+user);
 	
 }
@@ -80,18 +76,11 @@ function reportStatus(socket, status, height, delta, change, duration, sequence,
 function schemaUpdate(socket, message) {
 	var parts = message.split('|');
 	var address = parts[0];
-	var table = w2ui[address];
+	var table = document.getElementById(address);
 	
 	if(table != null) {
 		var minimum = parts.length;
-		var width = table.columns.length;	
-		
-		if(width == 0) {
-			schemas[table.name] = [];
-			templates[table.name] = [];
-			records[table.name] = [];
-		}
-		var schema = schemas[table.name];
+		var width = schema.length;	
 		
 		for ( var i = 1; i < parts.length; i++) {
 			var part = parts[i];
@@ -148,12 +137,11 @@ function deltaUpdate(socket, message) {
 	}
 	var parts = message.split('|');
 	var address = parts[0];
-	var table = w2ui[address];
-	var schema = schemas[address];
+	var table = document.getElementById(address);
+	var start = currentTime();
 	
 	if(table != null) {
 		var length = message.length;
-		var start = currentTime();
 		var total = 0;
 		
 		if(schema.length > 0) {
@@ -161,7 +149,7 @@ function deltaUpdate(socket, message) {
 		}
 		var finish = currentTime();
 		var duration = finish - start;
-		var height = table.total;	
+		var height = table.rows.length;	
 	
 		reportStatus(socket, "success.png", height, length, total, duration, sequence, address);
 	}
@@ -170,19 +158,6 @@ function deltaUpdate(socket, message) {
 function currentTime() {
 	var date = new Date()
 	return date.getTime();
-}
-
-function findRow(table, row) {
-	var record = table.find({recid: row});
-	var height = table.total;
-	var index = 0;
-	
-	if(record.length > 0) {
-		index = record[0];
-	} else {
-		index = height + 1;	
-	}
-	return index;
 }
 
 function updateTable(socket, table, rows) {
@@ -202,7 +177,7 @@ function updateTable(socket, table, rows) {
 		}
 		changes[count++] = change;
 	}
-	var height = table.total;
+	var height = table.rows.length;
 	
 	if (height <= require) {
 		expandHeight(table, require);
@@ -210,11 +185,10 @@ function updateTable(socket, table, rows) {
 	for ( var i = 0; i < changes.length; i++) {
 		var index = changes[i].index;
 		var delta = changes[i].delta;
-		var row = findRow(table, index);
 		var cells = delta.split(',');
 
 		if (cells.length > 0) {
-			updateRow(socket, table, row, cells);
+			updateRow(socket, table, index, cells);
 		}
 		total += cells.length;
 	}
@@ -222,9 +196,8 @@ function updateTable(socket, table, rows) {
 }
 
 function updateRow(socket, table, row, cells) {
-	var record = records[table.name][row];
-	var template = templates[table.name][row];	
-	var schema = schemas[table.name];	
+	var record = records[row];
+	var template = templates[row];	
 	
 	for ( var i = 0; i < cells.length; i++) {
 		var cell = cells[i].split('=');		
@@ -236,14 +209,25 @@ function updateRow(socket, table, row, cells) {
 		record[style.name] = decoded;
 	}
 	interpolateRow(table, record, template);
-	table.set(record.recid, template, false);
-	reconcileRow(socket, table, row);
+	drawRow(table, row, template);
+}
+
+function drawRow(table, row, template) {
+	var width = schema.length;
+	
+	for ( var i = 0; i < width; i++) {
+		var name = schema[i].name;
+		var cell = table.rows[row].cells[i];
+		
+		cell.style.cssText = template.style[i];
+		cell.innerHTML = template[name];
+	}
 }
 
 function interpolateRow(table, record, template) {
-	var schema = schemas[table.name];
+	var width = schema.length;
 	
-	for ( var i = 0; i < schema.length; i++) {
+	for ( var i = 0; i < width; i++) {
 		var column = schema[i];
 		var style = column.style;
 		var name = column.name;
@@ -255,7 +239,7 @@ function interpolateRow(table, record, template) {
 }
 
 function interpolateCell(table, record, text, recurse) {
-	var schema = schemas[table.name];
+	var width = schema.length;
 	
 	for( var j = 0; j < schema.length; j++) {
 		var index = text.indexOf('{');
@@ -279,24 +263,6 @@ function interpolateCell(table, record, text, recurse) {
 	return text;
 }
 
-function reconcileRow(socket, table, row) {
-	var template = templates[table.name][row];
-	var schema = schemas[table.name];
-	var index = findRow(table, row);
-	var row = table.get(index);
-	
-	for( var i = 0; i < schema.length; i++) {
-		var style = schema[i];
-		var name = style.name;
-		var actual = row[name];
-		var expect = template[name];
-		
-		if(actual != expect) {
-			requestRefresh(socket, 'reconcileFailure');
-		}		
-	}	
-}
-
 function decodeValue(value) {
 	var text = value.substring(1);
 
@@ -315,39 +281,26 @@ function decodeValue(value) {
 	return text;
 }
 
-function expandWidth(table) {
-	var schema = schemas[table.name];	
-	var width = table.columns.length;	
-	var height = table.total;
+function expandWidth(table) {		
+	var height = table.rows.length;	
+	var width = schema.length;
 	
-	for ( var i = width; i < schema.length; i++) {
-		var style = schema[i];	
-		var column = {};
-		
-		column['field'] = style.name;
-		column['caption'] = style.caption;
-		column['resizable'] = style.resizable;
-		column['sortable'] = style.sortable;
-		column['hidden'] = style.hidden;
-		column['size'] = '50px';		
-
-		for( var j = 0; j < height; j++) {
-			templates[table.name][i][name] = '';
-			records[table.name][i][name] = '';
-		}
-		table.addColumn(column);
-	}
+    for (var i = 0; i < height; i++) {   
+        var current = table.rows[i].cells.length;
+        
+        for (var j = current; j < width; j++) {
+           table.rows[i].insertCell(j);
+        }
+     }
 }
 
 function expandHeight(table, row) {
-	var schema = schemas[table.name];	
-	var height = table.total;
-	var additions = [];
-	var count = 0;
+    var height = table.rows.length;
+	var width = schema.length;
 	
 	for ( var i = height; i <= row; i++) {
-		var record = {recid : i, style: []};
-		var template = {recid : i, style: []};		
+		var record = {style: []};
+		var template = {style: []};		
 		
 		for( var j = 0; j < schema.length; j++) {
 			var name = schema[j].name;
@@ -355,13 +308,16 @@ function expandHeight(table, row) {
 			template[name] = '';
 			record[name] = '';
 		}
-		additions[count++] = template;
-		templates[table.name][i] = template;
-		records[table.name][i] = record;
+		templates[i] = template;
+		records[i] = record;		
 	}
-	if(count > 0) {
-    	table.add(additions);	
-	}
+    for (var i = height; i <= row; i++) {
+       table.insertRow(i);
+ 
+       for (var j = 0; j < width; j++) {
+          table.rows[i].insertCell(j);
+       }       
+    }	
 }
 
 window.addEventListener("load", connect, false);

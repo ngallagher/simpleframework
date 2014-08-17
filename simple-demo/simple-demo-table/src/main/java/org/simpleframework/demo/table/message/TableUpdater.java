@@ -51,7 +51,7 @@ public class TableUpdater extends Thread {
    public void run() {
       while(true) {
          try {
-            Thread.sleep(2000);
+            Thread.sleep(500);
          
             for(TableConnection connection : connections) {
                try {

@@ -11,7 +11,7 @@ public class ColumnStyleFormatter {
       this.encoder = new ValueEncoder();
    }
    
-   public String formatColumnStyle(ColumnStyle column) {
+   public String formatColumnStyle(ColumnStyle column) {      
       String name = column.getName();
       String template = column.getTemplate();
       String style = column.getStyle();
@@ -20,6 +20,14 @@ public class ColumnStyleFormatter {
       boolean sortable = column.isSortable();
       boolean hidden = column.isHidden();
       
+      if(template != null) {
+         template = template.trim();
+         template = template.replaceAll("\\s+", " ");
+      }
+      if(style != null) {
+         style = style.trim();
+         style = style.replaceAll("\\s+", " ");
+      }
       return name + "," + encoder.encode(title) + "," + encoder.encode(template) + "," + encoder.encode(style) + "," + resizable + "," + sortable + "," + hidden;
    }
 }
