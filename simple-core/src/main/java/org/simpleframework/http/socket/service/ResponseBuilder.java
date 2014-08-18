@@ -98,7 +98,7 @@ class ResponseBuilder  {
     * the client, otherwise a HTTP 101 response is sent.
     */
    public void commit() throws IOException { 
-      if(validator.valid()) {
+      if(validator.isValid()) {
          accept();
       } else {
          reject();

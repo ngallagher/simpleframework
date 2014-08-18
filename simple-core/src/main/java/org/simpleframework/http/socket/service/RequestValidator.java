@@ -24,6 +24,8 @@ import static org.simpleframework.http.Protocol.SEC_WEBSOCKET_VERSION;
 import static org.simpleframework.http.Protocol.UPGRADE;
 import static org.simpleframework.http.Protocol.WEBSOCKET;
 
+import java.util.List;
+
 import org.simpleframework.http.Request;
 
 /**
@@ -81,23 +83,53 @@ class RequestValidator {
     * 
     * @return true if the request was a valid handshake
     */
-   public boolean valid() {
+   public boolean isValid() {
+      if(!isProtocol()) {
+         return false;
+      }
+      if(!isUpgrade()) {
+         return false;
+      }
+      return true;
+   }
+   
+   /**
+    * This is used to determine if the request is a valid WebSocket
+    * handshake of the correct version. This also checks to see if 
+    * the request contained the required handshake token.
+    * 
+    * @return this returns true if the request is a valid handshake
+    */
+   private boolean isProtocol() {
       String protocol = request.getValue(SEC_WEBSOCKET_VERSION);
-      String token = request.getValue(SEC_WEBSOCKET_KEY);      
-      String connection = request.getValue(CONNECTION);
-      String upgrade = request.getValue(UPGRADE);
+      String token = request.getValue(SEC_WEBSOCKET_KEY);
       
-      if(connection != null && token != null) {
-         if(!version.equals(protocol)) {
+      if(token != null) {
+         return version.equals(protocol);
+      }
+      return false;
+   }
+   
+   /**
+    * Here we check to ensure that there is a HTTP connection header
+    * with the required upgrade token. The upgrade token may be 
+    * one of many, so all must be checked. Finally to ensure that
+    * the upgrade is for a WebSocket the upgrade header is checked.
+    * 
+    * @return this returns true if the request is an upgrade
+    */
+   private boolean isUpgrade() {
+      List<String> tokens = request.getValues(CONNECTION); 
+      
+      for(String token : tokens) {
+         if(token.equalsIgnoreCase(UPGRADE)) {
+            String upgrade = request.getValue(UPGRADE);
+            
+            if(upgrade != null) {
+               return upgrade.equalsIgnoreCase(WEBSOCKET);
+            }
             return false;
          }
-         if(!connection.equalsIgnoreCase(UPGRADE)) {
-            return false;
-         }
-         if(!upgrade.equalsIgnoreCase(WEBSOCKET)) {
-            return false;
-         }
-         return token != null;
       }
       return false;
    }
