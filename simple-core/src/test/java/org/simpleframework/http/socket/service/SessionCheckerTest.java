@@ -1,6 +1,7 @@
 package org.simpleframework.http.socket.service;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -64,6 +65,14 @@ public class SessionCheckerTest extends TestCase {
 
       public String getKey() {
          return "test-key";
+      }
+
+      public Map getAttributes() {
+         return request.getAttributes();
+      }
+
+      public Object getAttribute(Object key) {
+         return request.getAttribute(key);
       }      
    }
    

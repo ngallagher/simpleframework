@@ -116,7 +116,7 @@
     <constructor-arg ref="BestTableUpdater" />
   </bean>
 
-  <bean id="PerformanceAnalyzer" class="org.simpleframework.demo.table.telemetry.PerformanceAnalyzer" />
+  <bean id="PerformanceAnalyzer" class="org.simpleframework.demo.table.telemetry.PerformanceAnalyzer" init-method="start"/>
 
   <bean id="MemoryAnalyzer" class="org.simpleframework.demo.table.telemetry.MemoryAnalyzer" init-method="start"/>
 

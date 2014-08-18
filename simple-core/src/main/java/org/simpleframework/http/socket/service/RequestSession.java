@@ -21,6 +21,8 @@ package org.simpleframework.http.socket.service;
 import static org.simpleframework.http.Protocol.SEC_WEBSOCKET_KEY;
 import static org.simpleframework.http.Protocol.SEC_WEBSOCKET_PROTOCOL;
 
+import java.util.Map;
+
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.socket.Session;
@@ -60,6 +62,11 @@ class RequestSession implements Session {
    private final String protocol;
    
    /**
+    * This is the bag of attributes used by this session.
+    */
+   private final Map attributes;
+   
+   /**
     * This is the key associated with this session.
     */
    private final String key;   
@@ -76,9 +83,37 @@ class RequestSession implements Session {
    public RequestSession(WebSocket socket, Request request, Response response) {
       this.protocol = response.getValue(SEC_WEBSOCKET_PROTOCOL);
       this.key = request.getValue(SEC_WEBSOCKET_KEY);
+      this.attributes = request.getAttributes();
       this.response = response;
       this.request = request;
       this.socket = socket;
+   }
+   
+   /**
+    * This can be used to retrieve the response attributes. These can
+    * be used to keep state with the response when it is passed to
+    * other systems for processing. Attributes act as a convenient
+    * model for storing objects associated with the response. This 
+    * also inherits attributes associated with the client connection.
+    *
+    * @return the attributes of that have been set on the request
+    */ 
+   public Map getAttributes() {
+      return attributes;
+   }
+
+   /**
+    * This is used as a shortcut for acquiring attributes for the
+    * response. This avoids acquiring the attribute <code>Map</code>
+    * in order to retrieve the attribute directly from that object.
+    * The attributes contain data specific to the response.
+    * 
+    * @param key this is the key of the attribute to acquire
+    * 
+    * @return this returns the attribute for the specified name
+    */ 
+   public Object getAttribute(Object key) {
+      return attributes.get(key);
    }
 
    /**

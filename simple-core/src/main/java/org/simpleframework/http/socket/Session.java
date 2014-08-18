@@ -18,6 +18,8 @@
 
 package org.simpleframework.http.socket;
 
+import java.util.Map;
+
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 
@@ -33,6 +35,29 @@ import org.simpleframework.http.Response;
  * @see org.simpleframework.http.socket.WebSocket
  */
 public interface Session {
+   
+   /**
+    * This can be used to retrieve the response attributes. These can
+    * be used to keep state with the response when it is passed to
+    * other systems for processing. Attributes act as a convenient
+    * model for storing objects associated with the response. This 
+    * also inherits attributes associated with the client connection.
+    *
+    * @return the attributes of that have been set on the request
+    */ 
+   Map getAttributes();
+
+   /**
+    * This is used as a shortcut for acquiring attributes for the
+    * response. This avoids acquiring the attribute <code>Map</code>
+    * in order to retrieve the attribute directly from that object.
+    * The attributes contain data specific to the response.
+    * 
+    * @param key this is the key of the attribute to acquire
+    * 
+    * @return this returns the attribute for the specified name
+    */ 
+   Object getAttribute(Object key);
    
    /**
     * Provides a <code>WebSocket</code> that can be used to communicate
