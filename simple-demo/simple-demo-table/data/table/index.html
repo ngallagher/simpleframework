@@ -11,7 +11,9 @@
   <script type="text/javascript" src="js/application.js"></script>  
 </head>
 <style>
-.titleTop {
+.titleTop { 
+  padding: 5px;
+  height: 40px;
   background-image: -webkit-linear-gradient(#ececec, #dfdfdf);
   background-image: -moz-linear-gradient(#ececec, #dfdfdf);
   background-image: -ms-linear-gradient(#ececec, #dfdfdf);
@@ -63,7 +65,7 @@ $(function () {
         name: 'mainLayout',
         padding: 0,
         panels: [
-            { type: 'top', size: '32px', style: pstyle },          
+            { type: 'top', size: '40px', style: pstyle },          
             { type: 'left', size: '40%', style: pstyle },        
             { type: 'right', size: '60%', style: pstyle },
             { type: 'bottom', size: '25px', style: pstyle }            
@@ -75,9 +77,9 @@ $(function () {
         name: 'topLayout',
         padding: 0,
         panels: [                      
-            { type: 'left', size: '40%', style: pstyle, content: "<div class='titleTop'><table><tr><td><b>Outright/EFP</b></td><td><input type='submit' value='Panic'/></td><td><input type='submit' value='Shrink'/></td><td><input type='checkbox' onclick='showMarket()'/>Market</td><td><input type='checkbox' onclick='showMyPrices()'/>My Prices</td></tr></table></div>" },        
-            { type: 'main', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><b>Lit EFP</b></td><td><input type='submit' value='Panic'/></td><td><input type='submit' value='Shrink'/></td><td><input type='submit' value='My Levels'/></td></tr></table></div>" },
-            { type: 'right', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><b>Lit Switches</b></td><td><input type='submit' value='Panic'/></td><td><input type='submit' value='Shrink'/></td><td><input type='submit' value='My Levels'/></td></tr></table></div>" }            
+            { type: 'left', size: '40%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Outright/EFP</span></td><td><button class='btn'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn' onclick='showMarket()'>Market</button></td><td><button class='btn' onclick='showMyPrices()'>My Prices</button></td></tr></table></div>" },        
+            { type: 'main', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Lit EFP</span></td><td><button class='btn'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn'>My Levels</button></td></tr></table></div>" },
+            { type: 'right', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Lit Switches</span></td><td><button class='btn'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn'>My Levels</button></td></tr></table></div>" }            
         ]
     });    
 
@@ -181,3 +183,4 @@ $(function () {
 </body>
 </html>
 
+a

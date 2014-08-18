@@ -2,19 +2,9 @@
 <html>
 
 <head>
+   <script type="text/javascript" src="js/canvasjs.min.js"></script>
    <script type="text/javascript">
       window.onload = function() {
-         var updateCount = 0;
-         var seekCount = 0;
-         /*var counter = setInterval(timer, 10);
-    
-    		function timer()
-    		{
-				if(seekCount < updateCount) {
-					seekCount += Math.min(11, updateCount - seekCount);				
-         			document.getElementById("timer").innerHTML=seekCount;
-         		} 
-     		} */
 
          var paintTime = [];
          var roundTripTime = [];
@@ -25,18 +15,49 @@
          var rowsChanged = [];
          var rowsChangedSum = [];
          var latencyDivision = [];
+         var connections = 0;
+         var attempts = 0;
+
+         function connect() {
+            var expression = "[\\?&]user=([^&#]*)";
+            var regex = new RegExp(expression);
+            var results = regex.exec(window.location.href);
+            var socket = new WebSocket("ws://localhost:6060/performance?user=" + results[1]);
+
+            socket.onopen = function() {
+               attempts = 1;
+               connections++;
+            };
+
+            socket.onclose = function(message) {
+               var exponent = Math.pow(2, attempts++);
+               var interval = (exponent - 1) * 1000;
+               var reference = connect();
+
+               if (interval > 30 * 1000) {
+                  interval = 30 * 1000;
+               }
+               setTimeout(reference, interval);
+            };
+
+            socket.onmessage = function(message) {
+               executeUpdate(message);
+            };
+         }
+
 
          var latencyDivisionChart = new CanvasJS.Chart("latencyDivision", {
             creditText: "",
             title: {
                text: "Latency Proportions"
             },
-           legend: {
+            legend: {
                fontFamily: "tahoma",
                fontSize: 12,
-            },            
+            },
             data: [{
                type: "pie",
+               legendMarkerType: "circle",
                showInLegend: true,
                dataPoints: latencyDivision
 
@@ -51,10 +72,11 @@
             },
             legend: {
                fontFamily: "tahoma",
-               fontSize: 12,               
+               fontSize: 12,
             },
             data: [{
                type: "pie",
+               legendMarkerType: "circle",
                showInLegend: true,
                dataPoints: memoryDivision
 
@@ -78,11 +100,13 @@
                /*color: "#ff0000",*/
                type: "line",
                showInLegend: true,
+               legendMarkerType: "circle",
                legendText: "Average",
                dataPoints: paintTime
             }, {
                /*color: "#00ff00",*/
                type: "line",
+               legendMarkerType: "circle",
                showInLegend: true,
                legendText: "Maximum",
                dataPoints: maximumPaintTime
@@ -104,11 +128,13 @@
                   /* color: "#000000",*/
                   type: "line",
                   showInLegend: true,
+                  legendMarkerType: "circle",
                   legendText: "Average",
                   dataPoints: roundTripTime
                }, {
                   /*color: "#00ff00",*/
                   type: "line",
+                  legendMarkerType: "circle",
                   showInLegend: true,
                   legendText: "Maximum",
                   dataPoints: maximumRoundTripTime
@@ -131,12 +157,14 @@
             data: [{
                   /* color: "#000000",*/
                   type: "line",
+                  legendMarkerType: "circle",
                   showInLegend: true,
                   legendText: "Average",
                   dataPoints: networkTime
                }, {
                   /*color: "#00ff00",*/
                   type: "line",
+                  legendMarkerType: "circle",
                   showInLegend: true,
                   legendText: "Maximum",
                   dataPoints: maximumNetworkTime
@@ -159,12 +187,14 @@
             data: [{
                   /*color: "#0000ff",*/
                   type: "line",
+                  legendMarkerType: "circle",
                   showInLegend: true,
                   legendText: "Sample",
                   dataPoints: rowsChanged
                }, {
                   /*color: "#00ff00",*/
                   type: "line",
+                  legendMarkerType: "circle",
                   showInLegend: true,
                   legendText: "Total",
                   dataPoints: rowsChangedSum
@@ -173,12 +203,8 @@
 
             ]
          });
-         var expression = "[\\?&]user=([^&#]*)";
-         var regex = new RegExp(expression);
-         var results = regex.exec(window.location.href);
-         var websocket = new WebSocket("ws://localhost:6060/performance?user=" + results[1]);
 
-         websocket.onmessage = function(evt) {
+         function executeUpdate(evt) {
             var data = evt.data.split(":");
             var point = data[1].split(",");
             var chart = null;
@@ -200,7 +226,6 @@
             if (data[0] == 'rowsChangedSum') {
                chart = rowsChangedChart;
                series = rowsChangedSum;
-               updateCount += parseInt(point[1]);
             }
             if (data[0] == 'rowsChanged') {
                chart = rowsChangedChart;
@@ -254,10 +279,11 @@
             if (chart != null) {
                chart.render();
             }
-         };
-      }
+         }
+         connect();
+      };
    </script>
-   <script type="text/javascript" src="js/canvasjs.min.js"></script>
+
 </head>
 
 <body style="height: 100%; margin: 0; background-color: #ffffff;">
