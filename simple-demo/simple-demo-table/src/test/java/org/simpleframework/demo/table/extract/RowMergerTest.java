@@ -7,6 +7,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.product.Price;
 import org.simpleframework.demo.table.product.PriceType;
 import org.simpleframework.demo.table.product.Side;
@@ -81,7 +82,8 @@ public class RowMergerTest extends TestCase {
      
      List<ColumnStyle> columns = new ArrayList<ColumnStyle>();
      TableSchema schema = new TableSchema("exampleProduct", columns);
-     RowMerger merger = new RowMerger(schema, 1);
+     RowFormatter formatter = new RowFormatter();
+     RowMerger merger = new RowMerger(schema, formatter, 1);
      RowExtractor extractor = new RowExtractor(extractors);
      
      columns.add(new StringColumnStyle("bidPrice", "{bidPrice}"));
@@ -117,10 +119,10 @@ public class RowMergerTest extends TestCase {
      
      RowChange merge1 = merger.merge(row1, 1);
      
-     assertEquals(merge1.getChanges().get("bidPrice"), 11.1);
-     assertEquals(merge1.getChanges().get("offerPrice"), 13.1);
-     assertEquals(merge1.getChanges().get("bestBidPrice"), 11.1);
-     assertEquals(merge1.getChanges().get("bestOfferPrice"), 10.1);     
+     assertEquals(merge1.getChanges().get("bidPrice"), "11.1");
+     assertEquals(merge1.getChanges().get("offerPrice"), "13.1");
+     assertEquals(merge1.getChanges().get("bestBidPrice"), "11.1");
+     assertEquals(merge1.getChanges().get("bestOfferPrice"), "10.1");     
      assertEquals(merge1.getChanges().get("bestBidCompany"), "HSBC");
      assertEquals(merge1.getChanges().get("bestOfferCompany"), "ANZ");     
      assertEquals(merge1.getChanges().get("bidPriceBackground"), "highlightBest");
@@ -128,7 +130,7 @@ public class RowMergerTest extends TestCase {
      
      RowChange merge2 = merger.merge(row2, 2);
      
-     assertEquals(merge2.getChanges().get("bidPrice"), 9.1);
+     assertEquals(merge2.getChanges().get("bidPrice"), "9.1");
      assertEquals(merge2.getChanges().get("offerPrice"), null);
      assertEquals(merge2.getChanges().get("bestBidPrice"), null);
      assertEquals(merge2.getChanges().get("bestOfferPrice"), null);     

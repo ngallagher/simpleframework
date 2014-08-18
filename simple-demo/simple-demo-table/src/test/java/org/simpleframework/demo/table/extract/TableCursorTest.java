@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.simpleframework.demo.table.Row;
 import org.simpleframework.demo.table.TableCursor;
 import org.simpleframework.demo.table.TableSubscription;
+import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.product.Price;
 import org.simpleframework.demo.table.product.PriceType;
 import org.simpleframework.demo.table.product.Side;
@@ -144,7 +145,8 @@ public class TableCursorTest extends TestCase {
      List<ColumnStyle> columns = new ArrayList<ColumnStyle>();
      TableSchema schema = new TableSchema("exampleProduct", columns);     
      RowExtractor extractor = new RowExtractor(extractors);
-     TableCursor cursor = new TableCursor(model, schema, extractor);
+     RowFormatter formatter = new RowFormatter();
+     TableCursor cursor = new TableCursor(model, schema, extractor, formatter);
      
      columns.add(new StringColumnStyle("bidPrice", "{bidPrice}"));
      columns.add(new StringColumnStyle("offerPrice","{offerPrice}"));
@@ -159,18 +161,18 @@ public class TableCursorTest extends TestCase {
      
      assertNotNull(changes1);
      assertEquals(changes1.size(), 2);   
-     assertEquals(changes1.get(0).getChanges().get("bidPrice"), 11.1);
-     assertEquals(changes1.get(0).getChanges().get("offerPrice"), 13.1);
-     assertEquals(changes1.get(0).getChanges().get("bestBidPrice"), 11.1);
-     assertEquals(changes1.get(0).getChanges().get("bestOfferPrice"), 10.1);     
+     assertEquals(changes1.get(0).getChanges().get("bidPrice"), "11.1");
+     assertEquals(changes1.get(0).getChanges().get("offerPrice"), "13.1");
+     assertEquals(changes1.get(0).getChanges().get("bestBidPrice"), "11.1");
+     assertEquals(changes1.get(0).getChanges().get("bestOfferPrice"), "10.1");     
      assertEquals(changes1.get(0).getChanges().get("bestBidCompany"), "HSBC");
      assertEquals(changes1.get(0).getChanges().get("bestOfferCompany"), "ANZ");     
      assertEquals(changes1.get(0).getChanges().get("bidPriceBackground"), "highlightBest");
      assertEquals(changes1.get(0).getChanges().get("offerPriceBackground"), "highlightNormal");     
-     assertEquals(changes1.get(1).getChanges().get("bidPrice"), 9.1);
-     assertEquals(changes1.get(1).getChanges().get("offerPrice"), 13.1);
-     assertEquals(changes1.get(1).getChanges().get("bestBidPrice"), 11.1);
-     assertEquals(changes1.get(1).getChanges().get("bestOfferPrice"), 10.1);     
+     assertEquals(changes1.get(1).getChanges().get("bidPrice"), "9.1");
+     assertEquals(changes1.get(1).getChanges().get("offerPrice"), "13.1");
+     assertEquals(changes1.get(1).getChanges().get("bestBidPrice"), "11.1");
+     assertEquals(changes1.get(1).getChanges().get("bestOfferPrice"), "10.1");     
      assertEquals(changes1.get(1).getChanges().get("bestBidCompany"), "DB");
      assertEquals(changes1.get(1).getChanges().get("bestOfferCompany"), "ANZ");     
      assertEquals(changes1.get(1).getChanges().get("bidPriceBackground"), "highlightNormal");
@@ -194,10 +196,10 @@ public class TableCursorTest extends TestCase {
      
      assertNotNull(changes3);
      assertEquals(changes3.size(), 1); 
-     assertEquals(changes3.get(0).getChanges().get("bidPrice"), 10.1);
-     assertEquals(changes3.get(0).getChanges().get("offerPrice"), 8.1);
+     assertEquals(changes3.get(0).getChanges().get("bidPrice"), "10.1");
+     assertEquals(changes3.get(0).getChanges().get("offerPrice"), "8.1");
      assertEquals(changes3.get(0).getChanges().get("bestBidPrice"), null);
-     assertEquals(changes3.get(0).getChanges().get("bestOfferPrice"), 1.1);     
+     assertEquals(changes3.get(0).getChanges().get("bestOfferPrice"), "1.1");     
      assertEquals(changes3.get(0).getChanges().get("bestBidCompany"), null);
      assertEquals(changes3.get(0).getChanges().get("bestOfferCompany"), "UBS");     
      assertEquals(changes3.get(0).getChanges().get("bidPriceBackground"), null);

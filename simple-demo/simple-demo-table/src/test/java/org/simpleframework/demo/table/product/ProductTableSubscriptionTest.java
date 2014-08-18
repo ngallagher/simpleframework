@@ -15,6 +15,7 @@ import org.simpleframework.demo.table.extract.PredicateCellExtractor;
 import org.simpleframework.demo.table.extract.PropertyCellExtractor;
 import org.simpleframework.demo.table.extract.RowChange;
 import org.simpleframework.demo.table.extract.RowExtractor;
+import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.schema.ColumnStyle;
 import org.simpleframework.demo.table.schema.StringColumnStyle;
 import org.simpleframework.demo.table.schema.TableSchema;
@@ -58,7 +59,8 @@ public class ProductTableSubscriptionTest extends TestCase {
       List<ColumnStyle> columns = new ArrayList<ColumnStyle>();
       TableSchema schema = new TableSchema("product", columns);     
       RowExtractor extractor = new RowExtractor(extractors);
-      TableCursor cursor = new TableCursor(subscription, schema, extractor); 
+      RowFormatter formatter = new RowFormatter();      
+      TableCursor cursor = new TableCursor(subscription, schema, extractor, formatter); 
       
       columns.add(new StringColumnStyle("bidEFPPrice","{bidEFPPrice}"));
       columns.add(new StringColumnStyle("offerEFPPrice","{offerEFPPrice}"));
@@ -73,8 +75,8 @@ public class ProductTableSubscriptionTest extends TestCase {
       
       assertNotNull(change1);
       assertEquals(change1.size(), 1);
-      assertEquals(change1.get(0).getChanges().get("bestBidEFPPrice"), 10.1);
-      assertEquals(change1.get(0).getChanges().get("bestOfferEFPPrice"), 11.1);      
+      assertEquals(change1.get(0).getChanges().get("bestBidEFPPrice"), "10.1");
+      assertEquals(change1.get(0).getChanges().get("bestOfferEFPPrice"), "11.1");      
       assertEquals(change1.get(0).getChanges().get("bestBidEFPCompany"), "HSBC");
       assertEquals(change1.get(0).getChanges().get("bestOfferEFPCompany"), "ANZ");
       assertEquals(change1.get(0).getChanges().get("bidPriceEFPBackground"), "highlightBest");
@@ -91,7 +93,7 @@ public class ProductTableSubscriptionTest extends TestCase {
       
       assertNotNull(change3);
       assertEquals(change3.size(), 1);
-      assertEquals(change3.get(0).getChanges().get("bestBidEFPPrice"), 9.1);
+      assertEquals(change3.get(0).getChanges().get("bestBidEFPPrice"), "9.1");
       assertEquals(change3.get(0).getChanges().get("bestOfferEFPPrice"), null);      
       assertEquals(change3.get(0).getChanges().get("bestBidEFPCompany"), "DB");
       assertEquals(change3.get(0).getChanges().get("bestOfferEFPCompany"), null);
@@ -109,7 +111,7 @@ public class ProductTableSubscriptionTest extends TestCase {
       
       assertNotNull(change5);
       assertEquals(change5.size(), 1);
-      assertEquals(change5.get(0).getChanges().get("bestBidEFPPrice"), 22.66);
+      assertEquals(change5.get(0).getChanges().get("bestBidEFPPrice"), "22.66");
       assertEquals(change5.get(0).getChanges().get("bestOfferEFPPrice"), null);      
       assertEquals(change5.get(0).getChanges().get("bestBidEFPCompany"), "HSBC");
       assertEquals(change5.get(0).getChanges().get("bestOfferEFPCompany"), null);

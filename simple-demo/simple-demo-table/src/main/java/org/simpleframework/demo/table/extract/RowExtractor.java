@@ -27,5 +27,4 @@ public class RowExtractor {
       }
       return row;
    }
-
 }

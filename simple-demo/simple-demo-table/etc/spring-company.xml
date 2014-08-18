@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-  <bean id="BestTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
+  <bean id="CompanyTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
     <constructor-arg value="mainGrid" />
     <constructor-arg>
       <list>
@@ -11,13 +11,13 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{bidOutrightTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #0000ff;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=bid&type=outright', 'dialog', 600, 700)">{bidOutrightVolume}</span>
                 </div>
               ]]>
             </value>
           </constructor-arg>
-          <constructor-arg value="{bidOutrightHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="$ B" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
@@ -25,13 +25,13 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{bidOutrightTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #0000ff;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=bid&type=outright', 'dialog', 600, 700)">{bidOutright}</span>
                 </div>
               ]]>
             </value>
           </constructor-arg>
-          <constructor-arg value="{bidOutrightHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Bid" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
@@ -39,13 +39,13 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{offerOutrightTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #ff0000;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=offer&type=outright', 'dialog', 600, 700)">{offerOutright}</span>
                 </div>
               ]]>
             </value>
           </constructor-arg>
-          <constructor-arg value="{offerOutrightHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Offer" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
@@ -53,7 +53,7 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{offerOutrightTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #ff0000;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=offer&type=outright', 'dialog', 600, 700)">{offerOutrightVolume}</span>
                 </div>
               ]]>
@@ -81,13 +81,13 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{bidEFPTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #0000ff;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=bid&type=EFP', 'dialog', 600, 700)">{bidEFPVolume}</span>
                 </div>
               ]]>
             </value>
           </constructor-arg>
-          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="$ B" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
@@ -95,13 +95,13 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{bidEFPTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #0000ff;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=bid&type=EFP', 'dialog', 600, 700)">{bidEFP}</span>
                 </div>
               ]]>
             </value>
           </constructor-arg>
-          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Bid" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
@@ -109,13 +109,13 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{offerEFPTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #ff0000;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=offer&type=EFP', 'dialog', 600, 700)">{offerEFP}</span>
                 </div>
               ]]>
             </value>
           </constructor-arg>
-          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Offer" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
@@ -123,13 +123,13 @@
           <constructor-arg>
             <value>
               <![CDATA[
-                <div title='{offerEFPTooltip}' style='font-weight: bold; text-decoration: underline;'>
+                <div style='font-weight: bold; text-decoration: underline; color: #ff0000;'>
                   <span style='cursor: pointer; cursor: hand;' onclick="return openDialog('/trade.html?products={product}&side=offer&type=EFP', 'dialog', 600, 700)">{offerEFPVolume}</span>
                 </div>
               ]]>
             </value>
           </constructor-arg>
-          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="$ O" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
@@ -138,82 +138,58 @@
           <constructor-arg value="" />
           <constructor-arg value="Ref" />
         </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="bidEFPHighlight" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="offerEFPHighlight" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="bidOutrightHighlight" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="offerOutrightHighlight" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="bidEFPTooltip" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="offerEFPTooltip" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="bidOutrightTooltip" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="offerOutrightTooltip" />
-        </bean>
       </list>
     </constructor-arg>
   </bean>
 
-  <bean id="BestRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
+  <bean id="CompanyRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
     <constructor-arg>
       <map>
         <entry key="bidEFP">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[EFP].top.price" />
+            <constructor-arg value="companyDepth.bid[EFP].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFP">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[EFP].top.price" />
+            <constructor-arg value="companyDepth.offer[EFP].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidEFPVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[EFP].top.volume" />
+            <constructor-arg value="companyDepth.bid[EFP].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFPVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[EFP].top.volume" />
+            <constructor-arg value="companyDepth.offer[EFP].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidOutright">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[OUTRIGHT].top.price" />
+            <constructor-arg value="companyDepth.bid[OUTRIGHT].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerOutright">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[OUTRIGHT].top.price" />
+            <constructor-arg value="companyDepth.offer[OUTRIGHT].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidOutrightVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[OUTRIGHT].top.volume" />
+            <constructor-arg value="companyDepth.bid[OUTRIGHT].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerOutrightVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[OUTRIGHT].top.volume" />
+            <constructor-arg value="companyDepth.offer[OUTRIGHT].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
@@ -228,67 +204,11 @@
             <constructor-arg value="3ySep" />
           </bean>
         </entry>
-        <entry key="bidEFPHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.bid[EFP].top.company == filteredDepth.bid[EFP].top.company &amp;&amp; companyDepth.bid[EFP].top.company != 'null'" />
-            <constructor-arg value="background-color: #008500; color: #ffffff;" />
-            <constructor-arg value="color: #0000ff;" />
-          </bean>
-        </entry>
-        <entry key="offerEFPHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.offer[EFP].top.company == filteredDepth.offer[EFP].top.company &amp;&amp; companyDepth.offer[EFP].top.company != 'null'" />
-            <constructor-arg value="background-color: #008500; color: #ffffff; " />
-            <constructor-arg value="color: #ff0000;" />
-          </bean>
-        </entry>
-        <entry key="bidOutrightHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.bid[OUTRIGHT].top.company == filteredDepth.bid[OUTRIGHT].top.company &amp;&amp; companyDepth.bid[OUTRIGHT].top.company != 'null'" />
-            <constructor-arg value="background-color: #008500; color: #ffffff;" />
-            <constructor-arg value="color: #0000ff;" />
-          </bean>
-        </entry>
-        <entry key="offerOutrightHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.offer[OUTRIGHT].top.company == filteredDepth.offer[OUTRIGHT].top.company &amp;&amp; companyDepth.offer[OUTRIGHT].top.company != 'null'" />
-            <constructor-arg value="background-color: #008500; color: #ffffff;" />
-            <constructor-arg value="color: #ff0000;" />
-          </bean>
-        </entry>
-        <entry key="bidEFPTooltip">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.bid[EFP].top.company == filteredDepth.bid[EFP].top.company &amp;&amp; companyDepth.bid[EFP].top.company != 'null'" />
-            <constructor-arg value="Yay! you are the best at {bidEFP} for {product}" />
-            <constructor-arg value="Your price for {product} is {bidEFP}" />
-          </bean>
-        </entry>
-        <entry key="offerEFPTooltip">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.offer[EFP].top.company == filteredDepth.offer[EFP].top.company &amp;&amp; companyDepth.offer[EFP].top.company != 'null'" />
-            <constructor-arg value="Yay! you are the best at {offerEFP} for {product}" />
-            <constructor-arg value="Your price for {product} is {offerEFP}" />
-          </bean>
-        </entry>
-        <entry key="bidOutrightTooltip">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.bid[OUTRIGHT].top.company == filteredDepth.bid[OUTRIGHT].top.company &amp;&amp; companyDepth.bid[OUTRIGHT].top.company != 'null'" />
-            <constructor-arg value="Yay! you are the best at {bidOutright} for {product}" />
-            <constructor-arg value="Your price for {product} is {bidOutright}" />
-          </bean>
-        </entry>
-        <entry key="offerOutrightTooltip">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.offer[OUTRIGHT].top.company == filteredDepth.offer[OUTRIGHT].top.company &amp;&amp; companyDepth.offer[OUTRIGHT].top.company != 'null'" />
-            <constructor-arg value="Yay! you are the best at {offerOutright} for {product}" />
-            <constructor-arg value="Your price for {product} is {offerOutright}" />
-          </bean>
-        </entry>
       </map>
     </constructor-arg>
   </bean>
   
-  <bean id="BestRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
+  <bean id="CompanyRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
     <constructor-arg>
       <map>
         <entry key="bidEFP">
@@ -315,27 +235,27 @@
     </constructor-arg>
   </bean>   
 
-  <bean id="BestTable" class="org.simpleframework.demo.table.product.ProductTable" />
+  <bean id="CompanyTable" class="org.simpleframework.demo.table.product.ProductTable" />
 
-  <bean id="BestTableModel" class="org.simpleframework.demo.table.product.ProductTableModel">
-    <constructor-arg ref="BestTable" />
+  <bean id="CompanyTableModel" class="org.simpleframework.demo.table.product.ProductTableModel">
+    <constructor-arg ref="CompanyTable" />
   </bean>
   
-  <bean id="BestTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
-    <constructor-arg ref="BestTableModel" />
-    <constructor-arg ref="BestTableSchema" />
-    <constructor-arg ref="BestRowExtractor" />
-    <constructor-arg ref="BestRowFormatter" />    
+  <bean id="CompanyTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+    <constructor-arg ref="CompanyTableModel" />
+    <constructor-arg ref="CompanyTableSchema" />
+    <constructor-arg ref="CompanyRowExtractor" />
+    <constructor-arg ref="CompanyRowFormatter" />    
   </bean>  
 
-  <bean id="BestEFPTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
+  <bean id="CompanyEFPTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
     <constructor-arg value="litEFPGrid" />
     <constructor-arg>
       <list>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="product" />
           <constructor-arg>
-            <value><![CDATA[<div style='font-weight: bold; color: #ffffff;'>{product}</div>]]></value>
+            <value><![CDATA[<div style='font-weight: bold; color: #ffffff; color: #ffffff;'>{product}</div>]]></value>
           </constructor-arg>
           <constructor-arg value="" />
           <constructor-arg value="Security" />
@@ -353,69 +273,63 @@
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="bidEFPVolume" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{bidEFPVolume}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{bidEFPVolume}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="$ B" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="bidEFP" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{bidEFP}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{bidEFP}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Bid" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="offerEFP" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{offerEFP}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{offerEFP}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Offer" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="offerEFPVolume" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{offerEFPVolume}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{offerEFPVolume}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="$ O" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="bidEFPHighlight" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="offerEFPHighlight" />
         </bean>
       </list>
     </constructor-arg>
   </bean>
 
-  <bean id="BestEFPRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
+  <bean id="CompanyEFPRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
     <constructor-arg>
       <map>
         <entry key="bidEFP">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[EFP].top.price" />
+            <constructor-arg value="companyDepth.bid[EFP].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFP">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[EFP].top.price" />
+            <constructor-arg value="companyDepth.offer[EFP].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidEFPVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[EFP].top.volume" />
+            <constructor-arg value="companyDepth.bid[EFP].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFPVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[EFP].top.volume" />
+            <constructor-arg value="companyDepth.offer[EFP].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
@@ -430,25 +344,11 @@
             <constructor-arg value="3ySep" />
           </bean>
         </entry>
-        <entry key="bidEFPHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.bid[EFP].top.company == filteredDepth.bid[EFP].top.company &amp;&amp; companyDepth.bid[EFP].top.company != 'null'" />
-            <constructor-arg value="font-weight: bold; color: #ffffff;" />
-            <constructor-arg value="color: #888888;" />
-          </bean>
-        </entry>
-        <entry key="offerEFPHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.offer[EFP].top.company == filteredDepth.offer[EFP].top.company &amp;&amp; companyDepth.offer[EFP].top.company != 'null'" />
-            <constructor-arg value="font-weight: bold; color: #ffffff; " />
-            <constructor-arg value="color: #888888;" />
-          </bean>
-        </entry>
       </map>
     </constructor-arg>
   </bean>
   
-  <bean id="BestEFPRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
+  <bean id="CompanyEFPRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
     <constructor-arg>
       <map>
         <entry key="bidEFP">
@@ -465,20 +365,20 @@
     </constructor-arg>
   </bean>    
 
-  <bean id="BestEFPTable" class="org.simpleframework.demo.table.product.ProductTable" />
+  <bean id="CompanyEFPTable" class="org.simpleframework.demo.table.product.ProductTable" />
 
-  <bean id="BestEFPTableModel" class="org.simpleframework.demo.table.product.ProductTableModel">
-    <constructor-arg ref="BestEFPTable" />
+  <bean id="CompanyEFPTableModel" class="org.simpleframework.demo.table.product.ProductTableModel">
+    <constructor-arg ref="CompanyEFPTable" />
   </bean>
   
-  <bean id="BestEFPTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
-    <constructor-arg ref="BestEFPTableModel" />
-    <constructor-arg ref="BestEFPTableSchema" />
-    <constructor-arg ref="BestEFPRowExtractor" />
-    <constructor-arg ref="BestEFPRowFormatter" />    
+  <bean id="CompanyEFPTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+    <constructor-arg ref="CompanyEFPTableModel" />
+    <constructor-arg ref="CompanyEFPTableSchema" />
+    <constructor-arg ref="CompanyEFPRowExtractor" />
+    <constructor-arg ref="CompanyEFPRowFormatter" />    
   </bean>  
 
-  <bean id="BestSwitchTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
+  <bean id="CompanySwitchTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
     <constructor-arg value="litSwitchGrid" />
     <constructor-arg>
       <list>
@@ -503,69 +403,63 @@
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="bidEFPVolume" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{bidEFPVolume}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{bidEFPVolume}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="$ B" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="bidEFP" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{bidEFP}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{bidEFP}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{bidEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Bid" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="offerEFP" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{offerEFP}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{offerEFP}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="Offer" />
         </bean>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">
           <constructor-arg value="offerEFPVolume" />
           <constructor-arg>
-            <value><![CDATA[<div style='text-decoration: underline;'>{offerEFPVolume}</div>]]></value>
+            <value><![CDATA[<div style='text-decoration: underline; color: #ffffff;'>{offerEFPVolume}</div>]]></value>
           </constructor-arg>
-          <constructor-arg value="{offerEFPHighlight}" />
+          <constructor-arg value="" />
           <constructor-arg value="$ O" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="bidEFPHighlight" />
-        </bean>
-        <bean class="org.simpleframework.demo.table.schema.HiddenColumnStyle">
-          <constructor-arg value="offerEFPHighlight" />
         </bean>
       </list>
     </constructor-arg>
   </bean>
 
-  <bean id="BestSwitchRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
+  <bean id="CompanySwitchRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
     <constructor-arg>
       <map>
         <entry key="bidEFP">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[EFP].top.price" />
+            <constructor-arg value="companyDepth.bid[EFP].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFP">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[EFP].top.price" />
+            <constructor-arg value="companyDepth.offer[EFP].top.price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidEFPVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.bid[EFP].top.volume" />
+            <constructor-arg value="companyDepth.bid[EFP].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerEFPVolume">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="filteredDepth.offer[EFP].top.volume" />
+            <constructor-arg value="companyDepth.offer[EFP].top.volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
@@ -580,25 +474,11 @@
             <constructor-arg value="3ySep" />
           </bean>
         </entry>
-        <entry key="bidEFPHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.bid[EFP].top.company == filteredDepth.bid[EFP].top.company &amp;&amp; companyDepth.bid[EFP].top.company != 'null'" />
-            <constructor-arg value="font-weight: bold; color: #ffffff;" />
-            <constructor-arg value="color: #888888;" />
-          </bean>
-        </entry>
-        <entry key="offerEFPHighlight">
-          <bean class="org.simpleframework.demo.table.extract.PredicateCellExtractor">
-            <constructor-arg value="companyDepth.offer[EFP].top.company == filteredDepth.offer[EFP].top.company &amp;&amp; companyDepth.offer[EFP].top.company != 'null'" />
-            <constructor-arg value="font-weight: bold; color: #ffffff;" />
-            <constructor-arg value="color: #888888;" />
-          </bean>
-        </entry>
       </map>
     </constructor-arg>
   </bean>
 
-  <bean id="BestSwitchRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
+  <bean id="CompanySwitchRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
     <constructor-arg>
       <map>
         <entry key="bidEFP">
@@ -615,25 +495,25 @@
     </constructor-arg>
   </bean>    
   
-  <bean id="BestSwitchTable" class="org.simpleframework.demo.table.product.ProductTable" />
+  <bean id="CompanySwitchTable" class="org.simpleframework.demo.table.product.ProductTable" />
 
-  <bean id="BestSwitchTableModel" class="org.simpleframework.demo.table.product.ProductTableModel">
-    <constructor-arg ref="BestSwitchTable" />
+  <bean id="CompanySwitchTableModel" class="org.simpleframework.demo.table.product.ProductTableModel">
+    <constructor-arg ref="CompanySwitchTable" />
   </bean>
   
-  <bean id="BestSwitchTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
-    <constructor-arg ref="BestSwitchTableModel" />
-    <constructor-arg ref="BestSwitchTableSchema" />
-    <constructor-arg ref="BestSwitchRowExtractor" />
-    <constructor-arg ref="BestSwitchRowFormatter" />    
+  <bean id="CompanySwitchTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+    <constructor-arg ref="CompanySwitchTableModel" />
+    <constructor-arg ref="CompanySwitchTableSchema" />
+    <constructor-arg ref="CompanySwitchRowExtractor" />
+    <constructor-arg ref="CompanySwitchRowFormatter" />    
   </bean>  
   
-  <bean id="BestTableService" class="org.simpleframework.demo.table.message.TableService">
+  <bean id="CompanyTableService" class="org.simpleframework.demo.table.message.TableService">
     <constructor-arg>
       <list>
-        <ref bean="BestTableUpdater" />
-        <ref bean="BestEFPTableUpdater" />
-        <ref bean="BestSwitchTableUpdater" />
+        <ref bean="CompanyTableUpdater" />
+        <ref bean="CompanyEFPTableUpdater" />
+        <ref bean="CompanySwitchTableUpdater" />
       </list>
     </constructor-arg>
     <constructor-arg ref="PerformanceAnalyzer" />

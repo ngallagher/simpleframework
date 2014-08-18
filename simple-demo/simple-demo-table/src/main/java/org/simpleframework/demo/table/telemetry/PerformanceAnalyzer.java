@@ -27,18 +27,21 @@ public class PerformanceAnalyzer implements Service {
       long time = System.currentTimeMillis();
       long totalPaint = averagePaint.count();
       long totalRoundTrip = averageRoundTrip.count();
+      long maxMemory = Runtime.getRuntime().maxMemory();
+      long freeMemory = Runtime.getRuntime().freeMemory();
+      long usedMemory = maxMemory - freeMemory;
+      long averagePaintTime = averagePaint.average();
+      long averageRoundTripTime = averageRoundTrip.average();
+      long averageNetworkTime = averageRoundTripTime - averagePaintTime;
+      long networkTime = roundTripTime - paintTime;
       
       if(totalPaint > 1000) {
-         long lastAverage = averagePaint.average();
-         
          averagePaint.reset();         
-         averagePaint.sample(lastAverage);
+         averagePaint.sample(averagePaintTime);
       }
       if(totalRoundTrip > 1000) {
-         long lastAverage = averageRoundTrip.average();
-         
          averageRoundTrip.reset();
-         averageRoundTrip.sample(lastAverage);
+         averageRoundTrip.sample(averageRoundTripTime);
       }
       averagePaint.sample(paintTime);
       averageRoundTrip.sample(roundTripTime);
@@ -50,10 +53,13 @@ public class PerformanceAnalyzer implements Service {
          
          if(query != null && query.equals(user)) {
             try {
-               socket.send("averagePaintTime:"+time+","+averagePaint.average());
-               socket.send("averageRoundTripTime:"+time+","+averageRoundTrip.average());               
+               socket.send("usedMemory:"+time+","+usedMemory);
+               socket.send("freeMemory:"+time+","+freeMemory);                    
+               socket.send("averagePaintTime:"+time+","+averagePaintTime);
+               socket.send("averageNetworkTime:"+time+","+averageNetworkTime);               
                socket.send("paintTime:"+time+","+paintTime);
                socket.send("roundTripTime:"+time+","+roundTripTime);
+               socket.send("networkTime:"+time+","+networkTime);               
                socket.send("rowsChanged:"+time+","+rowChanges);                             
             } catch (Exception e) {
                sessions.remove(session);

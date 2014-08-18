@@ -13,6 +13,8 @@
    <style>
       #depthEFP {
          visibility: hidden;
+         width: 20px;
+         display: none;
       }
       #depthEFPTranspose {
          visibility: visible;
@@ -33,6 +35,19 @@
    </style>
    <script>
       var counter = setInterval(transposeDepth, 1000);
+
+
+function extractParameter(name) {
+	var source = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	var expression = "[\\?&]"+source+"=([^&#]*)";
+	var regex = new RegExp(expression);
+	var results = regex.exec(window.location.href);
+	
+	if( results == null ) {
+		return "";
+	}  
+	return results[1];
+}
 
       function transposeDepth() {
          var table = document.getElementById("depthEFP");
@@ -64,19 +79,50 @@
             for (var i = actual; i <= required; i++) {
                transpose.insertRow(i);
 
-               for (var j = 0; j < 7; j++) {
+               for (var j = 0; j < 4; j++) {
                   transpose.rows[i].insertCell(j);
                }
             }
          }
-         for (var i = 0; i < depth.length; i++) {
-            transpose.rows[i].cells[0].innerHTML = depth[i].bidCompany;
-            transpose.rows[i].cells[1].innerHTML = depth[i].bidVolume;
-            transpose.rows[i].cells[2].innerHTML = depth[i].bidPrice;
-            transpose.rows[i].cells[3].innerHTML = "<b>" + depth[i].product + "</b>";            
-            transpose.rows[i].cells[4].innerHTML = depth[i].offerPrice;
-            transpose.rows[i].cells[5].innerHTML = depth[i].offerVolume;
-            transpose.rows[i].cells[6].innerHTML = depth[i].offerCompany;
+         var side = extractParameter("side");
+         
+         for (var i = 0; i < depth.length; i++) {         	
+         	if(side == "bid") {
+         		var company = depth[i].bidCompany;
+         		var length = company.length;
+         		
+         		transpose.rows[i].cells[0].style.cssText = "height: 40px;";    
+         		
+         		if(length > 0) {     	
+            		transpose.rows[i].cells[0].innerHTML = "<input type='checkbox'/>";            	
+            		transpose.rows[i].cells[1].innerHTML = "<b>" + depth[i].bidPrice + "bp</b>";         
+            		transpose.rows[i].cells[2].innerHTML = "<img src='img/" + depth[i].bidCompany + ".png'/>";
+            		transpose.rows[i].cells[3].innerHTML = "Up to $" + depth[i].bidVolume + "mil";
+            	} else {
+            		transpose.rows[i].cells[0].innerHTML = "";
+            		transpose.rows[i].cells[1].innerHTML = "";
+            		transpose.rows[i].cells[2].innerHTML = "";
+            		transpose.rows[i].cells[3].innerHTML = "";            		            		            		
+            	}
+            } else {
+         		var company = depth[i].offerCompany;
+         		var length = company.length;
+         		
+         		transpose.rows[i].cells[0].style.cssText = "height: 40px;";    
+         		
+         		if(length > 0) {              
+					transpose.rows[i].cells[0].style.cssText = "height: 40px;";               
+            		transpose.rows[i].cells[0].innerHTML = "<input type='checkbox'/>";               
+            		transpose.rows[i].cells[1].innerHTML = "<b>" + depth[i].offerPrice + "bp</b>";         
+            		transpose.rows[i].cells[2].innerHTML = "<img src='img/" + depth[i].offerCompany + ".png'/>";
+            		transpose.rows[i].cells[3].innerHTML = "Up to $" + depth[i].offerVolume + "mil";
+            	} else {
+            		transpose.rows[i].cells[0].innerHTML = "";
+            		transpose.rows[i].cells[1].innerHTML = "";
+            		transpose.rows[i].cells[2].innerHTML = "";
+            		transpose.rows[i].cells[3].innerHTML = "";            		            		            		
+            	}            		            
+            }
          }
       }
    </script>
@@ -86,47 +132,54 @@
 
    <body>
       <div id="tab-example">
-         <div id="tabs" style="width: 100%; height: 29px;"></div>
+         <div id="tabs" style="height: 29px;"></div>
          <div id="tab1" class="tab">
-            <table border="1" height="100%" width="100%">
-               <tr height='92%' align="middle">
-                  <td colspan='2'>
-                     <table height="100%" width='100%'>
+         
+            <table border="1" width="100%">
+               <tr>
+               	<td width="10%">XXX</td>
+               	<td width="90%">YYY</td>                 	               
+               </tr>               
+           </table>         
+         
+            <table border="1" width="100%">
+               <tr height='100%'>
+                  <td colspan="3">
+                     <table border="1" width="100%">
                         <tr align="center">
                            <td>
-                              <table border="1" id="depthEFPTranspose" />
+                              <table id="depthEFPTranspose" cellpadding="5"/>
                               <table id="depthEFP" />
                            </td>
                         </tr>
                      </table>
                   </td>
-               </tr>
-               <tr height='8%'>
-                  <td width='100%' />
-                  <td>
-                     <button class="btn">Cancel</button>
-                  </td>
-                  <td>&nbsp;&nbsp;&nbsp;</td>
-
+               </tr>               
+           </table>
+           <table border="1" style="width: 100%; height: 60px;">
+               <tr>
+                  <td></td>
+                  <td align="right"><button class="btn">Cancel</button></td>
+                  <td></td>
                </tr>
             </table>
          </div>
          <div id="tab2" class="tab">
-            <table border='1' height="100%" width="100%">
+            <table border='1' height="100%">
                <tr>
                   <td>Hi</td>
                </tr>
             </table>
          </div>
          <div id="tab3" class="tab">
-            <table border='1' height="100%" width="100%">
+            <table border='1' height="100%">
                <tr>
                   <td>Hi</td>
                </tr>
             </table>
          </div>
          <div id="tab4" class="tab">
-            <table border='1' height="100%" width="100%">
+            <table border='1' height="100%">
                <tr>
                   <td>Hi</td>
                </tr>

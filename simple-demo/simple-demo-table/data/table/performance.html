@@ -18,8 +18,9 @@
         
             var paintTime = [];
             var roundTripTime = [];
+            var networkTime = [];            
             var averagePaintTime = [];
-            var averageRoundTripTime = [];
+            var averageNetworkTime = [];
             var rowsChanged = [];            
        		var latencyDivision = [];
 
@@ -35,7 +36,20 @@
 
                 }]
             });
+       		var memoryDivision = [];
 
+            var memoryDivisionChart = new CanvasJS.Chart("memoryDivision", {
+                creditText: "",            
+                title: {
+                    text: "Memory Usage"
+                },
+                data: [{
+                    type: "pie",
+                    showInLegend: true,
+                    dataPoints: memoryDivision
+
+                }]
+            });
             latencyDivisionChart.render();
             
             var paintTimeChart = new CanvasJS.Chart("paintTime", {
@@ -71,11 +85,29 @@
                     }, {
                         /*color: "#00ff00",*/
                         type: "line",
-                        dataPoints: averageRoundTripTime
+                        dataPoints: averageNetworkTime
                     },
 
                 ]
             });
+            var networkTimeChart = new CanvasJS.Chart("networkTime", {
+                creditText: "",
+                /* backgroundColor: "#f5aaff",*/
+                title: {
+                    text: "Network Time"
+                },
+                data: [{
+                        /* color: "#000000",*/
+                        type: "line",
+                        dataPoints: networkTime
+                    },  {
+                        /*color: "#00ff00",*/
+                        type: "line",
+                        dataPoints: averageNetworkTime
+                    },
+
+                ]
+            });            
             var rowsChangedChart = new CanvasJS.Chart("rowsChanged", {
                 creditText: "",
                 /*   backgroundColor: "#f5aa23",*/
@@ -112,9 +144,13 @@
                     series = rowsChanged;
                     updateCount += parseInt(point[1]);
                 }
-                if (data[0] == 'averageRoundTripTime') {
-                    chart = roundTripTimeChart;
-                    series = averageRoundTripTime;                    
+                if (data[0] == 'networkTime') {
+                    chart = networkTimeChart;
+                    series = networkTime;                    
+                }                
+                if (data[0] == 'averageNetworkTime') {
+                    chart = networkTimeChart;
+                    series = averageNetworkTime;                    
                     latencyDivision[0] = { y: parseFloat(point[1]), legendText: "Network"};
 					latencyDivisionChart.render();
                 }
@@ -124,15 +160,27 @@
                     latencyDivision[1] = { y: parseFloat(point[1]), legendText: "Paint"};
 					latencyDivisionChart.render();                    
                 }
-                series.push({
-                    x: new Date(parseInt(point[0])),
-                    y: parseFloat(point[1]),
-                });
-
-                if (series.length > 500) {
-                    series.shift();
+                if (data[0] == 'freeMemory') {                  
+                    memoryDivision[0] = { y: parseFloat(point[1]), legendText: "Free"};
+					memoryDivisionChart.render();
                 }
-                chart.render();
+                if (data[0] == 'usedMemory') {
+                    memoryDivision[1] = { y: parseFloat(point[1]), legendText: "Used"};
+					memoryDivisionChart.render();                    
+                }       
+                if(series != null) {         
+                	series.push({
+                    	x: new Date(parseInt(point[0])),
+                    	y: parseFloat(point[1]),
+                	});
+
+                	if (series.length > 500) {
+                    	series.shift();
+                	}
+                }
+                if(chart != null) {
+                	chart.render();
+                }
             };
         }
     </script>
@@ -145,25 +193,30 @@
         <tr>        	        	
             <td width="20%">
             	<table width='100%' height='100%'>
-            		<tr><td><span id='timer'></span></td></tr>
-                	<tr><td><div id="latencyDivision" style="height: 300px; width:100%;"></div></td></tr>
+                	<tr><td><div id="latencyDivision" style="height: 300px; width:100%;"></div></td></tr>            	
+            		<tr><td><div id="memoryDivision" style="height: 300px; width:100%;"></div></td></tr>
                 </table>
             </td>
             <td width="80%">
                 <table cellspacing="20" width="100%">
                     <tr>
                         <td>
-                            <div id="paintTime" style="height: 300px; width:100%;"></div>
+                            <div id="paintTime" style="height: 220px; width:100%;"></div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div id="roundTripTime" style="height: 300px; width:100%;"></div>
+                            <div id="networkTime" style="height: 220px; width:100%;"></div>
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td>
+                            <div id="roundTripTime" style="height: 220px; width:100%;"></div>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <div id="rowsChanged" style="height: 300px; width:100%;"></div>
+                            <div id="rowsChanged" style="height: 220px; width:100%;"></div>
                         </td>
                     </tr>
                 </table>

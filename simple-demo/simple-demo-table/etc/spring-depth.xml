@@ -254,6 +254,113 @@
     </constructor-arg>
   </bean>
 
+  <bean id="DepthOutrightRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
+    <constructor-arg>
+      <map>
+        <entry key="bidPrice0">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice1">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice2">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice3">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice4">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice5">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice6">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice7">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice8">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="bidPrice9">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice0">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice1">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice2">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice3">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice4">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice5">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice6">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice7">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice8">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>
+        <entry key="offerPrice9">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.0000" />
+          </bean>
+        </entry>        
+      </map>
+    </constructor-arg>
+  </bean>
+
   <bean id="DepthOutrightRowExtractor" class="org.simpleframework.demo.table.extract.RowExtractor">
     <constructor-arg>
       <map>
@@ -265,361 +372,361 @@
         </entry>
         <entry key="bidPrice0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[0].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[0].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[1].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[1].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[2].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[2].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[3].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[3].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[4].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[4].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[5].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[5].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[6].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[6].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[7].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[7].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[8].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[8].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[9].price" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[9].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[0].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[0].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[1].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[1].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[2].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[2].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[3].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[3].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[4].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[4].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[5].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[5].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[6].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[6].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[7].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[7].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[8].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[8].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[9].volume" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[9].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[0].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[0].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[1].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[1].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[2].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[2].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[3].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[3].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[4].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[4].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[5].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[5].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[6].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[6].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[7].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[7].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[8].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[8].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[OUTRIGHT].at[9].company" />
+            <constructor-arg value="filteredDepth.bid[OUTRIGHT].at[9].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[0].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[0].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[1].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[1].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[2].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[2].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[3].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[3].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[4].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[4].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[5].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[5].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[6].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[6].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[7].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[7].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[8].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[8].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[9].price" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[9].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[0].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[0].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[1].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[1].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[2].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[2].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[3].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[3].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[4].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[4].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[5].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[5].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[6].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[6].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[7].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[7].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[8].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[8].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[9].volume" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[9].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[0].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[0].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[1].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[1].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[2].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[2].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[3].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[3].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[4].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[4].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[5].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[5].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[6].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[6].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[7].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[7].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[8].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[8].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[OUTRIGHT].at[9].company" />
+            <constructor-arg value="filteredDepth.offer[OUTRIGHT].at[9].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
@@ -637,8 +744,9 @@
     <constructor-arg ref="DepthOutrightTableModel" />
     <constructor-arg ref="DepthOutrightTableSchema" />
     <constructor-arg ref="DepthOutrightRowExtractor" />
+    <constructor-arg ref="DepthOutrightRowFormatter" />    
   </bean>
-  
+
   <bean id="DepthOutrightTableService" class="org.simpleframework.demo.table.message.TableService">
     <constructor-arg>
       <list>
@@ -646,8 +754,8 @@
       </list>
     </constructor-arg>
     <constructor-arg ref="PerformanceAnalyzer" />
-    <constructor-arg ref="ProductStaticSource" />        
-  </bean>  
+    <constructor-arg ref="ProductStaticSource" />
+  </bean>
 
   <bean id="DepthEFPTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
     <constructor-arg value="depthEFP" />
@@ -912,367 +1020,474 @@
         </entry>
         <entry key="bidPrice0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[0].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[0].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[1].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[1].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[2].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[2].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[3].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[3].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[4].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[4].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[5].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[5].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[6].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[6].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[7].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[7].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[8].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[8].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidPrice9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[9].price" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[9].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[0].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[0].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[1].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[1].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[2].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[2].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[3].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[3].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[4].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[4].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[5].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[5].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[6].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[6].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[7].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[7].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[8].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[8].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidVolume9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[9].volume" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[9].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[0].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[0].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[1].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[1].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[2].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[2].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[3].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[3].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[4].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[4].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[5].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[5].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[6].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[6].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[7].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[7].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[8].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[8].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="bidCompany9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.bid[EFP].at[9].company" />
+            <constructor-arg value="filteredDepth.bid[EFP].at[9].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[0].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[0].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[1].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[1].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[2].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[2].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[3].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[3].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[4].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[4].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[5].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[5].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[6].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[6].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[7].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[7].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[8].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[8].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerPrice9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[9].price" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[9].price" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[0].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[0].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[1].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[1].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[2].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[2].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[3].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[3].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[4].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[4].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[5].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[5].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[6].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[6].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[7].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[7].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[8].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[8].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerVolume9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[9].volume" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[9].volume" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany0">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[0].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[0].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany1">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[1].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[1].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany2">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[2].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[2].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany3">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[3].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[3].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany4">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[4].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[4].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany5">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[5].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[5].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany6">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[6].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[6].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany7">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[7].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[7].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany8">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[8].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[8].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
         <entry key="offerCompany9">
           <bean class="org.simpleframework.demo.table.extract.PropertyCellExtractor">
-            <constructor-arg value="marketDepth.offer[EFP].at[9].company" />
+            <constructor-arg value="filteredDepth.offer[EFP].at[9].company" />
             <constructor-arg value="org.simpleframework.demo.table.product.Product" />
           </bean>
         </entry>
       </map>
     </constructor-arg>
   </bean>
+  
+  <bean id="DepthEFPRowFormatter" class="org.simpleframework.demo.table.format.RowFormatter">
+    <constructor-arg>
+      <map>
+        <entry key="bidPrice0">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice1">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice2">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice3">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice4">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice5">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice6">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice7">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice8">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="bidPrice9">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice0">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice1">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice2">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice3">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice4">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice5">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice6">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice7">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice8">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>
+        <entry key="offerPrice9">
+          <bean class="org.simpleframework.demo.table.format.DecimalCellFormatter">
+            <constructor-arg value="#.00" />
+          </bean>
+        </entry>        
+      </map>
+    </constructor-arg>
+  </bean> 
 
   <bean id="DepthEFPTable" class="org.simpleframework.demo.table.product.ProductTable" />
 
@@ -1284,6 +1499,7 @@
     <constructor-arg ref="DepthEFPTableModel" />
     <constructor-arg ref="DepthEFPTableSchema" />
     <constructor-arg ref="DepthEFPRowExtractor" />
+    <constructor-arg ref="DepthEFPRowFormatter" />    
   </bean>
 
   <bean id="DepthEFPTableService" class="org.simpleframework.demo.table.message.TableService">
@@ -1293,7 +1509,7 @@
       </list>
     </constructor-arg>
     <constructor-arg ref="PerformanceAnalyzer" />
-    <constructor-arg ref="ProductStaticSource" />        
-  </bean> 
+    <constructor-arg ref="ProductStaticSource" />
+  </bean>
 
 </beans>

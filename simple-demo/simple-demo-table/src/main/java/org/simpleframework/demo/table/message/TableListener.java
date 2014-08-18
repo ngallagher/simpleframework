@@ -66,9 +66,9 @@ public class TableListener implements FrameListener {
                }
             }
          }
-         System.err.println("onFrame(");
-         System.err.println(frame.getText());
-         System.err.println(")");         
+        // System.err.println("onFrame(");
+        // System.err.println(frame.getText());
+       //  System.err.println(")");         
       }
    }
 

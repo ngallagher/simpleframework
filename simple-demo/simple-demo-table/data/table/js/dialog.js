@@ -8,8 +8,9 @@ var total = 1;
 function connect() {
 	var user = extractParameter("user");
 	var company = extractParameter("company");
-	var products = extractParameter("products");		
-	var socket = new WebSocket("ws://localhost:6060/depthEFP?user=" + user + "&company=" + company + "&products=" + products);
+	var products = extractParameter("products");
+	var companies = extractParameter("companies");		
+	var socket = new WebSocket("ws://localhost:6060/depthEFP?user=" + user + "&company=" + company + "&products=" + products + "&companies=" + companies);
 
 	socket.onopen = function() {
 		attempts = 1;
@@ -101,7 +102,9 @@ function schemaUpdate(socket, message) {
 			column['template'] = template;
 			column['resizable'] = resizable == "true";
 			column['sortable'] = sortable == "true";
-			column['hidden'] = hidden == "true";		
+			column['hidden'] = hidden == "true";	
+			column['token'] = "{" + name + "}";			
+			column['pattern'] = new RegExp("{" + name + "}", "g");			
 			
 			schema[i - 1] = column;
 		}
@@ -243,14 +246,15 @@ function interpolateRow(table, record, template) {
 function interpolateCell(table, record, text, recurse) {
 	var width = schema.length;
 	
-	for( var j = 0; j < schema.length; j++) {
+	for( var j = 0; j < width; j++) {
 		var index = text.indexOf('{');
 		
 		if(index == -1) {
 			break;
 		}
+		var pattern = schema[j].pattern;
+		var token = schema[j].token;
 		var key = schema[j].name;
-		var token = new RegExp("{" + key + "}", "g");
 		var value = record[key];
 		
 		if(recurse > 0) {
@@ -260,7 +264,11 @@ function interpolateCell(table, record, text, recurse) {
 				value = interpolateCell(table, record, value, recurse - 1);
 			}
 		}
-		text = text.replace(token, value);
+		var match = text.indexOf(token); // quicker check
+		
+		if(match != -1) {
+			text = text.replace(pattern, value);
+		}
 	}
 	return text;
 }

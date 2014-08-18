@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.simpleframework.demo.table.extract.RowChange;
 import org.simpleframework.demo.table.extract.RowExtractor;
 import org.simpleframework.demo.table.extract.RowMerger;
+import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.schema.TableSchema;
 
 public class TableCursor {
@@ -16,14 +17,16 @@ public class TableCursor {
    private final Map<Integer, RowMerger> mergers;
    private final Map<Integer, Long> versions;
    private final TableSubscription subscription;
+   private final RowFormatter formatter;
    private final RowExtractor extractor;
    private final TableSchema schema;
    
-   public TableCursor(TableSubscription subscription, TableSchema schema, RowExtractor extractor) {
+   public TableCursor(TableSubscription subscription, TableSchema schema, RowExtractor extractor, RowFormatter formatter) {
       this.mergers = new ConcurrentHashMap<Integer, RowMerger>();
       this.versions = new ConcurrentHashMap<Integer, Long>();
       this.subscription = subscription;
       this.extractor = extractor;
+      this.formatter = formatter;      
       this.schema = schema;
    }
    
@@ -60,7 +63,7 @@ public class TableCursor {
       RowMerger merger = mergers.get(index);
       
       if(merger == null) {
-         merger = new RowMerger(schema, index);
+         merger = new RowMerger(schema, formatter, index);
          mergers.put(index, merger);
       }
       return merger;

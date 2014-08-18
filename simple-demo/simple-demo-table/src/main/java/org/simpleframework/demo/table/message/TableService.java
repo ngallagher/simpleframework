@@ -31,9 +31,18 @@ public class TableService implements Service {
       Request request = session.getRequest();      
       String user = request.getParameter("user");
       String company = request.getParameter("company");
-      String filter = request.getParameter("products");      
+      String filter = request.getParameter("products");
+      String companies = request.getParameter("companies");  
       List<String> products = new ArrayList<String>();
+      List<String> companyList = new ArrayList<String>();
       
+      if(companies != null && !companies.isEmpty()) {
+         String[] values = companies.split(",");
+         
+         for(String value : values) {
+            companyList.add(value);
+         }
+      }
       if(filter != null && !filter.isEmpty()) {
          String[] values = filter.split(",");
          
@@ -48,7 +57,7 @@ public class TableService implements Service {
          }
       }      
       if(user != null && company != null) {
-         Query client = new Query(user, company, Collections.EMPTY_LIST, products);
+         Query client = new Query(user, company, companyList, products);
          
          for(TableUpdater updater : updaters) {
             TableListener callbacks = new TableListener(updater, service);

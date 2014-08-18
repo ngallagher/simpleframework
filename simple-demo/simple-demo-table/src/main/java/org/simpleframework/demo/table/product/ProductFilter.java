@@ -24,11 +24,11 @@ public class ProductFilter {
          String company = client.getCompany();
          List<String> inclusive = client.getCompanies();
          List<String> exclusive = Collections.singletonList(company);
-         Depth marketDepth = filterDepth(depth, inclusive);
+         Depth filteredDepth = filterDepth(depth, inclusive);
          Depth companyDepth = filterDepth(depth, exclusive);
          long version = depth.getVersion();
          
-         return new Product(security, marketDepth, companyDepth, version);
+         return new Product(security, depth, filteredDepth, companyDepth, version);
       }
       return null;
    }

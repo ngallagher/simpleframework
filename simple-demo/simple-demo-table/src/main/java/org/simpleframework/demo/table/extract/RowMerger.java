@@ -5,19 +5,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.schema.Column;
 import org.simpleframework.demo.table.schema.TableSchema;
 
 public class RowMerger {
 
    private final Map<String, Object> cache;
+   private final RowFormatter formatter;
    private final TableSchema schema;
    private final AtomicLong revision;
    private final int index;
    
-   public RowMerger(TableSchema schema, int index) {
+   public RowMerger(TableSchema schema, RowFormatter formatter, int index) {
       this.cache = new HashMap<String, Object>();
       this.revision = new AtomicLong(-1);
+      this.formatter = formatter;
       this.schema = schema;
       this.index = index;
    }
@@ -38,7 +41,7 @@ public class RowMerger {
       if(state == version) {
          throw new IllegalStateException("Merging version " + version + " but already at " + state);         
       }
-      Map<String, Object> difference = new HashMap<String, Object>();
+      Map<String, String> difference = new HashMap<String, String>();
       
       for(Column column : columns) {
          String name = column.getName();
@@ -46,8 +49,10 @@ public class RowMerger {
          Object previous = cache.get(name);
          
          if (current != null) {
-            if (!current.equals(previous)) {            
-               difference.put(name, current);
+            if (!current.equals(previous)) {
+               String value = formatter.formatRow(name, current);
+               
+               difference.put(name, value);
                cache.put(name, current);               
             }
          } else {

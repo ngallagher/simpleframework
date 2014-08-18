@@ -31,9 +31,9 @@ public class ProductTableTest extends TestCase {
       assertEquals(product.get(0).getCompanyDepth().getBid(PriceType.EFP).getTop().getPrice(), 10.1);
       assertEquals(product.get(0).getCompanyDepth().getOffer(PriceType.EFP).getTop().getCompany(), "HSBC");
       assertEquals(product.get(0).getCompanyDepth().getBid(PriceType.EFP).getTop().getCompany(), "HSBC");      
-      assertEquals(product.get(0).getMarketDepth().getOffer(PriceType.EFP).getTop().getPrice(), 11.1);
-      assertEquals(product.get(0).getMarketDepth().getBid(PriceType.EFP).getTop().getPrice(), 10.1);  
-      assertEquals(product.get(0).getMarketDepth().getOffer(PriceType.EFP).getTop().getCompany(), "ANZ");
-      assertEquals(product.get(0).getMarketDepth().getBid(PriceType.EFP).getTop().getCompany(), "HSBC");      
+      assertEquals(product.get(0).getActualDepth().getOffer(PriceType.EFP).getTop().getPrice(), 11.1);
+      assertEquals(product.get(0).getActualDepth().getBid(PriceType.EFP).getTop().getPrice(), 10.1);  
+      assertEquals(product.get(0).getActualDepth().getOffer(PriceType.EFP).getTop().getCompany(), "ANZ");
+      assertEquals(product.get(0).getActualDepth().getBid(PriceType.EFP).getTop().getCompany(), "HSBC");      
    }
 }

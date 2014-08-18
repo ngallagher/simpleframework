@@ -34,7 +34,7 @@ public class TableTester extends Thread implements WebSocket {
 
    @Override
    public void send(String text) throws IOException {
-         System.err.println(text);
+         //System.err.println(text);
    }
 
    @Override

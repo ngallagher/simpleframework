@@ -7,9 +7,11 @@ var total = 1;
 
 function connect() {
 	var user = extractParameter("user");
+	var type = extractParameter("type");	
 	var company = extractParameter("company");
-	var products = extractParameter("products");		
-	var socket = new WebSocket("ws://localhost:6060/best?user=" + user + "&company=" + company + "&products=" + products);
+	var products = extractParameter("products");
+	var companies = extractParameter("companies");		
+	var socket = new WebSocket("ws://localhost:6060/" + type + "?user=" + user + "&company=" + company + "&products=" + products + "&companies=" + companies);
 
 	socket.onopen = function() {
 		attempts = 1;
@@ -63,7 +65,7 @@ function reportStatus(socket, status, height, delta, change, duration, sequence,
 	image += '"';
 	image += 'style="';
 	image += ' max-width: 100%;';
-	image += ' max-height: 100%;';
+	image += ' max-height: 25px;';
 	image += ' padding-top: 4px;';
     image += ' padding-bottom: 4px;';
 	image += ' padding-left: 4px;';
@@ -112,7 +114,9 @@ function schemaUpdate(socket, message) {
 			column['template'] = template;
 			column['resizable'] = resizable == "true";
 			column['sortable'] = sortable == "true";
-			column['hidden'] = hidden == "true";		
+			column['hidden'] = hidden == "true";
+			column['token'] = "{" + name + "}";			
+			column['pattern'] = new RegExp("{" + name + "}", "g");
 			
 			schema[i - 1] = column;
 		}
@@ -264,8 +268,9 @@ function interpolateCell(table, record, text, recurse) {
 		if(index == -1) {
 			break;
 		}
+		var pattern = schema[j].pattern;
+		var token = schema[j].token;
 		var key = schema[j].name;
-		var token = new RegExp("{" + key + "}", "g");
 		var value = record[key];
 		
 		if(recurse > 0) {
@@ -275,7 +280,11 @@ function interpolateCell(table, record, text, recurse) {
 				value = interpolateCell(table, record, value, recurse - 1);
 			}
 		}
-		text = text.replace(token, value);
+		var match = text.indexOf(token); // quicker check
+		
+		if(match != -1) {
+			text = text.replace(pattern, value);
+		}
 	}
 	return text;
 }
@@ -330,7 +339,7 @@ function expandWidth(table) {
 		column['resizable'] = style.resizable;
 		column['sortable'] = style.sortable;
 		column['hidden'] = style.hidden;
-		column['size'] = '50px';		
+		column['size'] = '60px';		
 
 		for( var j = 0; j < height; j++) {
 			templates[table.name][i][name] = '';

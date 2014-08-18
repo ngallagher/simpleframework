@@ -8,18 +8,21 @@ import org.simpleframework.demo.table.TableCursor;
 import org.simpleframework.demo.table.TableModel;
 import org.simpleframework.demo.table.TableSubscription;
 import org.simpleframework.demo.table.extract.RowExtractor;
+import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.schema.TableSchema;
 import org.simpleframework.http.socket.WebSocket;
 
 public class TableUpdater extends Thread {   
 
-   private final Set<TableConnection> connections;
+   private final Set<TableConnection> connections;   
    private final RowExtractor extractor;
+   private final RowFormatter formatter;
    private final TableSchema schema;
    private final TableModel model;
    
-   public TableUpdater(TableModel model, TableSchema schema, RowExtractor extractor) {
+   public TableUpdater(TableModel model, TableSchema schema, RowExtractor extractor, RowFormatter formatter) {
       this.connections = new CopyOnWriteArraySet<TableConnection>();
+      this.formatter = formatter;
       this.extractor = extractor;      
       this.schema = schema;
       this.model = model;
@@ -41,7 +44,7 @@ public class TableUpdater extends Thread {
       
       if(subscription != null) {
          TableSession session = new TableSession(socket);
-         TableCursor cursor = new TableCursor(subscription, schema, extractor);
+         TableCursor cursor = new TableCursor(subscription, schema, extractor, formatter);
          TableConnection connection = new TableConnection(cursor, session, schema);
          
          connections.add(connection);

@@ -21,7 +21,7 @@ public class RowChangeFormatter {
    }
    
    public String formatChange(RowChange change) {
-      Map<String, Object> changes = change.getChanges();
+      Map<String, String> changes = change.getChanges();
       List<Column> columns = schema.getColumns();
       Integer index = change.getIndex();
       int width = columns.size();

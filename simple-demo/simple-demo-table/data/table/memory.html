@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script type="text/javascript">
+        window.onload = function() {
+            var heapUsed = [];
+            var heapFree = [];
+            var threadCount = [];
+
+            var heapUsedChart = new CanvasJS.Chart("heapUsed", {
+                creditText: "",
+                title: {
+                    text: "Heap Used"
+                },
+                data: [{
+                    type: "line",
+                    dataPoints: heapUsed
+                }]
+            });
+            var heapFreeChart = new CanvasJS.Chart("heapFree", {
+                creditText: "",
+                title: {
+                    text: "Heap Free"
+                },
+                data: [{
+                    type: "line",
+                    dataPoints: heapFree
+                }, {
+                    type: "line",
+                    dataPoints: heapUsed
+                }, ]
+            });
+            var threadCountChart = new CanvasJS.Chart("threadCount", {
+                creditText: "",
+                title: {
+                    text: "Thread Count"
+                },
+                data: [{
+                    type: "line",
+                    dataPoints: threadCount
+                }]
+            });
+            websocket = new WebSocket("ws://localhost:6060/memory");
+
+            websocket.onmessage = function(evt) {
+                var data = evt.data.split(":");
+                var point = data[1].split(",");
+                var chart = null;
+                var series = null;
+
+                if (data[0] == 'heapUsed') {
+                    chart = heapUsedChart;
+                    series = heapUsed;
+                }
+                if (data[0] == 'heapFree') {
+                    chart = heapFreeChart;
+                    series = heapFree;
+                }
+                if (data[0] == 'threadCount') {
+                    chart = threadCountChart;
+                    series = threadCount;
+                }
+                series.push({
+                    x: new Date(parseInt(point[0])),
+                    y: parseFloat(point[1]),
+                });
+
+                if (series.length > 500) {
+                    series.shift();
+                }
+                chart.render();
+            };
+        }
+    </script>
+    <script type="text/javascript" src="js/canvasjs.min.js"></script>
+</head>
+
+<body>
+    <div id="heapUsed" style="height: 300px; width:100%;">
+    </div>
+    <div id="heapFree" style="height: 300px; width:100%;">
+    </div>
+    <div id="threadCount" style="height: 300px; width:100%;">
+    </div>
+</body>
+
+</html>
