@@ -8,4 +8,5 @@ public interface ColumnStyle {
    boolean isResizable();
    boolean isSortable();
    boolean isHidden();
+   int getWidth();
 }

@@ -9,6 +9,7 @@ public class StringColumnStyle implements ColumnStyle {
    private final String name;
    private final boolean sortable;
    private final boolean resizable;
+   private final int width;
 
    public StringColumnStyle(String name, String template) {
       this(name, template, null);
@@ -19,14 +20,19 @@ public class StringColumnStyle implements ColumnStyle {
    }
    
    public StringColumnStyle(String name, String template,  String style, String caption) {
-      this(name, template, style, caption, true, false);
+      this(name, template, style, caption, 60);
    }
    
-   public StringColumnStyle(String name, String template,  String style, String caption, boolean resizable, boolean sortable) {
+   public StringColumnStyle(String name, String template,  String style, String caption, int width) {
+      this(name, template, style, caption, width, true, false);
+   }   
+   
+   public StringColumnStyle(String name, String template,  String style, String caption, int width, boolean resizable, boolean sortable) {
       this.template = template;
       this.resizable = resizable;
       this.sortable = sortable;
-      this.caption = caption;  
+      this.caption = caption;
+      this.width = width;
       this.style = style;
       this.name = name;
    }
@@ -64,5 +70,10 @@ public class StringColumnStyle implements ColumnStyle {
    @Override
    public boolean isHidden() {
       return false;
-   }   
+   } 
+   
+   @Override
+   public int getWidth() {
+      return width;
+   }
 }

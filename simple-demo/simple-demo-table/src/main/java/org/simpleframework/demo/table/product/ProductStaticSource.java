@@ -29,7 +29,7 @@ public class ProductStaticSource {
       if(products.isEmpty()) {
          Random random = new SecureRandom();
          
-         for(int i = 0; i < 1000; i++) {
+         for(int i = 0; i < 200; i++) {
             int value = random.nextInt(200);
             String name = null;
             

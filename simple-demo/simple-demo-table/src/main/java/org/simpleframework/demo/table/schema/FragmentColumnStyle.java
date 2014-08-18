@@ -10,6 +10,7 @@ public class FragmentColumnStyle implements ColumnStyle {
    private final String name;
    private final boolean sortable;
    private final boolean resizable;
+   private final int width;
 
    public FragmentColumnStyle(String name, File fragment) {
       this(name, fragment, null);
@@ -20,14 +21,19 @@ public class FragmentColumnStyle implements ColumnStyle {
    }
    
    public FragmentColumnStyle(String name, File fragment, String style, String caption) {
-      this(name, fragment, style, caption, true, false);
+      this(name, fragment, style, caption, 60, true, false);
    }
    
-   public FragmentColumnStyle(String name, File fragment, String style, String caption, boolean resizable, boolean sortable) {
+   public FragmentColumnStyle(String name, File fragment, String style, String caption, int width) {
+      this(name, fragment, style, caption, width, true, false);
+   }   
+   
+   public FragmentColumnStyle(String name, File fragment, String style, String caption, int width, boolean resizable, boolean sortable) {
       this.fragment = new Fragment(fragment);
       this.resizable = resizable;
       this.sortable = sortable;
       this.caption = caption;  
+      this.width = width;
       this.style = style;
       this.name = name;
    }
@@ -65,5 +71,10 @@ public class FragmentColumnStyle implements ColumnStyle {
    @Override
    public boolean isHidden() {
       return false;
+   }
+   
+   @Override
+   public int getWidth() {
+      return width;
    }
 }

@@ -19,6 +19,7 @@ public class ColumnStyleFormatter {
       boolean resizable = column.isResizable();
       boolean sortable = column.isSortable();
       boolean hidden = column.isHidden();
+      int width = column.getWidth();
       
       if(template != null) {
          template = template.trim();
@@ -28,6 +29,14 @@ public class ColumnStyleFormatter {
          style = style.trim();
          style = style.replaceAll("\\s+", " ");
       }
-      return name + "," + encoder.encode(title) + "," + encoder.encode(template) + "," + encoder.encode(style) + "," + resizable + "," + sortable + "," + hidden;
+      if(title != null) {
+         title = title.trim();
+         title = title.replaceAll("\\s+", " ");        
+      }
+      template = encoder.encode(template);
+      style = encoder.encode(style);
+      title = encoder.encode(title);
+      
+      return name + "," + title + "," + template + "," + style + "," + resizable + "," + sortable + "," + hidden + "," + width;
    }
 }

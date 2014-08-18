@@ -1,6 +1,7 @@
 var templates = [];
 var records = [];
 var schema = [];
+var footer = {};
 var connections = 0;
 var attempts = 0;
 var total = 1;
@@ -15,6 +16,13 @@ function connect() {
 	socket.onopen = function() {
 		attempts = 1;
 		connections++;
+		
+		if(footer.connection == undefined) {
+			footer['connection'] = document.getElementById("connection");
+			footer['rows'] = document.getElementById("rows");
+			footer['changes'] = document.getElementById("changes");
+			footer['duration'] = document.getElementById("duration");
+		}
 		reportStatus(this, "success.png", "0", "0", "0", "0", "0", "");
 	};
 
@@ -71,6 +79,12 @@ function reportStatus(socket, status, height, delta, change, duration, sequence,
     image += ' padding-right: 8px;';    
 	image += '"/>';
 	 
+	if(footer.connection != undefined) {	
+		footer.connection.innerHTML = image;
+		footer.rows.innerHTML = height;
+		footer.changes.innerHTML = change;
+		footer.duration.innerHTML = duration;
+	}
 	socket.send("status:rows="+height+",change="+change+",duration="+duration+",sequence="+sequence+",address="+address+",user="+user);
 	
 }
@@ -85,26 +99,21 @@ function schemaUpdate(socket, message) {
 		var width = schema.length;	
 		
 		for ( var i = 1; i < parts.length; i++) {
+			var column = {};
 			var part = parts[i];
 			var values = part.split(',');
 			var name = values[0];
-			var caption = decodeValue(values[1]);
-			var template = decodeValue(values[2]);
-			var style = decodeValue(values[3]);		
-			var resizable = values[4];
-			var sortable = values[5];
-			var hidden = values[6];		
-			var column = {};
 			
 			column['name'] = name;
-			column['caption'] = caption;
-			column['style'] = style;		
-			column['template'] = template;
-			column['resizable'] = resizable == "true";
-			column['sortable'] = sortable == "true";
-			column['hidden'] = hidden == "true";	
+			column['caption'] = decodeValue(values[1]);
+			column['template'] = decodeValue(values[2]);
+			column['style']  = decodeValue(values[3]);		
+			column['resizable'] = values[4] == 'true';
+			column['sortable'] = values[5] == 'true';
+			column['hidden'] = values[6] == 'true';
+			column['width']  = values[7];
 			column['token'] = "{" + name + "}";			
-			column['pattern'] = new RegExp("{" + name + "}", "g");			
+			column['pattern'] = new RegExp("{" + name + "}", "g");		
 			
 			schema[i - 1] = column;
 		}
@@ -189,12 +198,16 @@ function updateTable(socket, table, rows) {
 	for ( var i = 0; i < changes.length; i++) {
 		var index = changes[i].index;
 		var delta = changes[i].delta;
-		var cells = delta.split(',');
+		var cells = delta.split(',');		
 
 		if (cells.length > 0) {
 			updateRow(socket, table, index, cells);
 		}
 		total += cells.length;
+		changes[i] = index;
+	}
+	if(total > 0) {
+		drawTable(table, changes);
 	}
 	return total;
 }
@@ -213,7 +226,17 @@ function updateRow(socket, table, row, cells) {
 		record[style.name] = decoded;
 	}
 	interpolateRow(table, record, template);
-	drawRow(table, row, template);
+}
+
+function drawTable(table, changes) {
+	var count = changes.length;
+	
+	for( var i = 0; i < count; i++ ) {
+		var row = changes[i];
+		var template = templates[row];
+		
+		drawRow(table, row, template);
+	}
 }
 
 function drawRow(table, row, template) {
@@ -238,39 +261,40 @@ function interpolateRow(table, record, template) {
 		var name = column.name;
 		var text = column.template;			
 		
-		template.style[i] = interpolateCell(table, record, style, 2);
-		template[name] = interpolateCell(table, record, text, 2);
+		template.style[i] = interpolateCell(table, record, column, style);
+		template[name] = interpolateCell(table, record, column, text);
 	}
 }
 
-function interpolateCell(table, record, text, recurse) {
-	var width = schema.length;
+function interpolateCell(table, record, column, text) {
+	var source = interpolateToken(table, record, column, text); // most likely to match
+	var width = schema.length;	
 	
-	for( var j = 0; j < width; j++) {
-		var index = text.indexOf('{');
-		
-		if(index == -1) {
-			break;
-		}
-		var pattern = schema[j].pattern;
-		var token = schema[j].token;
-		var key = schema[j].name;
-		var value = record[key];
-		
-		if(recurse > 0) {
-			index = value.indexOf('{');
+	for( var i = 0; i < 2; i++) { // find resursive references {{reference}}
+		for( var j = 0; j < width; j++) {
+			var index = source.indexOf('{'); // is there more work to do
 			
-			if(index != -1) {
-				value = interpolateCell(table, record, value, recurse - 1);
-			}
-		}
-		var match = text.indexOf(token); // quicker check
-		
-		if(match != -1) {
-			text = text.replace(pattern, value);
+			if(index == -1) {
+				return source; 
+			}			
+			source = interpolateToken(table, record, schema[j], source);
 		}
 	}
-	return text;
+	return source;
+}
+
+function interpolateToken(table, record, column, text) {
+	var token = column.token;
+	var index = text.indexOf(token); // can token be found?
+	
+	if(index == -1) {
+		return text;
+	}
+	var pattern = column.pattern;
+	var key = column.name;
+	var value = record[key];	
+	
+	return text.replace(pattern, value); // replace {reference} in text
 }
 
 function decodeValue(value) {

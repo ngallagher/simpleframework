@@ -42,4 +42,9 @@ public class HiddenColumnStyle implements ColumnStyle {
    public boolean isHidden() {
       return true;
    }   
+   
+   @Override
+   public int getWidth() {
+      return 0;
+   }
 }
