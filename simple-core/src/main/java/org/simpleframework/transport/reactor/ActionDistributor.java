@@ -18,6 +18,25 @@
  
 package org.simpleframework.transport.reactor;
  
+import static java.nio.channels.SelectionKey.OP_READ;
+import static java.nio.channels.SelectionKey.OP_WRITE;
+import static org.simpleframework.transport.reactor.ReactorEvent.CHANNEL_CLOSED;
+import static org.simpleframework.transport.reactor.ReactorEvent.CLOSE_SELECTOR;
+import static org.simpleframework.transport.reactor.ReactorEvent.ERROR;
+import static org.simpleframework.transport.reactor.ReactorEvent.EXECUTE_ACTION;
+import static org.simpleframework.transport.reactor.ReactorEvent.INVALID_KEY;
+import static org.simpleframework.transport.reactor.ReactorEvent.READ_INTEREST_READY;
+import static org.simpleframework.transport.reactor.ReactorEvent.REGISTER_INTEREST;
+import static org.simpleframework.transport.reactor.ReactorEvent.REGISTER_READ_INTEREST;
+import static org.simpleframework.transport.reactor.ReactorEvent.REGISTER_WRITE_INTEREST;
+import static org.simpleframework.transport.reactor.ReactorEvent.SELECT;
+import static org.simpleframework.transport.reactor.ReactorEvent.SELECT_CANCEL;
+import static org.simpleframework.transport.reactor.ReactorEvent.SELECT_EXPIRED;
+import static org.simpleframework.transport.reactor.ReactorEvent.UPDATE_INTEREST;
+import static org.simpleframework.transport.reactor.ReactorEvent.UPDATE_READ_INTEREST;
+import static org.simpleframework.transport.reactor.ReactorEvent.UPDATE_WRITE_INTEREST;
+import static org.simpleframework.transport.reactor.ReactorEvent.WRITE_INTEREST_READY;
+
 import java.io.IOException;
 import java.nio.channels.Channel;
 import java.nio.channels.SelectableChannel;
@@ -31,6 +50,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 
+import org.simpleframework.transport.trace.Trace;
 import org.simpleframework.util.thread.Daemon;
  
  /**
@@ -153,7 +173,41 @@ class ActionDistributor extends Daemon implements Distributor {
       this.cancel = cancel;
       this.expiry = expiry;
       this.start(); 
+   }   
+   
+   /**
+    * This is used to process the <code>Operation</code> object. This
+    * will wake up the selector if it is currently blocked selecting
+    * and register the operations associated channel. Once the 
+    * selector is awake it will acquire the operation from the queue
+    * and register the associated <code>SelectableChannel</code> for
+    * selection. The operation will then be executed when the channel
+    * is ready for the interested I/O events.
+    * 
+    * @param task this is the task that is scheduled for distribution   
+    * @param require this is the bit-mask value for interested events
+    */ 
+   public void process(Operation task, int require) throws IOException {
+      Action action = new ExecuteAction(task, require, expiry);
+      
+      if(!isActive())  {
+         throw new IOException("Distributor is closed");
+      }
+      pending.offer(action);
+      selector.wake();
    }
+   
+   /**
+    * This is used to close the distributor such that it cancels all
+    * of the registered channels and closes down the selector. This
+    * is used when the distributor is no longer required, after the
+    * close further attempts to process operations will fail.
+    */ 
+   public void close() throws IOException {  
+      stop();  
+      selector.wake();
+      latch.close();
+   }   
    
    /**
     * This returns the number of channels that are currently selecting
@@ -198,8 +252,8 @@ class ActionDistributor extends Daemon implements Distributor {
             expire();
             distribute(); 
             validate();
-         } catch(Exception e) {
-            continue;           
+         } catch(Exception cause) {
+            report(cause);           
          }            
       }    
    }
@@ -214,45 +268,41 @@ class ActionDistributor extends Daemon implements Distributor {
       try {
          register();
          cancel();
-         drain();
-      } catch(Exception e) {
-         return;
+         clear();
+      } catch(Exception cause) {
+         report(cause);
       }
-   }
- 
-   /**
-    * This is used to process the <code>Operation</code> object. This
-    * will wake up the selector if it is currently blocked selecting
-    * and register the operations associated channel. Once the 
-    * selector is awake it will acquire the operation from the queue
-    * and register the associated <code>SelectableChannel</code> for
-    * selection. The operation will then be executed when the channel
-    * is ready for the interested I/O events.
-    * 
-    * @param task this is the task that is scheduled for distribution   
-    * @param require this is the bit-mask value for interested events
-    */ 
-   public void process(Operation task, int require) throws IOException {
-      Action action = new ExecuteAction(task, require, expiry);
-      
-      if(!isActive())  {
-         throw new IOException("Distributor is closed");
-      }
-      pending.offer(action);
-      selector.wake();
    }
    
    /**
-    * This is used to close the distributor such that it cancels all
-    * of the registered channels and closes down the selector. This
-    * is used when the distributor is no longer required, after the
-    * close further attempts to process operations will fail.
-    */ 
-   public void close() throws IOException {  
-      stop();  
-      selector.wake();
-      latch.close();
-   }
+    * This method is called to ensure that if there is a global 
+    * error that each action will know about it. Such an issue could
+    * be file handle exhaustion or an out of memory error. It is
+    * also possible that a poorly behaving action could cause an
+    * issue which should be know the the entire system.
+    * 
+    * @param cause this is the exception to report
+    */
+   private void report(Exception cause) {
+      Set<Channel> channels = selecting.keySet();
+      
+      for(Channel channel : channels) {
+         ActionSet set = selecting.get(channel);
+         Action[] list = set.list();
+            
+         for(Action action : list) {         
+            Operation operation = action.getOperation();
+            Trace trace = operation.getTrace();
+            
+            try {
+               trace.trace(ERROR, cause);
+            } catch(Exception e) {
+               invalid.offer(channel);
+            }
+         }
+      }
+      invalid.clear();
+   }   
    
    /**   
     * Here we perform an expire which will take all of the registered
@@ -261,11 +311,23 @@ class ActionDistributor extends Daemon implements Distributor {
     * can be performed. Once this method has finished then all of 
     * the operations will have been scheduled for execution.
     */
-   private void drain() throws IOException {
+   private void clear() throws IOException {
       List<ActionSet> sets = selector.registeredSets();
       
-      for(ActionSet set : sets) {          
-         expire(set, Long.MAX_VALUE);           
+      for(ActionSet set : sets) {
+         Action[] list = set.list();
+         
+         for(Action action : list) {
+            Operation task = action.getOperation();
+            Trace trace = task.getTrace();
+            
+            try {
+               trace.trace(CLOSE_SELECTOR);         
+               expire(set, Long.MAX_VALUE);   
+            } catch(Exception cause) {
+               trace.trace(ERROR, cause);
+            } 
+         }
       }
       selector.close();
       latch.signal();
@@ -359,10 +421,17 @@ class ActionDistributor extends Daemon implements Distributor {
       Action cancel = new CancelAction(action);
       
       if(set != null) {
+         Operation task = action.getOperation();
+         Trace trace = task.getTrace();
          int interest = action.getInterest();
          
-         set.remove(interest);
-         executor.execute(cancel);
+         try {
+            trace.trace(SELECT_EXPIRED, interest);         
+            set.remove(interest);
+            execute(cancel);
+         } catch(Exception cause) {
+            trace.trace(ERROR, cause);
+         }
       }
    }
    
@@ -372,7 +441,7 @@ class ActionDistributor extends Daemon implements Distributor {
     * are registered that have been cancelled or are closed will
     * be removed from the selecting map and rejected.
     */
-   private void validate() {
+   private void validate() throws IOException {
       Set<Channel> channels = selecting.keySet();
       
       for(Channel channel : channels) {
@@ -384,15 +453,35 @@ class ActionDistributor extends Daemon implements Distributor {
          }
       }
       for(Channel channel : invalid) {
-         ActionSet set = selecting.remove(channel);
-         Action[] list = set.list();
-            
-         for(Action action : list) {         
-            executor.execute(action); // reject              
-         }
+         invalidate(channel);
       }
       invalid.clear();
-   }   
+   }
+   
+   /**
+    * This method is used to remove the channel from the selecting
+    * registry. It is rare that this will every happen, however it
+    * is important that tasks are cleared out in this manner as it
+    * could lead to a memory leak if left for a long time.
+    * 
+    * @param channel this is the channel being validated
+    */
+   private void invalidate(Channel channel) throws IOException {
+      ActionSet set = selecting.remove(channel);
+      Action[] list = set.list();
+         
+      for(Action action : list) {
+         Operation task = action.getOperation();
+         Trace trace = task.getTrace();
+               
+         try {
+            trace.trace(INVALID_KEY);               
+            execute(action); // reject
+         } catch(Exception cause) {            
+            trace.trace(ERROR, cause);            
+         }
+      }      
+   }
  
    /**
     * This is used to cancel any selection keys that have previously
@@ -404,6 +493,14 @@ class ActionDistributor extends Daemon implements Distributor {
       Collection<ActionSet> list = executing.values();
          
       for(ActionSet set : list) {
+         Action[] actions = set.list();
+         
+         for(Action action : actions) {
+            Operation task = action.getOperation();
+            Trace trace = task.getTrace();
+            
+            trace.trace(SELECT_CANCEL);
+         }
          set.cancel();
          set.clear();
       }     
@@ -428,7 +525,7 @@ class ActionDistributor extends Daemon implements Distributor {
                set = selecting.get(channel); 
             }  
             if(set != null) {
-               register(action, set);
+               update(action, set);
             } else {
                register(action);
             }
@@ -445,13 +542,21 @@ class ActionDistributor extends Daemon implements Distributor {
     * @param action this is the operation that is to be registered   
     */
    private void register(Action action) throws IOException {
-      SelectableChannel channel = action.getChannel(); 
+      SelectableChannel channel = action.getChannel();
+      Operation task = action.getOperation();
+      Trace trace = task.getTrace();
       
-      if(channel.isOpen()) {            
-         select(action);               
-      } else {
-         selecting.remove(channel);
-         executor.execute(action); // reject
+      try {
+         if(channel.isOpen()) {
+            trace.trace(SELECT);              
+            select(action);               
+         } else {
+            trace.trace(CHANNEL_CLOSED);            
+            selecting.remove(channel);
+            execute(action); // reject
+         }
+      }catch(Exception cause) {
+         trace.trace(ERROR, cause);
       }
    }   
    
@@ -464,14 +569,27 @@ class ActionDistributor extends Daemon implements Distributor {
     * @param action this is the operation that is to be registered
     * @param set this is the action set to register the action with     
     */
-   private void register(Action action, ActionSet set) throws IOException {
+   private void update(Action action, ActionSet set) throws IOException {
+      Operation task = action.getOperation();
+      Trace trace = task.getTrace();
       SelectionKey key = set.key();
       int interest = action.getInterest();
       int current = key.interestOps();
       int updated = current | interest;
      
-      key.interestOps(updated);
-      set.attach(action);
+      try {
+         if(OP_READ == (interest & OP_READ)) {
+            trace.trace(UPDATE_READ_INTEREST);
+         } 
+         if(OP_WRITE == (interest & OP_WRITE)) {
+            trace.trace(UPDATE_WRITE_INTEREST);
+         }       
+         trace.trace(UPDATE_INTEREST, updated);
+         key.interestOps(updated);
+         set.attach(action);
+      } catch(Exception cause) {      
+         trace.trace(ERROR, cause);      
+      }
    }
    
    /**
@@ -485,16 +603,23 @@ class ActionDistributor extends Daemon implements Distributor {
     * @return this returns the selection key used for selection
     */
    private void select(Action action) throws IOException {
-      SelectableChannel channel = action.getChannel(); 
+      SelectableChannel channel = action.getChannel();
+      Operation task = action.getOperation();
+      Trace trace = task.getTrace();
       int interest = action.getInterest();
       
       if(interest > 0) {
          ActionSet set = selector.register(channel, interest);  
          
-         if(set != null) {
-            set.attach(action);
-            selecting.put(channel, set);
+         if(OP_READ == (interest & OP_READ)) {
+            trace.trace(REGISTER_READ_INTEREST);
+         } 
+         if(OP_WRITE == (interest & OP_WRITE)) {
+            trace.trace(REGISTER_WRITE_INTEREST);
          }
+         trace.trace(REGISTER_INTEREST, interest);         
+         set.attach(action);
+         selecting.put(channel, set);         
       }
    }
  
@@ -541,7 +666,21 @@ class ActionDistributor extends Daemon implements Distributor {
       Action[] actions = set.ready();
       
       for(Action action : actions) {
-         executor.execute(action);         
+         Operation task = action.getOperation();
+         Trace trace = task.getTrace();
+         int interest = action.getInterest();
+         
+         try {
+            if(OP_READ == (interest & OP_READ)) {
+               trace.trace(READ_INTEREST_READY, interest);
+            } 
+            if(OP_WRITE == (interest & OP_WRITE)) {
+               trace.trace(WRITE_INTEREST_READY, interest);
+            } 
+            execute(action);
+         } catch(Exception cause) {
+            trace.trace(ERROR, cause);
+         }
       } 
    }
    
@@ -574,6 +713,27 @@ class ActionDistributor extends Daemon implements Distributor {
          }
       }
       selecting.remove(channel);     
+   }
+   
+   /**
+    * This is where the action is handed off to the executor. Before
+    * the action is executed a trace event is generated, this will
+    * ensure that the entry and exit points can be tracked. It is
+    * also useful in debugging performance issues and memory leaks.
+    * 
+    * @param action this is the action to execute
+    */
+   private void execute(Action action) {
+      Operation task = action.getOperation();
+      Trace trace = task.getTrace();
+      int interest = action.getInterest();
+      
+      try {
+         trace.trace(EXECUTE_ACTION, interest);
+         executor.execute(action);
+      } catch(Exception cause) {
+         trace.trace(ERROR, cause);
+      }
    }
 }
 

@@ -75,6 +75,10 @@ class FlushSignaller implements Operation {
    public SocketChannel getChannel() {
       return socket.getChannel();
    }
+   
+   public Trace getTrace() {
+      return trace;
+   }
 
    /**
     * This is used to perform the drain of the pending buffer

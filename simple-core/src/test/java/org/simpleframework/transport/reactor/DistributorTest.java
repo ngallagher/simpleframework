@@ -21,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
+import org.simpleframework.transport.trace.MockTrace;
+import org.simpleframework.transport.trace.Trace;
+
 
 public class DistributorTest extends TestCase {
 
@@ -110,6 +113,10 @@ public class DistributorTest extends TestCase {
          this.reactor = reactor;
          this.done = done;
          this.id = id;
+      }
+      
+      public Trace getTrace() {
+         return new MockTrace();
       }
       
       public long getExpiry(TimeUnit unit) {

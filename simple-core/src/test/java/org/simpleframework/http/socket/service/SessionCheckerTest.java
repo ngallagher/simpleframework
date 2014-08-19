@@ -17,12 +17,13 @@ import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.util.thread.ScheduledExecutor;
 
 public class SessionCheckerTest extends TestCase {
    
    public void testSessionChecker() throws Exception {
-      SessionChecker checker = new SessionChecker(1000, 2000);
-      checker.start();
+      ScheduledExecutor executor = new ScheduledExecutor(Runnable.class, 10);
+      SessionChecker checker = new SessionChecker(executor, 1000, 2000);
       
       MockSession session1 = new MockSession();
       MockSession session2 = new MockSession();

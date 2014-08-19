@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.channels.SelectableChannel;
 import java.nio.channels.SocketChannel;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -208,15 +209,15 @@ public class MockRenegotiationServer implements Container {
    
    private static class ConsoleAgent implements Analyzer {
       
-      private final Map<SocketChannel, Integer> map;
+      private final Map<SelectableChannel, Integer> map;
       private final AtomicInteger count;
       
       public ConsoleAgent() {
-         this.map = new ConcurrentHashMap<SocketChannel, Integer>();
+         this.map = new ConcurrentHashMap<SelectableChannel, Integer>();
          this.count = new AtomicInteger();
       }
 
-      public Trace attach(SocketChannel channel) {
+      public Trace attach(SelectableChannel channel) {
          if(map.containsKey(channel)) {
             throw new IllegalStateException("Can't attach twice");
          }

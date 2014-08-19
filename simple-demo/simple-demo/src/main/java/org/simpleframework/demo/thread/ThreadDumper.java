@@ -38,7 +38,7 @@ public class ThreadDumper extends Thread {
       }
    }
    public void run() {
-   /*   while(!dead) {
+      while(!dead) {
          try{
             latch.countDown();
             dumpThreadInfo();
@@ -47,7 +47,7 @@ public class ThreadDumper extends Thread {
          }catch(Exception e){
             e.printStackTrace();
          }
-      }*/
+      }
    }
 
   /**

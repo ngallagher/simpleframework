@@ -72,16 +72,22 @@ class FrameCollector implements Operation {
     * used to create a collector that will process and dispatch web 
     * socket frames as defined by RFC 6455.
     * 
+    * @param encoder this is the encoder used to send messages
     * @param session this is the web socket session
     * @param channel this is the underlying TCP communication channel
     * @param reactor this is the reactor used for read notifications
     */
-   public FrameCollector(Session session, Channel channel, Reactor reactor) {
-      this.processor = new FrameProcessor(session, channel);      
+   public FrameCollector(FrameEncoder encoder, Session session, Channel channel, Reactor reactor) {
+      this.processor = new FrameProcessor(encoder, session, channel);      
       this.cursor = channel.getCursor();
       this.trace = channel.getTrace();
       this.reactor = reactor;
       this.channel = channel;
+   }
+   
+   
+   public Trace getTrace() {
+      return trace;
    }   
 
    /**

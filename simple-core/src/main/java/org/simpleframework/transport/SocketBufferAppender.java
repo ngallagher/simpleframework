@@ -18,11 +18,16 @@
 
 package org.simpleframework.transport;
 
+import static org.simpleframework.transport.TransportEvent.WRITE;
+import static org.simpleframework.transport.TransportEvent.WRITE_BUFFER;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.ByteChannel;
 import java.nio.charset.Charset;
+
+import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>SocketBufferAppender</code> represents a buffer fragment
@@ -38,6 +43,11 @@ class SocketBufferAppender {
     * This is the buffer used to store the contents of the buffer.
     */
    private ByteBuffer buffer;
+   
+   /**
+    * This is the trace used to watch the buffering events.
+    */
+   private Trace trace;
   
    /**
     * This represents the the initial size of the buffer to use.
@@ -54,11 +64,13 @@ class SocketBufferAppender {
     * is used to create an appender that can collect smaller fragments
     * in to a larger buffer so that it can be delivered more efficiently.
     * 
+    * @param socket this is the socket to append data for
     * @param chunk this is the initial size of the buffer 
     * @param limit this is the maximum size of the buffer
     */
-   public SocketBufferAppender(int chunk, int limit) {
+   public SocketBufferAppender(Socket socket, int chunk, int limit) {
       this.buffer = ByteBuffer.allocateDirect(chunk);
+      this.trace = socket.getTrace();
       this.chunk = chunk;
       this.limit = limit;
    }
@@ -187,6 +199,9 @@ class SocketBufferAppender {
       int size = mark + count;
       
       if(count > 0) {
+         if(trace != null) {
+            trace.trace(WRITE_BUFFER, count);
+         }
          data.position(size); 
          segment.limit(count); 
          buffer.put(segment); 
@@ -259,7 +274,10 @@ class SocketBufferAppender {
 
          if(size <= 0) {
             break;
-         }
+         }         
+         if(trace != null) { 
+            trace.trace(WRITE, size);
+         }                    
          count += size;
       }
       if(count >= 0) {

@@ -98,7 +98,7 @@ class ActionSelector {
     * 
     * @return this returns all the associated action sets for this
     */
-   public List<ActionSet> registeredSets() throws IOException {
+   public List<ActionSet> registeredSets() {
       Set<SelectionKey> keys = selector.keys();
       Iterator<SelectionKey> ready = keys.iterator();
      
@@ -115,7 +115,7 @@ class ActionSelector {
     * 
     * @return this returns all the associated action sets for this
     */
-   private List<ActionSet> registeredSets(Iterator<SelectionKey> keys) throws IOException {
+   private List<ActionSet> registeredSets(Iterator<SelectionKey> keys) {
       List<ActionSet> sets = new LinkedList<ActionSet>();
       
       while(keys.hasNext()) {
@@ -156,7 +156,7 @@ class ActionSelector {
     * 
     * @return this returns all the selected action sets for this
     */
-   private List<ActionSet> selectedSets(Iterator<SelectionKey> keys) throws IOException {
+   private List<ActionSet> selectedSets(Iterator<SelectionKey> keys) {
       List<ActionSet> ready = new LinkedList<ActionSet>();
       
       while(keys.hasNext()) {

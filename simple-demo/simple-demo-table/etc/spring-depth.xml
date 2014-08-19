@@ -744,7 +744,8 @@
     <constructor-arg ref="DepthOutrightTableModel" />
     <constructor-arg ref="DepthOutrightTableSchema" />
     <constructor-arg ref="DepthOutrightRowExtractor" />
-    <constructor-arg ref="DepthOutrightRowFormatter" />    
+    <constructor-arg ref="DepthOutrightRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>    
   </bean>
 
   <bean id="DepthOutrightTableService" class="org.simpleframework.demo.table.message.TableService">
@@ -1499,7 +1500,8 @@
     <constructor-arg ref="DepthEFPTableModel" />
     <constructor-arg ref="DepthEFPTableSchema" />
     <constructor-arg ref="DepthEFPRowExtractor" />
-    <constructor-arg ref="DepthEFPRowFormatter" />    
+    <constructor-arg ref="DepthEFPRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>   
   </bean>
 
   <bean id="DepthEFPTableService" class="org.simpleframework.demo.table.message.TableService">

@@ -90,6 +90,11 @@ abstract class Phase implements Operation {
    public SelectableChannel getChannel() {
       return state.getChannel();
    }
+   
+   
+   public Trace getTrace() {
+      return trace;
+   }   
 
    /**
     * This is used to execute the task. It is up to the specific

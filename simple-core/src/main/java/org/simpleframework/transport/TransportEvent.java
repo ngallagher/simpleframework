@@ -45,6 +45,11 @@ public enum TransportEvent {
    WRITE,
    
    /**
+    * This event represents a write buffer operation on the underlying socket.
+    */
+   WRITE_BUFFER,  
+   
+   /**
     * This event occurs when no more data can be sent over the socket.
     */
    WRITE_WAIT,

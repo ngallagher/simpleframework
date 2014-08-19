@@ -19,13 +19,12 @@
 package org.simpleframework.http.socket.service;
 
 import java.io.IOException;
-import java.util.concurrent.Executor;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Reactor;
-import org.simpleframework.util.thread.ConcurrentExecutor;
+import org.simpleframework.util.thread.ScheduledExecutor;
 
 /**
  * The <code>ServiceDispatcher</code> object is used to perform the
@@ -36,17 +35,17 @@ import org.simpleframework.util.thread.ConcurrentExecutor;
  * 
  * @author Niall Gallagher
  */
-class ServiceDispatcher {
+class ServiceDispatcher {   
+   
+   /**
+    * This is used asynchronously read frames from the TCP channel.
+    */
+   private final ScheduledExecutor executor;   
    
    /**
     * This is used to check the session using ping control frames.
     */
    private final SessionChecker checker;
-   
-   /**
-    * This is used asynchronously read frames from the TCP channel.
-    */
-   private final Executor executor;
    
    /**
     * This is used to notify of read events on the TCP channel.
@@ -94,8 +93,8 @@ class ServiceDispatcher {
     * @param expiry this is the expiry for the session    
     */
    public ServiceDispatcher(Router router, int threads, long ping, long expiry) throws IOException {
-      this.executor = new ConcurrentExecutor(FrameCollector.class, threads);
-      this.checker = new SessionChecker(ping, expiry);
+      this.executor = new ScheduledExecutor(FrameCollector.class, threads);
+      this.checker = new SessionChecker(executor, ping, expiry);
       this.reactor = new ExecutorReactor(executor);
       this.router = router;
    }
@@ -110,30 +109,9 @@ class ServiceDispatcher {
     * @param response this is the session initiating response
     */
    public void dispatch(Request request, Response response) {
-      SessionBuilder connector = new SessionBuilder(request, response, reactor);
-      SessionDispatcher dispatcher = new SessionDispatcher(connector, checker, router);      
+      SessionBuilder connector = new SessionBuilder(checker, request, response, reactor);
+      SessionDispatcher dispatcher = new SessionDispatcher(connector, router);      
       
       dispatcher.dispatch(request, response);
-   }
-   
-   /**
-    * This is used to initiating session management by pinging all
-    * connected WebSocket channels. If after a specific number of 
-    * pings the WebSocket does not respond then the WebSocket is
-    * closed using a control frame.
-    */
-   public void start() {
-      checker.start();
-   }
-   
-   /**
-    * This is used to stop session management. Stopping the session
-    * manger means connected WebSocket channels will not receive
-    * any ping messages, they will however still receive pong frames
-    * if a ping is sent to it. Session management can be started 
-    * and stopped at will.
-    */
-   public void stop() {
-      checker.stop();
    }
 }

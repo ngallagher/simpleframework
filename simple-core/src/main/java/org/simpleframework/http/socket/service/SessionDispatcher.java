@@ -45,11 +45,6 @@ class SessionDispatcher {
    private final SessionBuilder builder;
    
    /**
-    * This is used to send ping control frames over the connection.
-    */
-   private final SessionChecker checker;
-   
-   /**
     * This is used to select the service to dispatch to.
     */
    private final Router router;
@@ -60,12 +55,10 @@ class SessionDispatcher {
     * using the provided <code>Router</code> instance. 
     * 
     * @param builder this is used to build the WebSocket session
-    * @param threads this is used to send ping control frames
     * @param router this is used to select the service 
     */
-   public SessionDispatcher(SessionBuilder builder, SessionChecker checker, Router router) {
+   public SessionDispatcher(SessionBuilder builder, Router router) {
       this.builder = builder;
-      this.checker = checker;
       this.router = router;
    }
    
@@ -84,9 +77,8 @@ class SessionDispatcher {
       
       try {
          Service service = router.route(request, response);
-         Session session = builder.create();
-      
-         checker.register(session);
+         Session session = builder.create();      
+        
          trace.trace(DISPATCH_SOCKET);
          service.connect(session);
       } catch(Exception cause) {

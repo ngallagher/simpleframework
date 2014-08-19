@@ -88,24 +88,4 @@ public interface Session {
     * @return the response used to establish the session
     */
    Response getResponse();
-   
-   /**
-    * Provides the protocol used to establish the session. If there are
-    * multiple protocols requested this is the protocol that was sent
-    * back to the client as the accepted protocol. Exposing this is
-    * for convenience only as it can also be acquired from the response.  
-    * 
-    * @return returns the protocol chosen for this session
-    */
-   String getProtocol();
-   
-   /**
-    * Provides the key used to establish the session. The key is a small
-    * random token sent by the client. In normal operation the key must
-    * not be used to identify the session as it is possible two clients
-    * may choose the same key, it is however useful for audit purposes.
-    * 
-    * @return the random key provided by the connected client
-    */
-   String getKey();
 }

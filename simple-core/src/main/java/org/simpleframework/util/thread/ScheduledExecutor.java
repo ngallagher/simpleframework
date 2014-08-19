@@ -42,10 +42,11 @@ public class ScheduledExecutor implements Executor {
     * before execution. Depending on the types of task that are
     * to be executed this should be increased for accuracy.
     * 
+    * @param type this is the type of the worker threads
     * @param size this is the number of threads for the scheduler
     */
-   public ScheduledExecutor(int size) {
-      this.engine = new ScheduledTaskQueue(size);
+   public ScheduledExecutor(Class type, int size) {
+      this.engine = new ScheduledTaskQueue(type, size);
    }
 
    /**
@@ -56,7 +57,7 @@ public class ScheduledExecutor implements Executor {
     * @param task this is the task to schedule for execution
     */
    public void execute(Runnable task) {
-     execute(task, 0);           
+      engine.execute(task);           
    }
    
    /**
@@ -83,7 +84,7 @@ public class ScheduledExecutor implements Executor {
     * @param unit this is the duration time unit to wait for
     */   
    public void execute(Runnable task, long delay, TimeUnit unit) {
-      engine.schedule(task, delay, unit);
+      engine.execute(task, delay, unit);
    }
 
    /**

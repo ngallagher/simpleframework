@@ -12,7 +12,7 @@ public class SchedulerTest extends TestCase {
    private static final int ITERATIONS = 10000;
    
    public void testScheduler() throws Exception {
-      ScheduledExecutor queue = new ScheduledExecutor(10);
+      ScheduledExecutor queue = new ScheduledExecutor(Runnable.class, 10);
       LinkedBlockingQueue<Timer> list = new LinkedBlockingQueue<Timer>();
       
       for(int i = 0; i < ITERATIONS; i++) {

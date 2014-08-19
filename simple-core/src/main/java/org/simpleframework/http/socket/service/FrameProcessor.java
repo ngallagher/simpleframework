@@ -34,7 +34,6 @@ import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.FrameType;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.Cursor;
 import org.simpleframework.transport.trace.Trace;
@@ -68,9 +67,9 @@ class FrameProcessor {
    private final FrameConsumer consumer;
    
    /**
-    * This is the actual WebSocket associated with this processor.
+    * This is the encoder that is used to send control messages.
     */
-   private final WebSocket socket;
+   private final FrameEncoder encoder;
    
    /**
     * This is the session associated with the WebSocket connection.
@@ -102,18 +101,19 @@ class FrameProcessor {
     * used to create a processor that can consume and dispatch frames
     * as defined by RFC 6455 to a set of registered listeners. 
     * 
+    * @param encoder this is the encoder used to send control frames
     * @param session this is the session associated with the channel
     * @param channel this is the channel to read frames from
     */
-   public FrameProcessor(Session session, Channel channel) {
+   public FrameProcessor(FrameEncoder encoder, Session session, Channel channel) {
       this.listeners = new CopyOnWriteArraySet<FrameListener>();
       this.error = new Reason(INTERNAL_SERVER_ERROR);
       this.normal = new Reason(NORMAL_CLOSURE);
       this.extractor = new ReasonExtractor();
       this.consumer = new FrameConsumer();
-      this.socket = session.getSocket();
       this.cursor = channel.getCursor();
       this.trace = channel.getTrace();
+      this.encoder = encoder;
       this.session = session;
    }   
    
@@ -167,7 +167,7 @@ class FrameProcessor {
                Frame response = frame.getFrame(FrameType.PONG);
                
                trace.trace(READ_PING);
-               socket.send(response);
+               encoder.encode(response);
                trace.trace(WRITE_PONG);
             }            
             for(FrameListener listener : listeners) {
@@ -177,7 +177,7 @@ class FrameProcessor {
                Reason reason = extractor.extract(frame);
                
                close(reason); 
-               socket.send(frame);               
+               encoder.encode(frame);               
             } 
             consumer.clear();           
          }
@@ -196,7 +196,7 @@ class FrameProcessor {
       for(FrameListener listener : listeners) {
          listener.onError(session, cause);
       }      
-      socket.close(error);
+      encoder.encode(error);
       
    }
    
@@ -212,7 +212,7 @@ class FrameProcessor {
       for(FrameListener listener : listeners) {
          listener.onClose(session, reason);
       }
-      socket.close(reason);
+      encoder.encode(reason);
    }   
    
    /**
@@ -225,6 +225,6 @@ class FrameProcessor {
       for(FrameListener listener : listeners) {
          listener.onClose(session, normal);
       }
-      socket.close(normal);
+      encoder.encode(normal);
    }
 }

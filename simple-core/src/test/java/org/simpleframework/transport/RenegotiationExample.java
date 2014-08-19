@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.SelectableChannel;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -200,7 +200,7 @@ public class RenegotiationExample {
    
    private static class MockAgent implements Analyzer {
 
-      public Trace attach(SocketChannel channel) {
+      public Trace attach(SelectableChannel channel) {
          return new Trace() {
             public void trace(Object event) {
                trace(event, "");

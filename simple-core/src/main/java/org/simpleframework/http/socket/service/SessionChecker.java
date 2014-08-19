@@ -23,20 +23,20 @@ import static org.simpleframework.http.socket.FrameType.PING;
 import static org.simpleframework.http.socket.service.ServiceEvent.ERROR;
 import static org.simpleframework.http.socket.service.ServiceEvent.WRITE_PING;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.DataFrame;
 import org.simpleframework.http.socket.Frame;
+import org.simpleframework.http.socket.FrameListener;
+import org.simpleframework.http.socket.FrameType;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.WebSocket;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.trace.Trace;
-import org.simpleframework.util.thread.Daemon;
+import org.simpleframework.util.thread.ScheduledExecutor;
 
 /**
  * The <code>SessionChecker</code> object is used to perform health 
@@ -52,32 +52,22 @@ import org.simpleframework.util.thread.Daemon;
  * 
  * @see org.simpleframework.http.socket.service.SessionMonitor
  */
-class SessionChecker {
-
-   /**
-    * This is used to hold the times the last ping was sent.
-    */
-   private final Map<Session, Long> times;
+class SessionChecker {      
    
    /**
-    * This is used to hold a reference to all ready sessions.
+    * This is the scheduler used to schedule ping operations.
     */
-   private final Set<Session> ready;
+   private final ScheduledExecutor scheduler;
    
    /**
-    * This holds sessions that are currently waiting for a pong.
+    * This is the frequency with which sessions are pinged at.
     */
-   private final Set<Session> waiting;
+   private final long frequency;
    
    /**
-    * This is registered with each session to listen for pongs.
+    * This is the length of time a session can remain idle.
     */
-   private final SessionMonitor monitor;
-   
-   /**
-    * This is used to perform the pinging of the channels.
-    */
-   private final ChannelPinger pinger;
+   private final long expiry;   
 
    /**
     * Constructor for the <code>SessionChecker</code> object. This will
@@ -86,15 +76,14 @@ class SessionChecker {
     * remain go unacknowledged, if there is no pong frame for this 
     * length of time then the session is closed.
     * 
+    * @param scheduler this is the executor used to schedule pings
     * @param frequency this is the frequency to ping all sessions
     * @param expiry this the expiry duration for an idle session
     */
-   public SessionChecker(long frequency, long expiry) {
-      this.pinger = new ChannelPinger(frequency, expiry);      
-      this.times = new ConcurrentHashMap<Session, Long>();
-      this.waiting = new CopyOnWriteArraySet<Session>();
-      this.ready = new CopyOnWriteArraySet<Session>();
-      this.monitor = new SessionMonitor(this);
+   public SessionChecker(ScheduledExecutor scheduler, long frequency, long expiry) {   
+      this.scheduler = scheduler;
+      this.frequency = frequency;
+      this.expiry = expiry;
    }
 
    /**
@@ -107,66 +96,13 @@ class SessionChecker {
     * @param session this is the session to send ping frames to
     */
    public void register(Session session) {
-      WebSocket socket = session.getSocket();
-      Request request = session.getRequest();
-      Channel channel = request.getChannel();
+      ChannelPinger pinger = new ChannelPinger(session); 
 
       try {
-         if(pinger.isActive()) {
-            socket.register(monitor);
-            ready.add(session);
-         }
-      } catch (Exception e) {
-         channel.close();
+         pinger.start();
+      } catch(Exception e) {
+         pinger.close();
       }
-   }
-
-   /**
-    * This notifies the sesion checker that a pong has been received 
-    * in response to a ping. Upon receipt of a pong frame the session
-    * can be rescheduled to receive a ping. If this is not called 
-    * before the expiry duration elapses then the session is closed.
-    * 
-    * @param session this is the session that received a pong
-    */
-   public void refresh(Session session) {
-      waiting.remove(session);
-      times.remove(session);
-   }
-
-   /**
-    * This is used to remove a session from notification. Upon removal
-    * the session will no longer receive any ping frames. A session
-    * can remain active without receiving any pings from the server
-    * as the client often sends a ping from its end.
-    * 
-    * @param session this is the session to remove 
-    */
-   public void remove(Session session) {
-      waiting.remove(session);
-      ready.remove(session);
-      times.remove(session);
-   }
-
-   /**
-    * This is used to initiating session management by pinging all
-    * connected WebSocket channels. If after a specific number of 
-    * pings the WebSocket does not respond then the WebSocket is
-    * closed using a control frame.
-    */
-   public void start() {
-      pinger.start();
-   }
-
-   /**
-    * This is used to stop session management. Stopping the session
-    * manger means connected WebSocket channels will not receive
-    * any ping messages, they will however still receive pong frames
-    * if a ping is sent to it. Session management can be started 
-    * and stopped at will.
-    */
-   public void stop() {
-      pinger.stop();
    }
 
    /**
@@ -175,8 +111,43 @@ class SessionChecker {
     * point during the delivery of a ping frame there is an I/O error
     * or an unexpected exception this will close the session.
     */
-   private class ChannelPinger extends Daemon {
+   public class ChannelPinger implements Runnable{
+      
+      /**
+       * This is used to perform the monitoring of the sessions.
+       */
+      private final ChannelMonitor monitor;
+      
+      /**
+       * This is the last time a ping was sent by this.
+       */
+      private final AtomicLong counter;      
+      
+      /**
+       * This is the last time a ping was sent by this.
+       */
+      private final AtomicLong timer;
+      
+      /**
+       * This is the WebSocket this this pinger will be monitoring.
+       */
+      private final WebSocket socket;
 
+      /**
+       * This is the request that is associated with the session.
+       */
+      private final Request request;
+      
+      /**
+       * This is the channel that the session is associated with.
+       */
+      private final Channel channel;
+      
+      /**
+       * This is used to trace various events for this pinger.
+       */
+      private final Trace trace;      
+      
       /**
        * The only reason for a close is for an unexpected error.
        */
@@ -186,16 +157,6 @@ class SessionChecker {
        * This is the frame that contains the ping to send.
        */
       private final Frame frame;
-      
-      /**
-       * This is the frequency with which sessions are pinged at.
-       */
-      private final long frequency;
-      
-      /**
-       * This is the length of time a session can remain idle.
-       */
-      private final long expiry;
 
       /**
        * Constructor for the <code>ChannelPinger</code> object. This
@@ -203,93 +164,29 @@ class SessionChecker {
        * a specified interval. If a session does not respond within 
        * the configured expiry time then it is terminated.
        * 
-       * @param frequency this is the frequency to send out pings
-       * @param expiry this is the idle time for a session
+       * @param session this is the session to be pinged
        */
-      public ChannelPinger(long frequency, long expiry) {
+      public ChannelPinger(Session session) {
+         this.monitor = new ChannelMonitor(this);
          this.reason = new Reason(INTERNAL_SERVER_ERROR);
          this.frame = new DataFrame(PING);
-         this.frequency = frequency;
-         this.expiry = expiry;
-      }
-
-      /**
-       * This is used to perform a dispatch of the ping control frame
-       * to all sessions that are currently not awaiting a pong. Before
-       * a ping is sent out the sessions are checked to see if there are
-       * any lingering sessions waiting for a pong that have been closed.
-       */
-      public void run() {
-         try {
-            execute();
-         } finally {          
-            purge();
-         }
-      }
+         this.counter = new AtomicLong();
+         this.timer = new AtomicLong();
+         this.socket = session.getSocket();
+         this.request = session.getRequest();
+         this.channel = request.getChannel();
+         this.trace = channel.getTrace();
+      }    
       
-      /**
-       * This is used to perform a dispatch of the ping control frame
-       * to all sessions that are currently not awaiting a pong. Before
-       * a ping is sent out the sessions are checked to see if there are
-       * any lingering sessions waiting for a pong that have been closed.
-       */
-      private void execute() {
-         while (isActive()) {
-            try {
-               sleep();
-               clean();                  
-               process();
-            } catch (Exception e) {
-               continue;
-            }
-         }
-      }
-      
-      /**
-       * This is used to clear out all sessions. When the pinger stops
-       * it is important to clear out all sessions so that there are
-       * no memory leaks created by the pinger. Further attempts to 
-       * register sessions are blocked before this is called.
-       */
-      private void purge() {
-         times.clear();
-         waiting.clear();
-         ready.clear();
-      }
-
-      /**
-       * To throttle the number of pings sent out the pinger sleeps for
-       * a specified interval. If for some reason the thread cannot
-       * sleep then the pinger is deactivaed and pinging is stopped.
-       */
-      private void sleep() {
-         try {
-            Thread.sleep(frequency);
-         } catch (Exception e) {
-            stop();
-         }
-      }      
-      
-      /**
-       * This method is used to sweep all connected sessions to check
-       * for sessions that need to be pinged or have expired. A session
-       * will expire if it does not receive a pong within the expiry 
-       * time. At any point if there is a I/O error the session will
-       * be terminated and no more pings are sent to it.
-       */
-      private void process() {
-         for(Session session : ready) {
-            Long time = times.get(session);
-            
-            if(time != null) {
-               expire(session, time);
-            }  else {
-               if(!waiting.contains(session)) {
-                  ping(session);              
-               } else {
-                  close(session);
-               }
-            }               
+      public void start() {
+         long time = System.currentTimeMillis();
+         
+         try {            
+            timer.set(time);
+            socket.register(monitor);
+            scheduler.execute(this);
+         } catch(Exception cause) {
+            error(cause);
          }
       }
 
@@ -301,21 +198,28 @@ class SessionChecker {
        * 
        * @param session this is the session to send to ping to
        */
-      private void ping(Session session) {
-         WebSocket socket = session.getSocket();
-         Request request = session.getRequest();
-         Channel channel = request.getChannel();
-         Trace trace = channel.getTrace();
+      public void ping() {
          long time = System.currentTimeMillis();
          
          try {
-            trace.trace(WRITE_PING);
-            times.put(session, time);              
-            waiting.add(session); 
-            socket.send(frame);           
+            timer.set(time);  
+            trace.trace(WRITE_PING);           
+            socket.send(frame);
+            counter.getAndIncrement();
+            scheduler.execute(this, frequency); // schedule the next one
          } catch (Exception cause) {              
-            error(session, cause);
+            error(cause);
          }
+      }
+      
+      public void refresh() {
+         long time = System.currentTimeMillis();
+         long count = counter.get();
+         
+          if(count > 0) {
+             timer.set(time);  
+             counter.getAndDecrement();
+          }
       }
 
       /**
@@ -323,22 +227,30 @@ class SessionChecker {
        * If the duration of the unacknowledged ping exceeds the expiry 
        * time the session is considered expired and is terminated.
        * 
-       * @param session this is the session to check
        * @param sent this is the time the last ping was sent
        */
-      private void expire(Session session, long sent) {
-         WebSocket socket = session.getSocket();
-         long time = System.currentTimeMillis();         
+      public void run() {
+         long count = counter.get();
+         
+         if(count > 0) {  
+            expire();
+         } else {
+            ping();
+         }
+      }
+      
+      private void expire() {
+         long time = System.currentTimeMillis();
+         long sent = timer.get();
 
-         try {
-            if (time - sent > expiry) {
-               ready.remove(session);
-               waiting.remove(session);
-               times.remove(session);
+         try {  
+            if (time - sent < expiry) {               
+               scheduler.execute(this, frequency); // reschedule
+            } else {               
                socket.close();
             }
          } catch (Exception cause) {
-            error(session, cause);
+            error(cause);
          }
       }
       
@@ -348,24 +260,14 @@ class SessionChecker {
        * close control frame with a reason, if this fails the TCP
        * channel is closed and all references are removed.       
        * 
-       * @param session this is the session to close
        * @param cause this is the cause of the failure
        */
-      private void error(Session session, Exception cause) {
-         WebSocket socket = session.getSocket();
-         Request request = session.getRequest();
-         Channel channel = request.getChannel();
-         Trace trace = channel.getTrace();
-         
-         try {
-            times.remove(session);
-            waiting.remove(session);            
+      private void error(Exception cause) {
+         try {               
             trace.trace(ERROR, cause);
             socket.close(reason);
          } catch(Exception e) {
-            channel.close();
-         } finally {
-            ready.remove(session);
+            trace.trace(ERROR, cause);
          }
       }      
       
@@ -375,35 +277,81 @@ class SessionChecker {
        * of the session in this manner only occurs if there is an
        * expiry of the session or an I/O error, both of which are
        * unexpected and violate the behaviour as defined in RFC 6455.
-       * 
-       * @param session this is the session to be closed
        */ 
-      private void close(Session session) {
-         WebSocket socket = session.getSocket();
-         
+      public void close() {
          try {
-            times.remove(session);
-            waiting.remove(session);
             socket.close(reason);
          } catch(Exception cause) {
-            error(session, cause);
-         } finally {
-            ready.remove(session);            
+            error(cause);          
          }
       }      
+   }
+   
+   /**
+    * The <code>SessionMonitor</code> is used to listen for responses to
+    * ping frames sent out by the server. A response to the ping frame 
+    * is a pong frame. When a pong is received it allows the session to
+    * be scheduled to receive another ping.
+    * 
+    * @author Niall Gallagher
+    */
+   private class ChannelMonitor implements FrameListener {
       
       /**
-       * This used to reconcile the waiting sessions with the sessions
-       * that are currently active. Reconciling in this manner is 
-       * needed to ensure there are no memory leaks caused by session
-       * references hanging around that will never receive a pong.
+       * This is used to ping sessions to check for health.
        */
-      private void clean() throws Exception {
-         for(Session session : waiting) {
-            if(!ready.contains(session)) {
-               close(session);
-            }
+      private final ChannelPinger pinger;
+      
+      /**
+       * Constructor for the <code>SessionMonitor</code> object. This 
+       * requires the session health checker that performs the pings 
+       * so that it can reschedule the session for multiple pings if
+       * the connection responds with a pong.
+       * 
+       * @param pinger this is the session health checker
+       */
+      public ChannelMonitor(ChannelPinger pinger) {
+         this.pinger = pinger;
+      }
+
+      /**
+       * This is called when a new frame arrives on the WebSocket. If
+       * the frame is a pong then this will reschedule the the session
+       * to receive another ping frame.
+       * 
+       * @param session this is the associated session
+       * @param frame this is the frame that has been received
+       */   
+      public void onFrame(Session session, Frame frame) {
+         FrameType type = frame.getType();
+         
+         if(type.isPong()) {         
+            pinger.refresh(); 
          }
       }
-   }
+
+      /**
+       * This is called when there is an error with the connection.
+       * When called the session is removed from the checker and no
+       * more ping frames are sent.
+       * 
+       * @param session this is the associated session
+       * @param cause this is the cause of the error
+       */
+      public void onError(Session session, Exception cause) {
+         pinger.error(cause);     
+      }
+
+      /**
+       * This is called when the connection is closed from the other
+       * side. When called the session is removed from the checker
+       * and no more ping frames are sent.
+       * 
+       * @param session this is the associated session
+       * @param reason this is the reason the connection was closed
+       */
+      public void onClose(Session session, Reason reason) {
+         pinger.close();
+      }
+   }   
 }

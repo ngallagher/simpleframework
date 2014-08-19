@@ -153,8 +153,7 @@ public class WebSocketPerformanceTest {
          this.address = new InetSocketAddress(port);
       }
       
-      public void connect() throws Exception {
-         container.start();      
+      public void connect() throws Exception {    
          connection.connect(address);
       }
       

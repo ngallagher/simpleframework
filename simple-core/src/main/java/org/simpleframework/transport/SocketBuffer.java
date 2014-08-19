@@ -81,7 +81,7 @@ class SocketBuffer {
     * @param limit this is the maximum size of the output buffer 
     */
    public SocketBuffer(Socket socket, int chunk, int limit) {
-      this.appender = new SocketBufferAppender(chunk, limit);
+      this.appender = new SocketBufferAppender(socket, chunk, limit);
       this.channel = socket.getChannel();
       this.trace = socket.getTrace();
       this.chunk = chunk;
@@ -177,12 +177,7 @@ class SocketBuffer {
       
       if(payload >= chunk) { // viable packet size
          int written = appender.write(channel);
-         
-         if(written > 0) {
-            if(trace != null) { 
-               trace.trace(WRITE, written);
-            }  
-         }
+
          if(written < payload) {// count not fully flush buffer               
             reference = duplicate;
             return false;
@@ -211,12 +206,7 @@ class SocketBuffer {
       
       if(count > 0) {
          int written = appender.write(channel);
-         
-         if(written > 0) {
-            if(trace != null) { 
-               trace.trace(WRITE, written);
-            }  
-         }
+
          if(written < count) {            
             compact();
             return false; // we are still buffering

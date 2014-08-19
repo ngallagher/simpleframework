@@ -79,6 +79,8 @@ class SocketAcceptor implements Operation {
     * This is the tracing analyzer used to trace accepted sockets.
     */
    private final Analyzer analyzer;
+   
+   private final Trace trace;
 
    /**
     * Constructor for the <code>SocketAcceptor</code> object. This 
@@ -93,6 +95,7 @@ class SocketAcceptor implements Operation {
     */
    public SocketAcceptor(SocketAddress address, SSLContext context, Server server, Analyzer analyzer) throws IOException {
       this.listener = ServerSocketChannel.open();
+      this.trace = analyzer.attach(listener);
       this.socket = listener.socket();
       this.context = context;
       this.analyzer = analyzer;
@@ -111,6 +114,10 @@ class SocketAcceptor implements Operation {
    public SocketAddress getAddress() {
       return socket.getLocalSocketAddress();
    }
+   
+   public Trace getTrace() {
+      return trace;
+   }  
    
    /**
     * This is the <code>SelectableChannel</code> which is used to 

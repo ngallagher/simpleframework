@@ -18,7 +18,7 @@
 
 package org.simpleframework.transport.trace;
 
-import java.nio.channels.SocketChannel;
+import java.nio.channels.SelectableChannel;
 
 /**
  * The <code>Analyzer</code> object represents a tracing analyzer used 
@@ -47,7 +47,7 @@ public interface Analyzer {
     * 
     * @return this returns a trace associated with the channel
     */
-   Trace attach(SocketChannel channel);
+   Trace attach(SelectableChannel channel);
    
    /**
     * This is used to stop the agent and clear all trace information.

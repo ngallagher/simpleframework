@@ -20,6 +20,8 @@ package org.simpleframework.transport.reactor;
 
 import java.nio.channels.SelectableChannel;
 
+import org.simpleframework.transport.trace.Trace;
+
 /**
  * The <code>Operation</code> interface is used to describe a task
  * that can be executed when the associated channel is ready for some
@@ -42,7 +44,9 @@ public interface Operation extends Runnable {
    *
    * @return this returns the channel used to govern execution
    */ 
-  SelectableChannel getChannel();        
+  SelectableChannel getChannel();       
+  
+  Trace getTrace();
 
   /**
    * This is used to cancel the operation if it has timed out. This

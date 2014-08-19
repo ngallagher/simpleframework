@@ -70,6 +70,11 @@
     <constructor-arg value="INTERNAL_SERVER_ERROR" />
   </bean>
 
+  <bean id="ThreadPool" class="org.simpleframework.util.thread.ConcurrentExecutor">
+    <constructor-arg value="java.lang.Runnable" />
+    <constructor-arg value="40" />
+  </bean>
+
   <bean id="ProductDepthProcessor" class="org.simpleframework.demo.table.product.DepthProcessor">
     <constructor-arg>
       <list>
@@ -96,7 +101,7 @@
         <value>ANZ</value>
         <value>CITI</value>
         <value>CS</value>
-        <value>DB</value>                
+        <value>DB</value>
       </list>
     </constructor-arg>
     <constructor-arg value="10" />
@@ -108,14 +113,14 @@
     <constructor-arg ref="BestTableUpdater" />
   </bean>
 
-  <bean id="PerformanceAnalyzer" class="org.simpleframework.demo.table.telemetry.PerformanceAnalyzer" init-method="start"/>
+  <bean id="PerformanceAnalyzer" class="org.simpleframework.demo.table.telemetry.PerformanceAnalyzer" init-method="start" />
 
-  <bean id="MemoryAnalyzer" class="org.simpleframework.demo.table.telemetry.MemoryAnalyzer" init-method="start"/>
+  <bean id="MemoryAnalyzer" class="org.simpleframework.demo.table.telemetry.MemoryAnalyzer" init-method="start" />
 
   <bean id="ServiceRouter" class="org.simpleframework.demo.http.socket.ServiceRouter">
     <constructor-arg>
       <map>
-        <entry key="/memory" value-ref="MemoryAnalyzer" />          
+        <entry key="/memory" value-ref="MemoryAnalyzer" />
         <entry key="/performance" value-ref="PerformanceAnalyzer" />
         <entry key="/best" value-ref="BestTableService" />
         <entry key="/company" value-ref="CompanyTableService" />
@@ -197,14 +202,17 @@
     <constructor-arg ref="ServiceRouter" />
   </bean>
 
-  <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer" init-method="start">
+  <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer">
     <constructor-arg ref="WebContainer" />
     <constructor-arg ref="WebSocketRouter" />
     <constructor-arg value="2" />
   </bean>
 
+  <bean id="WebServerAnalyzer" class="org.simpleframework.demo.trace.ConsoleAnalyzer" init-method="start" />
+
   <bean id="WebServer" class="org.simpleframework.demo.http.WebServer" init-method="start">
     <constructor-arg ref="WebSocketContainer" />
+    <constructor-arg ref="WebServerAnalyzer" />
     <constructor-arg value="${server.listenPort}" />
   </bean>
 

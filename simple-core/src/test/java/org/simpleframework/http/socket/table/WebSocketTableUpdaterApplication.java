@@ -56,7 +56,6 @@ public class WebSocketTableUpdaterApplication implements Container, Processor {
    
    public void connect() throws IOException {
       connection.connect(address);
-      container.start();
    }
 
    public void handle(Request req, Response resp) {

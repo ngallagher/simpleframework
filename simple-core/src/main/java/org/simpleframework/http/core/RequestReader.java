@@ -22,6 +22,7 @@ import java.nio.channels.SocketChannel;
 
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.Operation;
+import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>RequestReader</code> object is used to read the bytes 
@@ -65,6 +66,11 @@ class RequestReader implements Operation {
       this.collector = collector;        
       this.controller = controller;    
    }
+   
+   
+   public Trace getTrace() {
+      return channel.getTrace();
+   }   
    
    /**
     * This is the <code>SocketChannel</code> used to determine if the

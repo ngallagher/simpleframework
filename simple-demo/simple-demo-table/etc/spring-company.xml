@@ -246,7 +246,8 @@
     <constructor-arg ref="CompanyTableModel" />
     <constructor-arg ref="CompanyTableSchema" />
     <constructor-arg ref="CompanyRowExtractor" />
-    <constructor-arg ref="CompanyRowFormatter" />    
+    <constructor-arg ref="CompanyRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>           
   </bean>  
 
   <bean id="CompanyEFPTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
@@ -377,7 +378,8 @@
     <constructor-arg ref="CompanyEFPTableModel" />
     <constructor-arg ref="CompanyEFPTableSchema" />
     <constructor-arg ref="CompanyEFPRowExtractor" />
-    <constructor-arg ref="CompanyEFPRowFormatter" />    
+    <constructor-arg ref="CompanyEFPRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>           
   </bean>  
 
   <bean id="CompanySwitchTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
@@ -508,7 +510,8 @@
     <constructor-arg ref="CompanySwitchTableModel" />
     <constructor-arg ref="CompanySwitchTableSchema" />
     <constructor-arg ref="CompanySwitchRowExtractor" />
-    <constructor-arg ref="CompanySwitchRowFormatter" />    
+    <constructor-arg ref="CompanySwitchRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>           
   </bean>  
   
   <bean id="CompanyTableService" class="org.simpleframework.demo.table.message.TableService">

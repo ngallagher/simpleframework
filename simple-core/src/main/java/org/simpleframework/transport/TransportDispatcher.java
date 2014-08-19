@@ -21,6 +21,7 @@ package org.simpleframework.transport;
 import java.nio.channels.SocketChannel;
 
 import org.simpleframework.transport.reactor.Operation;
+import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>TransportDispatcher</code> operation is used transfer a 
@@ -69,6 +70,11 @@ class TransportDispatcher implements Operation {
    public SocketChannel getChannel() {
       return transport.getChannel();
    }
+   
+   
+   public Trace getTrace() {
+      return transport.getTrace();
+   }   
    
    /**
     * This is used to transfer the transport to the negotiator. This

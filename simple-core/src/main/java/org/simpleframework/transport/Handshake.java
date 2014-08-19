@@ -174,6 +174,11 @@ class Handshake implements Negotiation {
       this.client = client;
    }
    
+   
+   public Trace getTrace() {
+      return trace;
+   }   
+   
    /**
     * This returns the socket channel for the connected pipeline. It
     * is this channel that is used to determine if there are bytes

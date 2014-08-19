@@ -144,7 +144,7 @@ class FlushScheduler {
             lock.wait(120000);
          }
       } catch(Exception e) {
-         throw new TransportException("Schedule error", e);
+         throw new TransportException("Could not schedule for flush", e);
       }
       if(closed) {
          throw new TransportException("Socket closed");

@@ -18,10 +18,10 @@
 
 package org.simpleframework.transport.connect;
 
-import java.nio.channels.SocketChannel;
+import java.nio.channels.SelectableChannel;
 
-import org.simpleframework.transport.trace.Trace;
 import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>SocketAnalyzer</code> is used to wrap an analyzer object. 
@@ -61,7 +61,7 @@ class SocketAnalyzer implements Analyzer {
     * 
     * @return this returns a trace associated with the channel
     */
-   public Trace attach(SocketChannel channel) {
+   public Trace attach(SelectableChannel channel) {
       Trace trace = null;
       
       if(analyzer != null) {

@@ -2,6 +2,7 @@ package org.simpleframework.demo.table.message;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
 
 import org.simpleframework.demo.table.Query;
 import org.simpleframework.demo.table.TableCursor;
@@ -14,15 +15,17 @@ import org.simpleframework.http.socket.WebSocket;
 import org.simpleframework.util.thread.Daemon;
 
 public class TableUpdater extends Daemon {   
-
-   private final Set<TableConnection> connections;   
+  
+   private final Set<TableConnection> ready;   
    private final RowExtractor extractor;
    private final RowFormatter formatter;
+   private final Executor executor;
    private final TableSchema schema;
    private final TableModel model;
    
-   public TableUpdater(TableModel model, TableSchema schema, RowExtractor extractor, RowFormatter formatter) {
-      this.connections = new CopyOnWriteArraySet<TableConnection>();
+   public TableUpdater(TableModel model, TableSchema schema, RowExtractor extractor, RowFormatter formatter, Executor executor) {    
+      this.ready = new CopyOnWriteArraySet<TableConnection>();
+      this.executor = executor;
       this.formatter = formatter;
       this.extractor = extractor;      
       this.schema = schema;
@@ -30,7 +33,7 @@ public class TableUpdater extends Daemon {
    }
    
    public void refresh() {
-      for(TableConnection connection : connections) {
+      for(TableConnection connection : ready) {
          try {
             connection.refresh();
          } catch(Exception e) {
@@ -48,23 +51,24 @@ public class TableUpdater extends Daemon {
          TableCursor cursor = new TableCursor(subscription, schema, extractor, formatter);
          TableConnection connection = new TableConnection(cursor, session, schema);
          
-         connections.add(connection);
+         ready.add(connection);
       }
    }
    
    public void run() {
       while(true) {
          try {
-            Thread.sleep(50);
+            Thread.sleep(200);
          
-            for(TableConnection connection : connections) {
+            for(TableConnection connection : ready) {
                long time = System.currentTimeMillis();
                try {
-                  connection.update();
+                  ready.remove(connection);
+                  executor.execute(new TableRefresher(connection));
                }catch(Exception e){
                   System.err.println("ERROR AFTER " +(System.currentTimeMillis() - time) + " " + e);
                   //e.printStackTrace();
-                  connections.remove(connection);
+                  ready.remove(connection);
                }
             }
          } catch(Exception e) {
@@ -73,6 +77,23 @@ public class TableUpdater extends Daemon {
       }
    }
       
+   public class TableRefresher implements Runnable {
       
+      private final TableConnection connection;
+      
+      public TableRefresher(TableConnection connection) {
+         this.connection = connection;
+      }
+      
+      public void run() {
+         try {            
+            connection.update();
+            ready.add(connection);
+         } catch(Exception e) {
+           e.printStackTrace();
+         }
+      }
+      
+   }
    
 }

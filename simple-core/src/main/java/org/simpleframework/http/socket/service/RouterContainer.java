@@ -122,25 +122,4 @@ public class RouterContainer implements Container {
          container.handle(req, resp);
       }
    }   
-   
-   /**
-    * This is used to initiating session management by pinging all
-    * connected WebSocket channels. If after a specific number of 
-    * pings the WebSocket does not respond then the WebSocket is
-    * closed using a control frame.
-    */
-   public void start() {
-      dispatcher.start();
-   }
-   
-   /**
-    * This is used to stop session management. Stopping the session
-    * manger means connected WebSocket channels will not receive
-    * any ping messages, they will however still receive pong frames
-    * if a ping is sent to it. Session management can be started 
-    * and stopped at will.
-    */
-   public void stop() {
-      dispatcher.stop();
-   }
 }

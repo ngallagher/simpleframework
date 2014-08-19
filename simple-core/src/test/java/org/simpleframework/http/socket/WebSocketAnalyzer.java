@@ -2,7 +2,7 @@ package org.simpleframework.http.socket;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.SelectableChannel;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,7 +12,7 @@ import org.simpleframework.transport.trace.Trace;
 
 public class WebSocketAnalyzer implements Analyzer {
    
-   private final Map<SocketChannel, Integer> map;
+   private final Map<SelectableChannel, Integer> map;
    private final AtomicInteger count;
    private final boolean debug;
 
@@ -21,12 +21,12 @@ public class WebSocketAnalyzer implements Analyzer {
    }
    
    public WebSocketAnalyzer(boolean debug) {
-      this.map = new ConcurrentHashMap<SocketChannel, Integer>();
+      this.map = new ConcurrentHashMap<SelectableChannel, Integer>();
       this.count = new AtomicInteger();
       this.debug = debug;
    }
 
-   public Trace attach(SocketChannel channel) {
+   public Trace attach(SelectableChannel channel) {
       if(map.containsKey(channel)) {
          throw new IllegalStateException("Can't attach twice");
       }

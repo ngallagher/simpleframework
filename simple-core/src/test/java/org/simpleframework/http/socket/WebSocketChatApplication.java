@@ -59,7 +59,6 @@ public class WebSocketChatApplication implements Container, Processor {
      //    container.start();
      // } else {
          connection.connect(address);
-         container.start();
      // }
    }
 

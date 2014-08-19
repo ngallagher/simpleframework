@@ -326,7 +326,8 @@
     <constructor-arg ref="BestTableModel" />
     <constructor-arg ref="BestTableSchema" />
     <constructor-arg ref="BestRowExtractor" />
-    <constructor-arg ref="BestRowFormatter" />    
+    <constructor-arg ref="BestRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>           
   </bean>  
 
   <bean id="BestEFPTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
@@ -477,7 +478,8 @@
     <constructor-arg ref="BestEFPTableModel" />
     <constructor-arg ref="BestEFPTableSchema" />
     <constructor-arg ref="BestEFPRowExtractor" />
-    <constructor-arg ref="BestEFPRowFormatter" />    
+    <constructor-arg ref="BestEFPRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>           
   </bean>  
 
   <bean id="BestSwitchTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
@@ -628,7 +630,8 @@
     <constructor-arg ref="BestSwitchTableModel" />
     <constructor-arg ref="BestSwitchTableSchema" />
     <constructor-arg ref="BestSwitchRowExtractor" />
-    <constructor-arg ref="BestSwitchRowFormatter" />    
+    <constructor-arg ref="BestSwitchRowFormatter" />
+    <constructor-arg ref="ThreadPool"/>           
   </bean>  
   
   <bean id="BestTableService" class="org.simpleframework.demo.table.message.TableService">
