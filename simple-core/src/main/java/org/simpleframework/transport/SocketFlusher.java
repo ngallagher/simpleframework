@@ -18,14 +18,9 @@
 
 package org.simpleframework.transport;
 
-import static org.simpleframework.transport.TransportEvent.ERROR;
-
 import java.io.IOException;
-import java.nio.channels.SocketChannel;
 
-import org.simpleframework.transport.reactor.Operation;
 import org.simpleframework.transport.reactor.Reactor;
-import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>SocketFlusher</code> flushes bytes to the underlying
@@ -38,9 +33,9 @@ import org.simpleframework.transport.trace.Trace;
  *
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.transport.PacketController
+ * @see org.simpleframework.transport.SocketBufferWriter
  */
-class SocketFlusher implements PacketFlusher {
+class SocketFlusher {    
    
    /**
     * This is the signaller used to determine when to flush.
@@ -50,12 +45,12 @@ class SocketFlusher implements PacketFlusher {
    /**
     * This is the scheduler used to block and signal the writer.
     */
-   private FlushScheduler scheduler;   
+   private FlushScheduler scheduler;    
    
    /**
-    * This is the writer used to queue the packets written.
+    * This is the writer used to queue the buffers written.
     */
-   private PacketWriter writer;   
+   private SocketBuffer buffer;      
    
    /**
     * This is used to determine if the socket flusher is closed.
@@ -68,13 +63,14 @@ class SocketFlusher implements PacketFlusher {
     * When finished flushing all of the buffered data this signals
     * any threads that are blocking waiting for the write to finish.
     *
+    * @param buffer this is used to write the buffered buffers
     * @param reactor this is used to perform asynchronous writes
-    * @param writer this is used to write the buffered packets
+    * @param socket this is the socket used to select with
     */
-   public SocketFlusher(Socket socket, Reactor reactor, PacketWriter writer) throws IOException {
+   public SocketFlusher(SocketBuffer buffer, Socket socket, Reactor reactor) throws IOException {
       this.signaller = new FlushSignaller(this, socket);
       this.scheduler = new FlushScheduler(socket, reactor, signaller, this);
-      this.writer = writer;
+      this.buffer = buffer;
    }
 
    /**
@@ -87,7 +83,7 @@ class SocketFlusher implements PacketFlusher {
       if(closed) {
          throw new TransportException("Flusher is closed");
       }
-      boolean block = writer.isBlocking();
+      boolean block = !buffer.ready();
 
       if(!closed) {
          scheduler.schedule(block);
@@ -102,10 +98,10 @@ class SocketFlusher implements PacketFlusher {
     * method. This returns true if all the buffers are written.
     */   
    public synchronized void execute() throws IOException {      
-      boolean ready = writer.flush(); 
+      boolean ready = buffer.flush(); 
 
       if(!ready) { 
-         boolean block = writer.isBlocking(); 
+         boolean block = !buffer.ready(); 
 
          if(!block && !closed) {
             scheduler.release(); 
@@ -124,7 +120,7 @@ class SocketFlusher implements PacketFlusher {
     */
    public synchronized void abort() throws IOException {
       scheduler.close();
-      writer.close();
+      buffer.close();
    }
    
    /**
@@ -134,7 +130,7 @@ class SocketFlusher implements PacketFlusher {
     * the writer does not block then this waits to be finished.
     */
    public synchronized void close() throws IOException {
-      boolean ready = writer.flush();
+      boolean ready = buffer.flush();
       
       if(!closed) {
          closed = true;

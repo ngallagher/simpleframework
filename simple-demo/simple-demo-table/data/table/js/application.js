@@ -86,8 +86,9 @@ function reportStatus(socket, status, height, delta, change, duration, sequence,
 		footer.changes.innerHTML = change;
 		footer.duration.innerHTML = duration;
 	}
-	socket.send("status:rows="+height+",change="+change+",duration="+duration+",sequence="+sequence+",address="+address+",user="+user);
-	
+	if(socket.readyState == 1) {
+		socket.send("status:rows="+height+",change="+change+",duration="+duration+",sequence="+sequence+",address="+address+",user="+user);
+	}	
 }
 
 function schemaUpdate(socket, message) {

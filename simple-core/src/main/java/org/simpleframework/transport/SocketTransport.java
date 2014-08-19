@@ -58,12 +58,7 @@ public class SocketTransport implements Transport {
    /**
     * This is the writer that is used to flush the buffer queue.
     */
-   private PacketController writer;
-   
-   /**
-    * This creates packets with increasing sequence numbers.
-    */
-   private PacketBuilder builder;
+   private SocketBufferWriter writer;
 
    /**
     * This is the underlying byte channel used to send the  data.
@@ -96,7 +91,7 @@ public class SocketTransport implements Transport {
     * @param reactor this is used to perform asynchronous writes
     */
    public SocketTransport(Socket socket, Reactor reactor) throws IOException {
-      this(socket, reactor, 20480);
+      this(socket, reactor, 4096);
    }
 
    /**
@@ -108,10 +103,10 @@ public class SocketTransport implements Transport {
     *
     * @param socket this is used to read and write the data
     * @param reactor this is used to perform asynchronous writes
-    * @param threshold this is the threshold for asynchronous buffers
+    * @param buffer this is the size of the output buffer to use 
     */
-   public SocketTransport(Socket socket, Reactor reactor, int threshold) throws IOException {
-      this(socket, reactor, threshold, 3);
+   public SocketTransport(Socket socket, Reactor reactor, int buffer) throws IOException {
+      this(socket, reactor, buffer, 20480);
    }
 
    /**
@@ -123,29 +118,11 @@ public class SocketTransport implements Transport {
     *
     * @param socket this is used to read and write the data
     * @param reactor this is used to perform asynchronous writes
-    * @param threshold this is the threshold for asynchronous buffers  
-    * @param queue this is the queue size for asynchronous writes
+    * @param buffer this is the size of the output buffer to use      
+    * @param threshold this is the maximum size of the output buffer
     */
-   public SocketTransport(Socket socket, Reactor reactor, int threshold, int queue) throws IOException {
-      this(socket, reactor, threshold, queue, 4096);
-   }
-   
-   /**
-    * Constructor for the <code>SocketTransport</code> object. This 
-    * requires a reactor to perform asynchronous writes and also the
-    * pipeline which is used to read and write data. This transport
-    * will use a queue of buffers which are lazily initialized so as
-    * to only allocate the memory on demand.
-    *
-    * @param socket this is used to read and write the data
-    * @param reactor this is used to perform asynchronous writes
-    * @param threshold this is the threshold for asynchronous buffers  
-    * @param queue this is the queue size for asynchronous writes
-    * @param buffer this is the size of the buffers to be used
-    */
-   public SocketTransport(Socket socket, Reactor reactor, int threshold, int queue, int buffer) throws IOException {
-     this.writer = new SocketController(socket, reactor, threshold);
-     this.builder = new PacketBuilder(queue, buffer);
+   public SocketTransport(Socket socket, Reactor reactor, int buffer, int threshold) throws IOException {
+     this.writer = new SocketBufferWriter(socket, reactor, buffer, threshold);     
      this.channel = socket.getChannel();
      this.trace = socket.getTrace();
      this.socket = socket;
@@ -252,15 +229,8 @@ public class SocketTransport implements Transport {
    public  void write(ByteBuffer data) throws IOException{  
       if(closed) {
          throw new TransportException("Transport is closed");
-      }     
-      Packet packet = builder.build(data);
-      
-      while(packet != null) {
-         if(!closed) {
-            writer.write(packet);
-         }
-         packet = builder.build(data);
-      }
+      }    
+      writer.write(data);
    }    
    
    /**
@@ -273,11 +243,7 @@ public class SocketTransport implements Transport {
       if(closed) {
          throw new TransportException("Transport is closed");
       }
-      Packet packet = builder.build();
-
-      if(packet != null) {
-         writer.write(packet);
-      }
+      writer.flush();
    }
    
    /**
@@ -288,11 +254,7 @@ public class SocketTransport implements Transport {
     */
    public void close() throws IOException {
       if(!closed) {              
-         Packet packet = builder.build();
-         
-         if(packet != null) {
-            writer.write(packet);
-         }
+         writer.flush();
          writer.close();
          closed = true;
       }

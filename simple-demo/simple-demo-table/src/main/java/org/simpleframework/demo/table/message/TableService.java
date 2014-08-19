@@ -26,7 +26,7 @@ public class TableService implements Service {
    }
 
    @Override
-   public void connect(Session session) {
+   public void connect(Session session) {      
       WebSocket socket = session.getSocket();
       Request request = session.getRequest();      
       String user = request.getParameter("user");

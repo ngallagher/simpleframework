@@ -53,11 +53,6 @@ class OperationFactory {
    private final int buffer;
    
    /**
-    * This is the number of buffers that can be queued by the factory.
-    */
-   private final int queue;
-   
-   /**
     * This determines if the SSL handshake is for the client side.
     */
    private final boolean client;
@@ -69,10 +64,10 @@ class OperationFactory {
     * execute in an asynchronous thread.
     * 
     * @param negotiator the negotiator used to process transports 
-    * @param threshold number of bytes that can be copied for queuing
+    * @param buffer this is the initial size of the buffer to use   
     */
-   public OperationFactory(Negotiator negotiator, int threshold) {
-      this(negotiator, threshold, 4096);
+   public OperationFactory(Negotiator negotiator, int buffer) {
+      this(negotiator, buffer, 20480);
    }
    
    /**
@@ -82,11 +77,11 @@ class OperationFactory {
     * execute in an asynchronous thread.
     * 
     * @param negotiator the negotiator used to process transports 
-    * @param threshold number of bytes that can be copied for queuing
-    * @param buffer this is the size of the buffers for the transport
+    * @param buffer this is the initial size of the buffer to use       
+    * @param threshold maximum size of the output buffer to use
     */
-   public OperationFactory(Negotiator negotiator, int threshold, int buffer) {
-      this(negotiator, threshold, buffer, 3);
+   public OperationFactory(Negotiator negotiator, int buffer, int threshold) {
+      this(negotiator, buffer, threshold, false);
    }
    
    /**
@@ -96,32 +91,15 @@ class OperationFactory {
     * execute in an asynchronous thread.
     * 
     * @param negotiator the negotiator used to process transports 
-    * @param threshold number of bytes that can be copied for queuing
-    * @param buffer this is the size of the buffers for the transport
-    * @param queue this is the number of buffers that can be queued
-    */
-   public OperationFactory(Negotiator negotiator, int threshold, int buffer, int queue) {
-      this(negotiator, threshold, buffer, queue, false);
-   }
-   
-   /**
-    * Constructor for the <code>OperationFactory</code> object. This
-    * uses the negotiator provided to hand off the created transport
-    * when it has been created. All operations created typically
-    * execute in an asynchronous thread.
-    * 
-    * @param negotiator the negotiator used to process transports 
-    * @param threshold number of bytes that can be copied for queuing
-    * @param buffer this is the size of the buffers for the transport
-    * @param queue this is the number of buffers that can be queued
+    * @param buffer this is the initial size of the buffer to use       
+    * @param threshold maximum size of the output buffer to use
     * @param client determines if the SSL handshake is for a client
     */
-   public OperationFactory(Negotiator negotiator, int threshold, int buffer, int queue, boolean client) {
+   public OperationFactory(Negotiator negotiator, int buffer, int threshold, boolean client) {
       this.negotiator = negotiator;
       this.threshold = threshold;
       this.buffer = buffer;
       this.client = client;
-      this.queue = queue;
    }
    
    /**
@@ -152,7 +130,7 @@ class OperationFactory {
     * @return this returns the operation used for processing
     */
    private Operation getInstance(Socket socket, SSLEngine engine) throws IOException {
-      Transport transport = new SocketTransport(socket, negotiator, threshold, queue, buffer);
+      Transport transport = new SocketTransport(socket, negotiator, threshold, buffer);
    
       if(engine != null) {
          return new Handshake(transport, negotiator, client);

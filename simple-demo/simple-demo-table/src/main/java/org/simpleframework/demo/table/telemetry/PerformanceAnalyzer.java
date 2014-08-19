@@ -92,27 +92,23 @@ public class PerformanceAnalyzer extends Thread implements Service {
                      long time = System.currentTimeMillis();
                      
                      socket.send("usedMemory:"+time+","+usedMemory);
-                     socket.send("freeMemory:"+time+","+freeMemory);                    
+                     socket.send("freeMemory:"+time+","+freeMemory);                   
                      
-                     if(maximumPaintTime > 0) {
-                        socket.send("maximumPaintTime:"+time+","+maximumPaintTime);
-                     }
-                     if(maximumRoundTripTime > 9) {
-                        socket.send("maximumRoundTripTime:"+time+","+maximumRoundTripTime);
-                     }
-                     if(maximumNetworkTime > 9) {
-                        socket.send("maximumNetworkTime:"+time+","+maximumNetworkTime);
-                     }                     
-                     socket.send("paintTime:"+time+","+averagePaintTime);
-                     socket.send("roundTripTime:"+time+","+averageRoundTripTime);
-                     socket.send("networkTime:"+time+","+averageNetworkTime);               
-                     socket.send("rowsChanged:"+time+","+averageRowChanges);
-                     socket.send("rowsChangedSum:"+time+","+rowChangesSum);                       
+                     if(rowChangesSum > 0) {                        
+                        socket.send("maximumPaintTime:"+time+","+maximumPaintTime);                    
+                        socket.send("maximumRoundTripTime:"+time+","+maximumRoundTripTime);                    
+                        socket.send("maximumNetworkTime:"+time+","+maximumNetworkTime);                   
+                        socket.send("paintTime:"+time+","+averagePaintTime);
+                        socket.send("roundTripTime:"+time+","+averageRoundTripTime);
+                        socket.send("networkTime:"+time+","+averageNetworkTime);               
+                        socket.send("rowsChanged:"+time+","+averageRowChanges);
+                        socket.send("rowsChangedSum:"+time+","+rowChangesSum);                       
                      
-                     networkTimeAverager.reset();
-                     paintAverager.reset();
-                     roundTripAverager.reset();
-                     rowChangesAverager.reset();
+                        networkTimeAverager.reset();
+                        paintAverager.reset();
+                        roundTripAverager.reset();
+                        rowChangesAverager.reset();
+                     }
                   }                          
                } catch (Exception e) {
                   sessions.remove(session);

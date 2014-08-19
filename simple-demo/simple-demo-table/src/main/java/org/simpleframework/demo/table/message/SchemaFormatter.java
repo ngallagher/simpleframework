@@ -21,7 +21,10 @@ public class SchemaFormatter {
       String table = schema.getTable();
       
       if(!columns.isEmpty()) {
-         StringBuilder builder = new StringBuilder(table);
+         StringBuilder builder = new StringBuilder();
+         
+         builder.append(ChangeType.SCHEMA.code);
+         builder.append(table);
          
          for(Column column : columns) {
             ColumnStyle style = column.getStyle();

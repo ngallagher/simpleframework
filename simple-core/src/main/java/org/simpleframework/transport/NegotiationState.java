@@ -34,7 +34,7 @@ import javax.security.cert.X509Certificate;
 import org.simpleframework.transport.trace.Trace;
 
 /**
- * The <code>NegotiationCertificate</code> represents the certificate
+ * The <code>NegotiationState</code> represents the certificate
  * that is sent by a client during a secure HTTPS conversation. This
  * may or may not contain an X509 certificate chain from the client.
  * If it does not a <code>CertificateChallenge</code> may be used to

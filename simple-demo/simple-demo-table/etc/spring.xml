@@ -96,15 +96,7 @@
         <value>ANZ</value>
         <value>CITI</value>
         <value>CS</value>
-        <value>DB</value>
-        <value>HSBC</value>
-        <value>MBL</value>
-        <value>ML</value>
-        <value>NAB</value>
-        <value>NOMURA</value>
-        <value>RBC</value>
-        <value>RBS</value>
-        <value>WBC</value>                  
+        <value>DB</value>                
       </list>
     </constructor-arg>
     <constructor-arg value="10" />

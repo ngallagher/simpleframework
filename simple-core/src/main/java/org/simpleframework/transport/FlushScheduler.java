@@ -139,7 +139,7 @@ class FlushScheduler {
     */
    private void listen() throws IOException {
       try {
-         if(!closed) {
+         if(!closed) {   
             trace.trace(WRITE_BLOCKING);
             lock.wait(120000);
          }

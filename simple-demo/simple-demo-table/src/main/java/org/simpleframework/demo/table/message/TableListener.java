@@ -74,7 +74,7 @@ public class TableListener implements FrameListener {
 
    public void onError(Session socket, Exception cause) {
       System.err.println("onError(");
-      cause.printStackTrace();
+      //cause.printStackTrace();
       System.err.println(")");
    }
 
@@ -83,6 +83,6 @@ public class TableListener implements FrameListener {
    }
 
    public void onClose(Session session, Reason reason) {
-      System.err.println("onClose(" + reason +" reason="+reason.getText()+" code="+reason.getCode()+")");
+      System.err.println("onClose(" + reason +" reason="+reason.getText()+" code="+reason.getCode()+")"+Thread.currentThread().getName());
    }
 }

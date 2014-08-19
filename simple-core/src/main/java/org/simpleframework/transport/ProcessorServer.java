@@ -71,7 +71,7 @@ public class ProcessorServer implements Server {
     * @param threads this is the number of threads this will use
     */
    public ProcessorServer(Processor processor, int threads) throws IOException {
-      this(processor, threads, 20480);
+      this(processor, threads, 4096);
    }
       
    /**
@@ -82,10 +82,10 @@ public class ProcessorServer implements Server {
     * 
     * @param processor this is used to process transports
     * @param threads this is the number of threads this will use
-    * @param threshold number of bytes that can be copied for queuing
+    * @param buffer this is the initial size of the output buffer 
     */
-   public ProcessorServer(Processor processor, int threads, int threshold) throws IOException {
-      this(processor, threads, threshold, 4096);
+   public ProcessorServer(Processor processor, int threads, int buffer) throws IOException {
+      this(processor, threads, buffer, 20480);
    }
    
    /**
@@ -96,11 +96,11 @@ public class ProcessorServer implements Server {
     * 
     * @param processor this is used to process transports
     * @param threads this is the number of threads this will use
-    * @param threshold number of bytes that can be copied for queuing
-    * @param buffer this is the size of the buffers for the transport
+    * @param buffer this is the initial size of the output buffer      
+    * @param threshold this is the maximum size of the output buffer
     */
-   public ProcessorServer(Processor processor, int threads, int threshold, int buffer) throws IOException {
-      this(processor, threads, threshold, buffer, 3);
+   public ProcessorServer(Processor processor, int threads, int buffer, int threshold) throws IOException {
+      this(processor, threads, buffer, threshold, false);
    }
    
    /**
@@ -111,30 +111,13 @@ public class ProcessorServer implements Server {
     * 
     * @param processor this is used to process transports
     * @param threads this is the number of threads this will use
-    * @param threshold number of bytes that can be copied for queuing
-    * @param buffer this is the size of the buffers for the transport
-    * @param queue this is the number of buffers that can be queued
-    */
-   public ProcessorServer(Processor processor, int threads, int threshold, int buffer, int queue) throws IOException {
-      this(processor, threads, threshold, buffer, queue, false);
-   }
-   
-   /**
-    * Constructor for the <code>ProcessorServer</code> object. 
-    * The transport processor is used to process plain connections
-    * and wrap those connections in a <code>Transport</code> that
-    * can be used to send and receive data to and from.
-    * 
-    * @param processor this is used to process transports
-    * @param threads this is the number of threads this will use
-    * @param threshold number of bytes that can be copied for queuing
-    * @param buffer this is the size of the buffers for the transport
-    * @param queue this is the number of buffers that can be queued 
+    * @param buffer this is the initial size of the output buffer      
+    * @param threshold this is the maximum size of the output buffer
     * @param client determines if the SSL handshake is for a client
     */
-   public ProcessorServer(Processor processor, int threads, int threshold, int buffer, int queue, boolean client) throws IOException {
+   public ProcessorServer(Processor processor, int threads, int buffer, int threshold, boolean client) throws IOException {
       this.negotiator = new SecureNegotiator(processor, threads);
-      this.factory = new OperationFactory(negotiator, threshold, buffer, queue, client);
+      this.factory = new OperationFactory(negotiator, buffer, threshold, client);
       this.terminator = new ServerTerminator(processor, negotiator);
    }
 

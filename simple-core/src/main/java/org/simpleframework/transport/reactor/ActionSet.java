@@ -97,8 +97,7 @@ class ActionSet {
          if(action != null) {
             actions[count++] = action;
          }
-      }
-      
+      }      
       return copyOf(actions, count);
    }   
    

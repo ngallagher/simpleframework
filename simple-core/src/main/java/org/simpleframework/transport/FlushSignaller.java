@@ -52,7 +52,7 @@ class FlushSignaller implements Operation {
    
    /**
     * Constructor for the <code>FlushSignaller</code> object. This 
-    * will create an operation that is used to flush the packet 
+    * will create an operation that is used to flush the buffer 
     * queue to the underlying socket. This ensures that the data 
     * is written to the socket in the queued order.
     *
@@ -86,7 +86,7 @@ class FlushSignaller implements Operation {
    public void run() {
       try {
          writer.execute();
-      } catch(Exception cause) {
+      } catch(Exception cause) {           
          trace.trace(ERROR, cause);
          cancel();
       }
@@ -99,9 +99,9 @@ class FlushSignaller implements Operation {
     * is closed and the flusher times out to avoid deadlock.
     */
    public void cancel() {
-      try {
+      try {       
          writer.abort();
-      }catch(Exception cause){
+      }catch(Exception cause){    
          trace.trace(ERROR, cause);
       }
    }

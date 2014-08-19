@@ -39,7 +39,7 @@ public class DepthGenerator extends Thread {
                
                createDepth(name, company, randomMid, randomSpread, randomVolume);               
             }            
-            Thread.sleep(100);
+            Thread.sleep(frequency);
          } catch(Exception e) {
             e.printStackTrace();          
          }

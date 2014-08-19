@@ -19,72 +19,74 @@
 package org.simpleframework.transport;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.simpleframework.transport.reactor.Reactor;
 
 /**
- * The <code>SocketController</code> is used to represent the means 
- * to write packets to an underlying transport. This manages all of 
+ * The <code>SocketBufferWriter</code> is used to represent the means 
+ * to write buffers to an underlying transport. This manages all of 
  * the selection required to determine if the socket is write ready.
- * If the packet to be written is to block then this will wait 
- * until all queue packets are fully written.
+ * If the buffer to be written is to block then this will wait 
+ * until all queue buffers are fully written.
  * 
  * @author Niall Gallagher
  */
-class SocketController implements PacketController {
+class SocketBufferWriter {   
    
    /**
     * This is the flusher that is used to asynchronously flush.
     */
-   private final PacketFlusher flusher;
+   private final SocketFlusher flusher;   
 
    /**
-    * This is the writer that is used to queue the packets.
+    * This is the writer that is used to queue the buffers.
     */
-   private final PacketWriter writer;
+   private final SocketBuffer writer;   
    
    /**
-    * Constructor for the <code>SocketWriter</code> object. This is 
-    * used to create a writer that can write packets to the socket
+    * Constructor for the <code>SocketBufferWriter</code> object. This 
+    * is used to create a writer that can write buffers to the socket
     * in such a way that it write either asynchronously or block 
-    * the calling thread until such time as the packets are written.
+    * the calling thread until such time as the buffers are written.
     * 
     * @param socket this is the pipeline that this writes to 
     * @param reactor this is the writer used to scheduler writes
-    * @param threshold this is the threshold for asynchronous buffers  
+    * @param buffer this is the initial size of the output buffer
+    * @param threshold this is the maximum size of the buffer 
     */
-   public SocketController(Socket socket, Reactor reactor, int threshold) throws IOException {
-      this.writer = new SocketWriter(socket, threshold);
-      this.flusher = new SocketFlusher(socket, reactor, writer);
+   public SocketBufferWriter(Socket socket, Reactor reactor, int buffer, int threshold) throws IOException {
+      this.writer = new SocketBuffer(socket,  buffer, threshold);
+      this.flusher = new SocketFlusher(writer, socket, reactor);
    }
 
    /**
-    * This method is used to deliver the provided packet of bytes to
+    * This method is used to deliver the provided buffer of bytes to
     * the underlying transport. This will not modify the data that
-    * is to be written, this will simply queue the packets in the
+    * is to be written, this will simply queue the buffers in the
     * order that they are provided.
     *
-    * @param packet this is the array of bytes to send to the client
+    * @param buffer this is the array of bytes to send to the client
     */  
-   public void write(Packet packet) throws IOException {
-      boolean done = writer.write(packet);
+   public void write(ByteBuffer buffer) throws IOException {
+      boolean done = writer.write(buffer); // returns true if we can buffer
 
       if(!done) {
-         flusher.flush();
+         flusher.flush(); // we could not fully write or buffer the data so we must flush
       }
    }
 
    /**
-    * This method is used to flush all of the queued packets to 
+    * This method is used to flush all of the queued buffers to 
     * the client. This method will block not block but will simply
     * flush any data to the underlying transport. Internally the
     * data will be queued for delivery to the connected entity.    
     */ 
    public void flush() throws IOException {
-      boolean done = writer.flush();
+      boolean done = writer.flush(); // returns true only if everything is delivered
 
       if(!done) {
-         flusher.flush();
+         flusher.flush(); // here we will block for an op write event!!
       }
    }
 

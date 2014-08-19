@@ -15,11 +15,19 @@ public class TableChangeFormatter {
       this.schema = schema;
    }
 
-   public String formatChanges(List<RowChange> changes) {
+   public String formatChanges(List<RowChange> changes, long sequence) {
+      long time = System.currentTimeMillis();
       String table = schema.getTable();
       
       if(!changes.isEmpty()) {
-         StringBuilder builder = new StringBuilder(table);     
+         StringBuilder builder = new StringBuilder();
+         
+         builder.append(ChangeType.TABLE.code);
+         builder.append(sequence);
+         builder.append("@");
+         builder.append(time);
+         builder.append(":");       
+         builder.append(table);
          
          for(RowChange change : changes) {
             String text = formatter.formatChange(change);            

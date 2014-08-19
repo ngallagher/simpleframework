@@ -23,7 +23,12 @@ import java.nio.channels.Channel;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 
 import org.simpleframework.util.thread.Daemon;
@@ -45,26 +50,31 @@ import org.simpleframework.util.thread.Daemon;
   * @see org.simpleframework.transport.reactor.ExecutorReactor
   */ 
 class ActionDistributor extends Daemon implements Distributor {
-    
-   /**
-    * This is the selector used to select for interested events.
-    */ 
-   private ActionSelector selector;
-    
-   /**
-    * This is the queue that is used to provide the operations.
-    */ 
-   private ActionQueue pending;
-   
-   /**
-    * This is used to keep track of actions currently in selection.
-    */
-   private ActionMap selecting;
    
    /**
     * This is used to determine the operations that need cancelling.
     */ 
-   private ActionMap executing; 
+   private Map<Channel, ActionSet> executing;
+   
+   /**
+    * This is used to keep track of actions currently in selection.
+    */
+   private Map<Channel, ActionSet> selecting;   
+   
+   /**
+    * This is the queue that is used to invalidate channels.
+    */ 
+   private Queue<Channel> invalid;       
+   
+   /**
+    * This is the queue that is used to provide the operations.
+    */ 
+   private Queue<Action> pending;  
+   
+  /**
+   * This is the selector used to select for interested events.
+   */ 
+   private ActionSelector selector;   
  
    /**
     * This is used to execute the operations that are ready.
@@ -132,11 +142,12 @@ class ActionDistributor extends Daemon implements Distributor {
     * @param cancel should the channel be removed from selection
     * @param expiry this the maximum idle time for an operation
     */   
-   public ActionDistributor(Executor executor, boolean cancel, long expiry) throws IOException {   
-      this.selector = new ActionSelector();
-      this.selecting = new ActionMap();
-      this.executing = new ActionMap();
-      this.pending = new ActionQueue();  
+   public ActionDistributor(Executor executor, boolean cancel, long expiry) throws IOException {
+      this.selecting = new LinkedHashMap<Channel, ActionSet>();
+      this.executing = new LinkedHashMap<Channel, ActionSet>();
+      this.pending = new ConcurrentLinkedQueue<Action>();
+      this.invalid = new ConcurrentLinkedQueue<Channel>();      
+      this.selector = new ActionSelector();  
       this.latch = new Latch();
       this.executor = executor;    
       this.cancel = cancel;
@@ -185,9 +196,10 @@ class ActionDistributor extends Daemon implements Distributor {
             register();
             cancel(); 
             expire();
-            distribute();       
+            distribute(); 
+            validate();
          } catch(Exception e) {
-            continue;              
+            continue;           
          }            
       }    
    }
@@ -242,7 +254,7 @@ class ActionDistributor extends Daemon implements Distributor {
       latch.close();
    }
    
-   /**
+   /**   
     * Here we perform an expire which will take all of the registered
     * sockets and expire it. This ensures that the operations can be
     * executed within the executor and the cancellation of the sockets
@@ -353,6 +365,34 @@ class ActionDistributor extends Daemon implements Distributor {
          executor.execute(cancel);
       }
    }
+   
+   /**
+    * This method is used to perform simple validation. It ensures 
+    * that directly after the processing loop any channels that
+    * are registered that have been cancelled or are closed will
+    * be removed from the selecting map and rejected.
+    */
+   private void validate() {
+      Set<Channel> channels = selecting.keySet();
+      
+      for(Channel channel : channels) {
+         ActionSet set = selecting.get(channel);
+         SelectionKey key = set.key();
+         
+         if(!key.isValid()) {
+            invalid.offer(channel);
+         }
+      }
+      for(Channel channel : invalid) {
+         ActionSet set = selecting.remove(channel);
+         Action[] list = set.list();
+            
+         for(Action action : list) {         
+            executor.execute(action); // reject              
+         }
+      }
+      invalid.clear();
+   }   
  
    /**
     * This is used to cancel any selection keys that have previously
@@ -466,7 +506,7 @@ class ActionDistributor extends Daemon implements Distributor {
     * processed then they are handed to the executor object and 
     * marked as ready for cancellation.
     */ 
-   private void distribute() throws IOException {
+   private void distribute() throws IOException {      
       if(selector.select(5000) > 0) {
          if(isActive()) {           
             process();            

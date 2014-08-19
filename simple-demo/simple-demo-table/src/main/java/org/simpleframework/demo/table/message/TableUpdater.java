@@ -11,8 +11,9 @@ import org.simpleframework.demo.table.extract.RowExtractor;
 import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.schema.TableSchema;
 import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.util.thread.Daemon;
 
-public class TableUpdater extends Thread {   
+public class TableUpdater extends Daemon {   
 
    private final Set<TableConnection> connections;   
    private final RowExtractor extractor;
@@ -25,7 +26,7 @@ public class TableUpdater extends Thread {
       this.formatter = formatter;
       this.extractor = extractor;      
       this.schema = schema;
-      this.model = model;
+      this.model = model;      
    }
    
    public void refresh() {
@@ -54,13 +55,15 @@ public class TableUpdater extends Thread {
    public void run() {
       while(true) {
          try {
-            Thread.sleep(500);
+            Thread.sleep(50);
          
             for(TableConnection connection : connections) {
+               long time = System.currentTimeMillis();
                try {
                   connection.update();
                }catch(Exception e){
-                  e.printStackTrace();
+                  System.err.println("ERROR AFTER " +(System.currentTimeMillis() - time) + " " + e);
+                  //e.printStackTrace();
                   connections.remove(connection);
                }
             }

@@ -43,7 +43,7 @@ public class TableConnection {
          String schema = schemaFormatter.formatSchema();
          
          if(schema != null) {
-            socket.send(ChangeType.SCHEMA.code + schema);
+            socket.send(schema);
          }
       }
    }
@@ -51,14 +51,15 @@ public class TableConnection {
    public void updateTable() throws IOException {
       WebSocket socket = session.getSocket();
       AtomicLong counter = session.getSendCount();      
-      List<RowChange> changes = cursor.update();         
-      String message = tableFormatter.formatChanges(changes);
+      List<RowChange> changes = cursor.update();
+      long count = counter.get();
       
-      if(message != null) {
-         long time = System.currentTimeMillis();            
-         long count = counter.get();
+      if(!changes.isEmpty()) {
+         String message = tableFormatter.formatChanges(changes, count);
       
-         socket.send(ChangeType.TABLE.code + count + "@" + time + ":" + message);
+         if(message != null) {
+            socket.send(message);
+         }
       }
    }   
    
