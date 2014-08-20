@@ -66,6 +66,18 @@ class FlushSignaller implements Operation {
    }
    
    /**
+    * This is used to acquire the trace object that is associated
+    * with the operation. A trace object is used to collection details
+    * on what operations are being performed. For instance it may 
+    * contain information relating to I/O events or errors. 
+    * 
+    * @return this returns the trace associated with this operation
+    */    
+   public Trace getTrace() {
+      return trace;
+   }   
+   
+   /**
     * This returns the socket channel for the connected pipeline. It
     * is this channel that is used to determine if there are bytes
     * that can be written. When closed this is no longer selectable.
@@ -74,10 +86,6 @@ class FlushSignaller implements Operation {
     */
    public SocketChannel getChannel() {
       return socket.getChannel();
-   }
-   
-   public Trace getTrace() {
-      return trace;
    }
 
    /**

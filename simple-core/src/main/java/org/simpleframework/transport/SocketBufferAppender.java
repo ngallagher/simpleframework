@@ -31,7 +31,7 @@ import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>SocketBufferAppender</code> represents a buffer fragment
- * collector. This povides write access to a direct byte buffer which
+ * collector. This provides write access to a direct byte buffer which
  * is used to collect fragments. Once a sufficient amount of data
  * has been collected by this then can be written out to a channel. 
  * 

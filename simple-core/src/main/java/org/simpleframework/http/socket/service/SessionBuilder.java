@@ -43,10 +43,13 @@ class SessionBuilder {
    private final ScheduledExecutor executor;
    
    /**
-    * This is the reactor used to notify of read events.
+    * This is the reactor used to register for I/O notifications.
     */
    private final Reactor reactor;
    
+   /**
+    * This is the frequency the server should send out ping frames.
+    */
    private final long ping;
    
    /**
@@ -54,9 +57,9 @@ class SessionBuilder {
     * used to create sessions using the request and response associated
     * with the WebSocket opening handshake. 
     * 
-    * @param request the request involved in initiating the session
-    * @param response the response involved in initiating the session
-    * @param reactor the reactor used to notify of read events
+    * @param scheduler this is the shared thread pool used for pinging
+    * @param reactor this is used to check for I/O notifications
+    * @param ping this is the frequency to send out ping frames
     */
    public SessionBuilder(ScheduledExecutor executor, Reactor reactor, long ping) {
       this.executor = executor;
@@ -68,6 +71,9 @@ class SessionBuilder {
     * This is used to create a WebSocket session. If at any point there 
     * is an error creating the session the underlying TCP connection is
     * closed and a <code>Session</code> is returned regardless. 
+    * 
+    * @param request this is the request associated with this session
+    * @param response this is the response associated with this session
     * 
     * @return this returns the session associated with the WebSocket
     */

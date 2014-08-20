@@ -37,6 +37,9 @@ import org.simpleframework.util.thread.ScheduledExecutor;
  */
 class ServiceDispatcher {   
    
+   /**
+    * This is the session dispatcher used to dispatch the session.
+    */
    private final SessionDispatcher dispatcher;   
    
    /**
@@ -44,6 +47,9 @@ class ServiceDispatcher {
     */
    private final ScheduledExecutor executor;   
    
+   /**
+    * This is used to build the sessions from the handshake request.
+    */
    private final SessionBuilder builder;
    
    /**
@@ -60,7 +66,7 @@ class ServiceDispatcher {
     * @param threads this is the number of threads to use
     */
    public ServiceDispatcher(Router router, int threads) throws IOException {
-      this(router, threads, 5000);
+      this(router, threads, 10000);
    }
    
    /**
@@ -73,25 +79,10 @@ class ServiceDispatcher {
     * @param ping this is the frequency used to send ping frames
     */
    public ServiceDispatcher(Router router, int threads, long ping) throws IOException {
-      this(router, threads, ping, 20000);
-   }
-   
-   /**
-    * Constructor for the <code>ServiceDispatcher</code> object. The
-    * dispatcher created will dispatch WebSocket sessions to a service
-    * using the provided <code>Router</code> instance. 
-    * 
-    * @param router this is the router used to select a service
-    * @param threads this is the number of threads to use
-    * @param ping this is the frequency used to send ping frames
-    * @param expiry this is the expiry for the session    
-    */
-   public ServiceDispatcher(Router router, int threads, long ping, long expiry) throws IOException {
       this.executor = new ScheduledExecutor(FrameCollector.class, threads);      
       this.reactor = new ExecutorReactor(executor);
       this.builder = new SessionBuilder(executor, reactor, ping);
-      this.dispatcher = new SessionDispatcher(builder, router);       
-     
+      this.dispatcher = new SessionDispatcher(builder, router);      
    }
 
    /**

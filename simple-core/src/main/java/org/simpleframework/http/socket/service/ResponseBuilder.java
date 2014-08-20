@@ -62,6 +62,9 @@ class ResponseBuilder  {
     */
    private final Response response;
    
+   /**
+    * This is the underlying TCP channel for the request.
+    */
    private final Channel channel;
    
    /**

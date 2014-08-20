@@ -18,8 +18,8 @@
 
 package org.simpleframework.http.socket.service;
 
-import static org.simpleframework.http.socket.CloseCode.INTERNAL_SERVER_ERROR;
 import static org.simpleframework.http.socket.CloseCode.NORMAL_CLOSURE;
+import static org.simpleframework.http.socket.service.ServiceEvent.ERROR;
 import static org.simpleframework.http.socket.service.ServiceEvent.READ_FRAME;
 import static org.simpleframework.http.socket.service.ServiceEvent.READ_PING;
 import static org.simpleframework.http.socket.service.ServiceEvent.READ_PONG;
@@ -28,6 +28,7 @@ import static org.simpleframework.http.socket.service.ServiceEvent.WRITE_PONG;
 import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.Frame;
@@ -73,22 +74,24 @@ class FrameProcessor {
    private final FrameEncoder encoder;
    
    /**
+    * This is used to determine if a close notification was sent.
+    */
+   private final AtomicBoolean closed;
+   
+   /**
     * This is the session associated with the WebSocket connection.
     */
    private final Session session;
 
-   
+   /**
+    * This is the underlying TCP channel this reads frames from.
+    */
    private final Channel channel;   
    
    /**
     * This is the reason message used for a normal closure.
     */
    private final Reason normal;
-   
-   /**
-    * This is the reason message used for an internal failure.
-    */
-   private final Reason error;   
    
    /**
     * This is the cursor used to maintain a read seek position.
@@ -111,10 +114,10 @@ class FrameProcessor {
     */
    public FrameProcessor(FrameEncoder encoder, Session session, Request request) {
       this.listeners = new CopyOnWriteArraySet<FrameListener>();
-      this.error = new Reason(INTERNAL_SERVER_ERROR);
       this.normal = new Reason(NORMAL_CLOSURE);
       this.extractor = new ReasonExtractor();
       this.consumer = new FrameConsumer();
+      this.closed = new AtomicBoolean();
       this.channel = request.getChannel();
       this.cursor = channel.getCursor();
       this.trace = channel.getTrace();
@@ -182,7 +185,7 @@ class FrameProcessor {
                Reason reason = extractor.extract(frame);
                
                close(reason); 
-               encoder.encode(frame);               
+               encoder.encode(reason);               
             } 
             consumer.clear();           
          }
@@ -195,14 +198,18 @@ class FrameProcessor {
     * registered listeners so that they can take action. The
     * underlying TCP connection is closed after any failure. 
     * 
-    * @param cause this is the cause of the failure
+    * @param reason this is the cause of the failure
     */
-   public void failure(Exception cause) throws IOException {
-      for(FrameListener listener : listeners) {
-         listener.onError(session, cause);
-      }      
-      encoder.encode(error);
-      
+   public void failure(Exception reason) throws IOException {
+      if(!closed.getAndSet(true)) {
+         for(FrameListener listener : listeners) {   
+            try {
+               listener.onError(session, reason);
+            } catch(Exception cause) {
+               trace.trace(ERROR, cause);
+            }
+         }        
+      }
    }
    
    /**
@@ -213,23 +220,33 @@ class FrameProcessor {
     * 
     * @param reason this is the reason for the connection closure
     */  
-   public void close(Reason reason) throws IOException{      
-      for(FrameListener listener : listeners) {
-         listener.onClose(session, reason);
+   public void close(Reason reason) throws IOException{
+      if(!closed.getAndSet(true)) {      
+         for(FrameListener listener : listeners) {
+            try {
+               listener.onClose(session, reason);
+            } catch(Exception cause) {
+               trace.trace(ERROR, cause);
+            }            
+         }        
       }
-      encoder.encode(reason);
    }   
-   
+
    /**
-    * This is used to close the connection without a specific reason.
-    * The close reason will be sent as a control frame before the
-    * TCP connection is terminated. All registered listeners will be
-    * notified of the close event.
+    * This is used to close the connection when it has not responded
+    * to any activity for a configured period of time. It may be
+    * possible to send up a control frame, however if the TCP channel
+    * is closed this will just notify the listeners.
     */   
-   public void close() throws IOException{      
-      for(FrameListener listener : listeners) {
-         listener.onClose(session, normal);
+   public void close() throws IOException{  
+      if(!closed.getAndSet(true)) {   
+         try {
+            for(FrameListener listener : listeners) {
+               listener.onClose(session, normal);
+            }
+         } catch(Exception cause) {
+            trace.trace(ERROR, cause);
+         }                 
       }
-      encoder.encode(normal);
    }
 }

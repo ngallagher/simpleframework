@@ -1,6 +1,25 @@
+/*
+ * StatusChecker.java February 2014
+ *
+ * Copyright (C) 2014, Niall Gallagher <niallg@users.sf.net>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
+ * implied. See the License for the specific language governing 
+ * permissions and limitations under the License.
+ */
+
 package org.simpleframework.http.socket.service;
 
 import static org.simpleframework.http.socket.CloseCode.INTERNAL_SERVER_ERROR;
+import static org.simpleframework.http.socket.CloseCode.NORMAL_CLOSURE;
 import static org.simpleframework.http.socket.FrameType.PING;
 import static org.simpleframework.http.socket.service.ServiceEvent.ERROR;
 import static org.simpleframework.http.socket.service.ServiceEvent.PING_EXPIRED;
@@ -13,7 +32,6 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.DataFrame;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.Reason;
-import org.simpleframework.http.socket.WebSocket;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.trace.Trace;
 import org.simpleframework.util.thread.ScheduledExecutor;
@@ -29,8 +47,6 @@ import org.simpleframework.util.thread.ScheduledExecutor;
  * then it will close the associated session.
  * 
  * @author Niall Gallagher
- * 
- * @see org.simpleframework.http.socket.service.SessionMonitor
  */
 class StatusChecker implements Runnable{
    
@@ -39,50 +55,66 @@ class StatusChecker implements Runnable{
     */
    private final StatusResultListener listener;
    
+   /**
+    * This is the shared scheduler used to execute this checker.
+    */
    private final ScheduledExecutor scheduler;   
-
    
    /**
-    * This is the last time a ping was sent by this.
+    * This is a count of the number of unacknowledged ping frames.
     */
-   private final AtomicLong counter;  
-   
+   private final AtomicLong counter;     
    
    /**
     * This is the WebSocket this this pinger will be monitoring.
     */
-   private final WebSocket socket;      
-   
-   private final Channel channel;
+   private final FrameChannel socket;      
    
    /**
-    * This is used to trace various events for this pinger.
+    * This is the underling TCP channel that is being checked.
     */
-   private final Trace trace;      
+   private final Channel channel;  
    
    /**
     * The only reason for a close is for an unexpected error.
     */
-   private final Reason reason;
+   private final Reason normal;
+   
+   /**
+    * The only reason for a close is for an unexpected error.
+    */
+   private final Reason error;      
+   
+   /**
+    * This is used to trace various events for this pinger.
+    */
+   private final Trace trace;       
    
    /**
     * This is the frame that contains the ping to send.
     */
    private final Frame frame;
    
+   /**
+    * This is the frequency with which the checker should run.
+    */
    private final long frequency;
 
    /**
-    * Constructor for the <code>ChannelPinger</code> object. This
+    * Constructor for the <code>StatusChecker</code> object. This
     * is used to create a pinger that will send out ping frames at
     * a specified interval. If a session does not respond within 
-    * the configured expiry time then it is terminated.
+    * three times the duration of the ping the connection is reset.
     * 
-    * @param session this is the session to be pinged
+    * @param scheduler this is the scheduler used to execute this
+    * @param socket this is the WebSocket to send the frames over
+    * @param request this is the associated request
+    * @param frequency this is the frequency with which to ping
     */
-   public StatusChecker(ScheduledExecutor scheduler, WebSocket socket, Request request, long frequency) {
+   public StatusChecker(ScheduledExecutor scheduler, FrameChannel socket, Request request, long frequency) {
       this.listener = new StatusResultListener(this);
-      this.reason = new Reason(INTERNAL_SERVER_ERROR);
+      this.error = new Reason(INTERNAL_SERVER_ERROR);
+      this.normal = new Reason(NORMAL_CLOSURE);      
       this.frame = new DataFrame(PING);
       this.counter = new AtomicLong();
       this.channel = request.getChannel();
@@ -92,23 +124,19 @@ class StatusChecker implements Runnable{
       this.socket = socket;
    }   
    
-   public void refresh() {
-      try {
-         trace.trace(PONG_RECEIVED);
-         counter.set(0);
-      } catch(Exception cause) {
-         trace.trace(ERROR, cause);
-         channel.close();         
-      }
-   }   
-   
+   /**
+    * This is used to kick of the status checking. Here an initial
+    * ping is sent over the socket and the task is then scheduled to
+    * check the result after the frequency period has expired. If
+    * this method fails for any reason the TCP channel is closed.
+    */
    public void start() {
       try {            
          socket.register(listener);
          trace.trace(WRITE_PING);           
          socket.send(frame);    
          counter.getAndIncrement();         
-         scheduler.execute(this);
+         scheduler.execute(this, frequency); 
       } catch(Exception cause) {
          trace.trace(ERROR, cause);
          channel.close();         
@@ -117,10 +145,10 @@ class StatusChecker implements Runnable{
 
    /**
     * This method is used to check to see if a session has expired.
-    * If the duration of the unacknowledged ping exceeds the expiry 
-    * time the session is considered expired and is terminated.
-    * 
-    * @param sent this is the time the last ping was sent
+    * If there have been three unacknowledged ping events then this
+    * will force a closure of the WebSocket connection. This is done
+    * to ensure only healthy connections are maintained within the
+    * server, also RFC 6455 recommends using the ping pong protocol.
     */
    public void run() {
       long count = counter.get();
@@ -133,13 +161,29 @@ class StatusChecker implements Runnable{
             scheduler.execute(this, frequency); // schedule the next one
          } else {
             trace.trace(PING_EXPIRED);
-            socket.close(reason);
+            socket.close(normal);
          }
       } catch (Exception cause) {              
-         trace.trace(ERROR, cause);  
+         trace.trace(ERROR, cause);
          channel.close();         
       }
    }
+   
+   /**
+    * If the connection gets a response to its ping message then this
+    * will reset the internal counter. This ensure that the connection
+    * does not time out. If after three pings there is not response
+    * from the other side then the connection will be terminated.
+    */
+   public void refresh() {
+      try {
+         trace.trace(PONG_RECEIVED);
+         counter.set(0);
+      } catch(Exception cause) {
+         trace.trace(ERROR, cause);
+         channel.close();         
+      }
+   }      
    
    /**
     * This is used to close the session and send a 1011 close code
@@ -148,12 +192,29 @@ class StatusChecker implements Runnable{
     * expiry of the session or an I/O error, both of which are
     * unexpected and violate the behaviour as defined in RFC 6455.
     */ 
-   public void expire() {
+   public void failure() {
       try {
-         socket.close(reason);
+         socket.close(error);
+         channel.close();           
       } catch(Exception cause) {
-         trace.trace(ERROR, cause);
-         channel.close();         
+         trace.trace(ERROR, cause);       
+         channel.close();           
+      }
+   }      
+   
+   /**
+    * This is used to close the session and send a 1000 close code
+    * to the client indicating a normal closure. This will be called
+    * when there is a close notification dispatched to the status
+    * listener. Typically here a graceful closure is best.
+    */ 
+   public void close() {
+      try {
+         socket.close(normal);
+         channel.close();           
+      } catch(Exception cause) {
+         trace.trace(ERROR, cause);       
+         channel.close();           
       }
    }      
 } 

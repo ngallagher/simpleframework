@@ -80,6 +80,9 @@ class SocketAcceptor implements Operation {
     */
    private final Analyzer analyzer;
    
+   /**
+    * This is used to collect trace events with the acceptor.
+    */
    private final Trace trace;
 
    /**
@@ -115,6 +118,14 @@ class SocketAcceptor implements Operation {
       return socket.getLocalSocketAddress();
    }
    
+   /**
+    * This is used to acquire the trace object that is associated
+    * with the operation. A trace object is used to collection details
+    * on what operations are being performed. For instance it may 
+    * contain information relating to I/O events or errors. 
+    * 
+    * @return this returns the trace associated with this operation
+    */     
    public Trace getTrace() {
       return trace;
    }  
@@ -143,7 +154,7 @@ class SocketAcceptor implements Operation {
    public void run() {
       try {
          accept();
-      } catch(Exception e) {
+      } catch(Exception cause) {       
          pause();
       }
    }
@@ -157,8 +168,8 @@ class SocketAcceptor implements Operation {
    private void pause() {
       try {
          Thread.sleep(10);
-      } catch(Exception e) {
-         return;
+      } catch(Exception cause) {
+         trace.trace(ERROR, cause);
       }
    }
 
@@ -171,8 +182,8 @@ class SocketAcceptor implements Operation {
    public void cancel() {
       try {
          close();
-      } catch(Throwable e) {
-         return;
+      } catch(Throwable cause) {
+         trace.trace(ERROR, cause);
       }
    }
 

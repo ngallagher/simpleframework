@@ -84,12 +84,19 @@ class FrameCollector implements Operation {
       this.cursor = channel.getCursor();
       this.trace = channel.getTrace();
       this.reactor = reactor;
-   }
+   }   
    
-   
+   /**
+    * This is used to acquire the trace object that is associated
+    * with the operation. A trace object is used to collection details
+    * on what operations are being performed. For instance it may 
+    * contain information relating to I/O events or errors. 
+    * 
+    * @return this returns the trace associated with this operation
+    */    
    public Trace getTrace() {
       return trace;
-   }   
+   }
 
    /**
     * This is the channel associated with this collector. This is used
@@ -150,6 +157,8 @@ class FrameCollector implements Operation {
             processor.failure(cause);
          } catch(Exception fatal) {
             trace.trace(ERROR, fatal);
+         } finally {
+            channel.close();
          }
       }
    }
@@ -164,6 +173,7 @@ class FrameCollector implements Operation {
          processor.close();
       } catch(Exception cause) {
          trace.trace(ERROR, cause);
+         channel.close();         
       }
    }      
 }

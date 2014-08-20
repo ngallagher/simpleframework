@@ -71,10 +71,13 @@ class FrameChannel implements WebSocket {
    private final SessionChannel socket;
    
    /**
-    * This is the external session that has synchronized methods.
+    * This is the session object that has a synchronized socket.
     */
    private final Session session;   
    
+   /**
+    * This is the underlying TCP channel that frames are sent over.
+    */
    private final Channel channel;   
    
    /**
@@ -98,10 +101,8 @@ class FrameChannel implements WebSocket {
     * channel. For asynchronous read and dispatch operations this will
     * produce an operation to collect and process RFC 6455 frames.
     * 
-    * @param checker this is the checker used to monitor sessions
     * @param request this is the initiating request for the WebSocket
     * @param response this is the initiating response for the WebSocket
-    * @param channel this is the underlying TCP channel to communicate on
     * @param reactor this is the reactor used to process frames
     */
    public FrameChannel(Request request, Response response, Reactor reactor) {

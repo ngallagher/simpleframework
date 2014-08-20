@@ -3,7 +3,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
   <bean id="DepthOutrightTableSchema" class="org.simpleframework.demo.table.schema.TableSchema">
-    <constructor-arg value="depthOUTRIGHT" />
+    <constructor-arg value="depthOutright" />
     <constructor-arg>
       <list>
         <bean class="org.simpleframework.demo.table.schema.StringColumnStyle">

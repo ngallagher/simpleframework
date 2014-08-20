@@ -1,6 +1,7 @@
 package org.simpleframework.demo.table.product;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -30,14 +31,30 @@ public class PriceMerger {
       Price existing = prices.remove(company);
       
       if(!same(update, existing)) {
-         if(existing != null) {
-            sorted.remove(existing);
-         }
-         prices.put(company, update);    
-         sorted.add(update);
+         replace(update, existing);
          return true;
       }
       return false;
+   }
+   
+   public void replace(Price update, Price existing) {
+      if(existing == null) {
+         Iterator<Price> prices = sorted.iterator();
+         String key = update.getCompany();
+         
+         while(prices.hasNext()) {
+            Price price = prices.next();
+            String company = price.getCompany();
+            
+            if(company.equals(key)) { 
+               prices.remove();
+               break;
+            }            
+         }
+      } else {
+         sorted.remove(existing);
+      }
+      sorted.add(update);
    }
 
    public boolean same(Price update, Price existing) {

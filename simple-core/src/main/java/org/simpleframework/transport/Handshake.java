@@ -52,11 +52,11 @@ import org.simpleframework.transport.trace.Trace;
  * expected next, whether this is a response to the client or a 
  * message from it. During the negotiation this may need to wait 
  * for either a write ready event or a read ready event. Event 
- * notification is done using the negotiator provided.
+ * notification is done using the processor provided.
  *
  * @author Niall Gallagher
  *
- * @see org.simpleframework.transport.Negotiator
+ * @see org.simpleframework.transport.Processor
  */
 class Handshake implements Negotiation {
    
@@ -71,10 +71,13 @@ class Handshake implements Negotiation {
    private final SocketChannel channel;
    
    /**
-    * This is the negotiator used to process the secure transport.
+    * This is the processor used to process the secure transport.
     */
-   private final  Processor processor;
+   private final Processor processor;
    
+   /**
+    * This is the reactor used to register for I/O notifications.
+    */
    private final Reactor reactor;
    
    /**
@@ -113,26 +116,28 @@ class Handshake implements Negotiation {
    private final boolean client;
    
    /**
-    * Constructor for the <code>Negotiation</code> object. This is
+    * Constructor for the <code>Handshake</code> object. This is
     * used to create an operation capable of performing negotiations
     * for SSL connections. Typically this is used to perform request
     * response negotiations, such as a handshake or termination.
     *
-    * @param negotiator the negotiator used to check socket events
     * @param transport the transport to perform the negotiation for
+    * @param processor the processor used to dispatch the transport
+    * @param reactor this is the reactor used for I/O notifications      
     */
    public Handshake(Transport transport, Processor processor, Reactor reactor) {
       this(transport, processor, reactor, 20480);           
    }
   
    /**
-    * Constructor for the <code>Negotiation</code> object. This is
+    * Constructor for the <code>Handshake</code> object. This is
     * used to create an operation capable of performing negotiations
     * for SSL connections. Typically this is used to perform request
     * response negotiations, such as a handshake or termination.
     *
-    * @param negotiator the negotiator used to check socket events
     * @param transport the transport to perform the negotiation for
+    * @param processor the processor used to dispatch the transport
+    * @param reactor this is the reactor used for I/O notifications     
     * @param size the size of the buffers used for the negotiation
     */
    public Handshake(Transport transport, Processor processor, Reactor reactor, int size) {
@@ -140,13 +145,14 @@ class Handshake implements Negotiation {
    }
    
    /**
-    * Constructor for the <code>Negotiation</code> object. This is
+    * Constructor for the <code>Handshake</code> object. This is
     * used to create an operation capable of performing negotiations
     * for SSL connections. Typically this is used to perform request
     * response negotiations, such as a handshake or termination.
     *
-    * @param negotiator the negotiator used to check socket events
     * @param transport the transport to perform the negotiation for
+    * @param processor the processor used to dispatch the transport
+    * @param reactor this is the reactor used for I/O notifications     
     * @param client determines the side of the SSL handshake
     */
    public Handshake(Transport transport, Processor processor, Reactor reactor, boolean client) {
@@ -154,13 +160,14 @@ class Handshake implements Negotiation {
    }
    
    /**
-    * Constructor for the <code>Negotiation</code> object. This is
+    * Constructor for the <code>Handshake</code> object. This is
     * used to create an operation capable of performing negotiations
     * for SSL connections. Typically this is used to perform request
     * response negotiations, such as a handshake or termination.
     *
-    * @param negotiator the negotiator used to check socket events
     * @param transport the transport to perform the negotiation for
+    * @param processor the processor used to dispatch the transport
+    * @param reactor this is the reactor used for I/O notifications  
     * @param size the size of the buffers used for the negotiation
     * @param client determines the side of the SSL handshake
     */
@@ -178,7 +185,14 @@ class Handshake implements Negotiation {
       this.client = client;
    }
    
-   
+   /**
+    * This is used to acquire the trace object that is associated
+    * with the operation. A trace object is used to collection details
+    * on what operations are being performed. For instance it may 
+    * contain information relating to I/O events or errors. 
+    * 
+    * @return this returns the trace associated with this operation
+    */  
    public Trace getTrace() {
       return trace;
    }   
@@ -213,7 +227,7 @@ class Handshake implements Negotiation {
    /**
     * This is used to terminate the negotiation. This is excecuted
     * when the negotiation times out. When the negotiation expires it
-    * is rejected by the negotiator and must be canceled. Canceling
+    * is rejected by the processor and must be canceled. Canceling
     * is basically termination of the connection to free resources.
     */
    public void cancel() {
@@ -412,7 +426,7 @@ class Handshake implements Negotiation {
     * This is used to receive data from the client. If at any
     * point during the negotiation a message is required that
     * can not be read immediately this is used to asynchronously
-    * read the data when a select operation is signaled.
+    * read the data when a select operation is signalled.
     *  
     * @return this returns true when the message has been read
     */
@@ -531,7 +545,7 @@ class Handshake implements Negotiation {
    
    /**
     * The <code>Committer</code> task is used to transfer the transport
-    * created to the negotiator. This is executed when the SSL
+    * created to the processor. This is executed when the SSL
     * handshake is completed. It allows the transporter to use the
     * newly created transport to read and write in plain text and
     * to have the SSL transport encrypt and decrypt transparently.
@@ -540,10 +554,11 @@ class Handshake implements Negotiation {
       
       /**
        * Constructor for the <code>Committer</code> task. This is used to
-       * pass the transport object object to the negotiator when the
+       * pass the transport object object to the processor when the
        * SSL handshake has completed. 
        * 
        * @param state this is the underlying negotiation to use
+       * @param reactor this is the reactor used for I/O notifications
        * @param trace the trace that is used to monitor the handshake        
        */
       public Committer(Negotiation state, Reactor reactor, Trace trace) {
@@ -578,6 +593,7 @@ class Handshake implements Negotiation {
        * resume the negotiation.
        * 
        * @param state this is the negotiation object that is used
+       * @param reactor this is the reactor used for I/O notifications        
        * @param trace the trace that is used to monitor the handshake        
        */
       public Consumer(Negotiation state, Reactor reactor, Trace trace) {
@@ -613,6 +629,7 @@ class Handshake implements Negotiation {
        * resume the negotiation.
        * 
        * @param state this is the negotiation object that is used
+       * @param reactor this is the reactor used for I/O notifications        
        * @param trace the trace that is used to monitor the handshake        
        */
       public Producer(Negotiation state, Reactor reactor, Trace trace) {
@@ -621,7 +638,7 @@ class Handshake implements Negotiation {
       
       /**
        * This method is used to determine if the task is ready. This 
-       * is executed when the select operation is signaled. When this 
+       * is executed when the select operation is signalled. When this 
        * is true the the task completes. If not then this will 
        * schedule the task again for the specified select operation.
        * 

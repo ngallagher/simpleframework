@@ -1,5 +1,5 @@
 /*
- * SocketController.java February 2008
+ * SocketBufferWriter.java February 2008
  *
  * Copyright (C) 2008, Niall Gallagher <niallg@users.sf.net>
  *

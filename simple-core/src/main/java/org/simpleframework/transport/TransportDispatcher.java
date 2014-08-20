@@ -25,9 +25,9 @@ import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>TransportDispatcher</code> operation is used transfer a 
- * transport to the negotiator so it can be processed. This is uses so 
+ * transport to the processor so it can be processed. This is uses so 
  * that when a pipeline is given to the processor it can be dispatched
- * in another thread to the negotiator. This is needed so that the
+ * in another thread to the processor. This is needed so that the
  * connection thread is occupied only briefly.
  * 
  * @author Niall Gallagher
@@ -35,18 +35,18 @@ import org.simpleframework.transport.trace.Trace;
 class TransportDispatcher implements Operation {
    
    /**
-    * This is the negotiator used to transfer the transport to. 
+    * This is the processor used to transfer the transport to. 
     */
    private final Processor processor;
    
    /**
-    * This is the transport to be passed to the negotiator.
+    * This is the transport to be passed to the processor.
     */
    private final Transport transport;
 
    /**
     * Constructor for the <code>TransportDispatcher</code> object. This 
-    * is used to transfer a transport to a negotiator. Transferring the
+    * is used to transfer a transport to a processor. Transferring the
     * transport using an operation ensures that the thread that is
     * used to process the pipeline is not occupied for long.
     * 
@@ -69,15 +69,22 @@ class TransportDispatcher implements Operation {
     */ 
    public SocketChannel getChannel() {
       return transport.getChannel();
-   }
+   }   
    
-   
+   /**
+    * This is used to acquire the trace object that is associated
+    * with the operation. A trace object is used to collection details
+    * on what operations are being performed. For instance it may 
+    * contain information relating to I/O events or errors. 
+    * 
+    * @return this returns the trace associated with this operation
+    */     
    public Trace getTrace() {
       return transport.getTrace();
    }   
    
    /**
-    * This is used to transfer the transport to the negotiator. This
+    * This is used to transfer the transport to the processor. This
     * will typically be executed asynchronously so that it does not
     * delay the thread that passes the <code>Pipeline</code> to the
     * transport processor, ensuring quicker processing.

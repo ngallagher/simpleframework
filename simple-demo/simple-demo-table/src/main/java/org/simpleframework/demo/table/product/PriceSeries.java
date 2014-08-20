@@ -3,7 +3,9 @@ package org.simpleframework.demo.table.product;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PriceSeries {
 
@@ -14,6 +16,15 @@ public class PriceSeries {
    }
    
    public PriceSeries(Collection<Price> prices) {
+      Set<String> s = new  HashSet<String>();
+      for(Price p : prices){
+         if(p != null) {
+         String d=p.getCompany();
+         if(!s.add(d)){
+            System.err.println("dup "+d);
+         }
+         }
+      }
       this.prices = new ArrayList<Price>(prices);
    }   
    

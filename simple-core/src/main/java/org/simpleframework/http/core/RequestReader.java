@@ -18,6 +18,8 @@
  
 package org.simpleframework.http.core;
 
+import static org.simpleframework.http.core.ContainerEvent.ERROR;
+
 import java.nio.channels.SocketChannel;
 
 import org.simpleframework.transport.Channel;
@@ -54,6 +56,11 @@ class RequestReader implements Operation {
    private final Channel channel;
    
    /**
+    * This is used to collect any trace information.
+    */
+   private final Trace trace;
+   
+   /**
     * Constructor for the <code>RequestReader</code> object. This is
     * used to collect the data required to compose a HTTP request.
     * Once all the data has been read by this it is dispatched. 
@@ -63,13 +70,21 @@ class RequestReader implements Operation {
     */
    public RequestReader(Controller controller, Collector collector){
       this.channel = collector.getChannel();
+      this.trace = channel.getTrace();
       this.collector = collector;        
       this.controller = controller;    
-   }
+   }   
    
-   
+   /**
+    * This is used to acquire the trace object that is associated
+    * with the operation. A trace object is used to collection details
+    * on what operations are being performed. For instance it may 
+    * contain information relating to I/O events or errors. 
+    * 
+    * @return this returns the trace associated with this operation
+    */    
    public Trace getTrace() {
-      return channel.getTrace();
+      return trace;
    }   
    
    /**
@@ -94,8 +109,9 @@ class RequestReader implements Operation {
    public void run() {
       try {
          collector.collect(controller);
-      }catch(Throwable e){
-         cancel();
+      }catch(Throwable cause){
+         trace.trace(ERROR, cause);
+         channel.close();
       } 
    }
    
@@ -108,8 +124,8 @@ class RequestReader implements Operation {
    public void cancel() {
       try {
          channel.close();
-      } catch(Throwable e) {
-         return;
+      } catch(Throwable cause) {
+         trace.trace(ERROR, cause);
       }
    }  
 }

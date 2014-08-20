@@ -76,7 +76,19 @@ abstract class Phase implements Operation {
       this.require = require;
       this.state = state;
       this.trace = trace;
-   }      
+   }    
+   
+   /**
+    * This is used to acquire the trace object that is associated
+    * with the operation. A trace object is used to collection details
+    * on what operations are being performed. For instance it may 
+    * contain information relating to I/O events or errors. 
+    * 
+    * @return this returns the trace associated with this operation
+    */    
+   public Trace getTrace() {
+      return trace;
+   }   
 
    /**
     * This is the <code>SelectableChannel</code> which is used to 
@@ -89,12 +101,7 @@ abstract class Phase implements Operation {
     */ 
    public SelectableChannel getChannel() {
       return state.getChannel();
-   }
-   
-   
-   public Trace getTrace() {
-      return trace;
-   }   
+   }     
 
    /**
     * This is used to execute the task. It is up to the specific

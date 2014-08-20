@@ -53,11 +53,14 @@ class FrameEncoder {
    private final String charset;
    
    /**
+    * This is the TCP channel the frames are delivered over.
+    */
+   private final Channel channel;
+   
+   /**
     * This is the underlying sender used to send the frames.
     */
    private final Sender sender;
-   
-   private final Channel channel;
    
    /**
     * This is used to trace the traffic on the channel.

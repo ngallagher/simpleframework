@@ -39,10 +39,13 @@ import org.simpleframework.transport.reactor.Reactor;
 class OperationFactory {
    
    /**
-    * This is the negotiator used to process the created transport.
+    * This is the processor used to process the created transport.
     */
    private final Processor processor;
    
+   /**
+    * This is the reactor used to register for I/O notifications.
+    */   
    private final Reactor reactor;
    
    /**
@@ -62,11 +65,12 @@ class OperationFactory {
    
    /**
     * Constructor for the <code>OperationFactory</code> object. This
-    * uses the negotiator provided to hand off the created transport
+    * uses the processor provided to hand off the created transport
     * when it has been created. All operations created typically
     * execute in an asynchronous thread.
     * 
-    * @param negotiator the negotiator used to process transports 
+    * @param processor the processor used to dispatch the transport
+    * @param reactor this is the reactor used for I/O notifications 
     * @param buffer this is the initial size of the buffer to use   
     */
    public OperationFactory(Processor processor, Reactor reactor, int buffer) {
@@ -75,11 +79,12 @@ class OperationFactory {
    
    /**
     * Constructor for the <code>OperationFactory</code> object. This
-    * uses the negotiator provided to hand off the created transport
+    * uses the processor provided to hand off the created transport
     * when it has been created. All operations created typically
     * execute in an asynchronous thread.
     * 
-    * @param negotiator the negotiator used to process transports 
+    * @param processor the processor used to dispatch the transport
+    * @param reactor this is the reactor used for I/O notifications 
     * @param buffer this is the initial size of the buffer to use       
     * @param threshold maximum size of the output buffer to use
     */
@@ -89,11 +94,12 @@ class OperationFactory {
    
    /**
     * Constructor for the <code>OperationFactory</code> object. This
-    * uses the negotiator provided to hand off the created transport
+    * uses the processor provided to hand off the created transport
     * when it has been created. All operations created typically
     * execute in an asynchronous thread.
     * 
-    * @param negotiator the negotiator used to process transports 
+    * @param processor the processor used to dispatch the transport
+    * @param reactor this is the reactor used for I/O notifications 
     * @param buffer this is the initial size of the buffer to use       
     * @param threshold maximum size of the output buffer to use
     * @param client determines if the SSL handshake is for a client

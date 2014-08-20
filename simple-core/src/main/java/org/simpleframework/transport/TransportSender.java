@@ -145,9 +145,9 @@ public class TransportSender implements Sender {
     */    
    public void send(ByteBuffer buffer, int off, int len) throws IOException {
       try {        
-        // if(!lock.tryLock(duration, MILLISECONDS)) {
-        //    throw new IOException("Transport lock could not be acquired");
-        // }
+         if(!lock.tryLock(duration, MILLISECONDS)) {
+            throw new IOException("Transport lock could not be acquired");
+         }
          try {
             int mark = buffer.position();
             int limit = buffer.limit();
@@ -158,7 +158,7 @@ public class TransportSender implements Sender {
             transport.write(buffer);
             buffer.limit(limit);                  
          } finally {
-          //  lock.unlock();                           
+            lock.unlock();                           
          }
       } catch(Exception e) {
          throw new IOException("Error writing to transport", e);
@@ -173,14 +173,14 @@ public class TransportSender implements Sender {
     */     
    public void flush() throws IOException {
       try {        
-        // if(!lock.tryLock(duration, MILLISECONDS)) {
-        //    throw new IOException("Transport lock could not be acquired");
-        // }
-        // try {
+         if(!lock.tryLock(duration, MILLISECONDS)) {
+            throw new IOException("Transport lock could not be acquired");
+         }
+         try {
             transport.flush();                    
-        // } finally {
-          //  lock.unlock();                           
-       //  }         
+         } finally {
+            lock.unlock();                           
+         }         
       } catch(Exception e) {
          throw new IOException("Error flushing to transport", e);
       }          
@@ -195,13 +195,13 @@ public class TransportSender implements Sender {
    public void close() throws IOException {
       if(!closed.getAndSet(true)) {           
          try {        
-            //if(!lock.tryLock(duration, MILLISECONDS)) {
-            //   throw new IOException("Transport lock could not be acquired");
-           // }
+            if(!lock.tryLock(duration, MILLISECONDS)) {
+               throw new IOException("Transport lock could not be acquired");
+            }
             try {
                transport.close();                    
             } finally {
-             //  lock.unlock();                           
+               lock.unlock();                           
             }            
          } catch(Exception e) {
             throw new IOException("Error closing the transport", e);
