@@ -1,4 +1,4 @@
-package org.simpleframework.demo.table.message;
+package org.simpleframework.demo.table.service;
 
 public enum ChangeType {
    SCHEMA("S"),

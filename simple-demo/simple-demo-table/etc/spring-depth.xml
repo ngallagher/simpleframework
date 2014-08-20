@@ -740,7 +740,7 @@
     <constructor-arg ref="DepthOutrightTable" />
   </bean>
 
-  <bean id="DepthOutrightTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="DepthOutrightTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="DepthOutrightTableModel" />
     <constructor-arg ref="DepthOutrightTableSchema" />
     <constructor-arg ref="DepthOutrightRowExtractor" />
@@ -748,7 +748,7 @@
     <constructor-arg ref="ThreadPool"/>    
   </bean>
 
-  <bean id="DepthOutrightTableService" class="org.simpleframework.demo.table.message.TableService">
+  <bean id="DepthOutrightTableService" class="org.simpleframework.demo.table.service.TableService">
     <constructor-arg>
       <list>
         <ref bean="DepthOutrightTableUpdater" />
@@ -1496,7 +1496,7 @@
     <constructor-arg ref="DepthEFPTable" />
   </bean>
 
-  <bean id="DepthEFPTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="DepthEFPTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="DepthEFPTableModel" />
     <constructor-arg ref="DepthEFPTableSchema" />
     <constructor-arg ref="DepthEFPRowExtractor" />
@@ -1504,7 +1504,7 @@
     <constructor-arg ref="ThreadPool"/>   
   </bean>
 
-  <bean id="DepthEFPTableService" class="org.simpleframework.demo.table.message.TableService">
+  <bean id="DepthEFPTableService" class="org.simpleframework.demo.table.service.TableService">
     <constructor-arg>
       <list>
         <ref bean="DepthEFPTableUpdater" />

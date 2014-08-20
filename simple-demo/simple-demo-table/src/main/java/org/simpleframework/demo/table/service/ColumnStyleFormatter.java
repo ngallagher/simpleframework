@@ -1,4 +1,4 @@
-package org.simpleframework.demo.table.message;
+package org.simpleframework.demo.table.service;
 
 import org.simpleframework.demo.table.extract.ValueEncoder;
 import org.simpleframework.demo.table.schema.ColumnStyle;

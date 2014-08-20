@@ -322,7 +322,7 @@
     <constructor-arg ref="BestTable" />
   </bean>
   
-  <bean id="BestTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="BestTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="BestTableModel" />
     <constructor-arg ref="BestTableSchema" />
     <constructor-arg ref="BestRowExtractor" />
@@ -474,7 +474,7 @@
     <constructor-arg ref="BestEFPTable" />
   </bean>
   
-  <bean id="BestEFPTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="BestEFPTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="BestEFPTableModel" />
     <constructor-arg ref="BestEFPTableSchema" />
     <constructor-arg ref="BestEFPRowExtractor" />
@@ -626,7 +626,7 @@
     <constructor-arg ref="BestSwitchTable" />
   </bean>
   
-  <bean id="BestSwitchTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="BestSwitchTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="BestSwitchTableModel" />
     <constructor-arg ref="BestSwitchTableSchema" />
     <constructor-arg ref="BestSwitchRowExtractor" />
@@ -634,7 +634,7 @@
     <constructor-arg ref="ThreadPool"/>           
   </bean>  
   
-  <bean id="BestTableService" class="org.simpleframework.demo.table.message.TableService">
+  <bean id="BestTableService" class="org.simpleframework.demo.table.service.TableService">
     <constructor-arg>
       <list>
         <ref bean="BestTableUpdater" />

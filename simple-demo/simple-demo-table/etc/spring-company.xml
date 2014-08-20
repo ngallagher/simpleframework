@@ -242,7 +242,7 @@
     <constructor-arg ref="CompanyTable" />
   </bean>
   
-  <bean id="CompanyTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="CompanyTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="CompanyTableModel" />
     <constructor-arg ref="CompanyTableSchema" />
     <constructor-arg ref="CompanyRowExtractor" />
@@ -374,7 +374,7 @@
     <constructor-arg ref="CompanyEFPTable" />
   </bean>
   
-  <bean id="CompanyEFPTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="CompanyEFPTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="CompanyEFPTableModel" />
     <constructor-arg ref="CompanyEFPTableSchema" />
     <constructor-arg ref="CompanyEFPRowExtractor" />
@@ -506,7 +506,7 @@
     <constructor-arg ref="CompanySwitchTable" />
   </bean>
   
-  <bean id="CompanySwitchTableUpdater" class="org.simpleframework.demo.table.message.TableUpdater" init-method="start">
+  <bean id="CompanySwitchTableUpdater" class="org.simpleframework.demo.table.service.TableUpdater" init-method="start">
     <constructor-arg ref="CompanySwitchTableModel" />
     <constructor-arg ref="CompanySwitchTableSchema" />
     <constructor-arg ref="CompanySwitchRowExtractor" />
@@ -514,7 +514,7 @@
     <constructor-arg ref="ThreadPool"/>           
   </bean>  
   
-  <bean id="CompanyTableService" class="org.simpleframework.demo.table.message.TableService">
+  <bean id="CompanyTableService" class="org.simpleframework.demo.table.service.TableService">
     <constructor-arg>
       <list>
         <ref bean="CompanyTableUpdater" />

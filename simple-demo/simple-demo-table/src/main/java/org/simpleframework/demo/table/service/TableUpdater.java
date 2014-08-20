@@ -1,4 +1,4 @@
-package org.simpleframework.demo.table.message;
+package org.simpleframework.demo.table.service;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;

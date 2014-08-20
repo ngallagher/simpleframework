@@ -1,4 +1,4 @@
-package org.simpleframework.demo.table.message;
+package org.simpleframework.demo.table.service;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.simpleframework.demo.table.message;
+package org.simpleframework.demo.table.service;
 
 import org.simpleframework.demo.http.resource.Resource;
 import org.simpleframework.http.Request;

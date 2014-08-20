@@ -58,7 +58,7 @@
     <constructor-arg value="/index.html" />
   </bean>
 
-  <bean id="TableResource" class="org.simpleframework.demo.table.message.TableResource">
+  <bean id="TableResource" class="org.simpleframework.demo.table.service.TableResource">
     <constructor-arg ref="FileSystemResource" />
     <constructor-arg value="company" />
   </bean>
@@ -109,7 +109,7 @@
 
   <bean id="ProductDepthDebugger" class="org.simpleframework.demo.table.product.DepthDebugger" />
 
-  <bean id="ProductTableTester" class="org.simpleframework.demo.table.message.TableTester" init-method="start">
+  <bean id="ProductTableTester" class="org.simpleframework.demo.table.service.TableTester" init-method="start">
     <constructor-arg ref="BestTableUpdater" />
   </bean>
 
