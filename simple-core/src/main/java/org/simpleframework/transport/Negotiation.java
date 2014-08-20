@@ -20,6 +20,8 @@ package org.simpleframework.transport;
 
 import java.io.IOException;
 
+import org.simpleframework.transport.reactor.Operation;
+
 /**
  * The <code>Negotiation</code> interface is used to represent an
  * SSL negotiation. When an operation can not be completed this
@@ -28,7 +30,7 @@ import java.io.IOException;
  * 
  * @author Niall Gallagher
  */
-interface Negotiation extends Notifier {
+interface Negotiation extends Operation  {
    
    /**
     * This is used to resume the negotiation when an operation

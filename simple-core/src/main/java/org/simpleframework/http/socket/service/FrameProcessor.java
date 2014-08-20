@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.FrameType;
@@ -75,6 +76,9 @@ class FrameProcessor {
     * This is the session associated with the WebSocket connection.
     */
    private final Session session;
+
+   
+   private final Channel channel;   
    
    /**
     * This is the reason message used for a normal closure.
@@ -84,7 +88,7 @@ class FrameProcessor {
    /**
     * This is the reason message used for an internal failure.
     */
-   private final Reason error;
+   private final Reason error;   
    
    /**
     * This is the cursor used to maintain a read seek position.
@@ -105,12 +109,13 @@ class FrameProcessor {
     * @param session this is the session associated with the channel
     * @param channel this is the channel to read frames from
     */
-   public FrameProcessor(FrameEncoder encoder, Session session, Channel channel) {
+   public FrameProcessor(FrameEncoder encoder, Session session, Request request) {
       this.listeners = new CopyOnWriteArraySet<FrameListener>();
       this.error = new Reason(INTERNAL_SERVER_ERROR);
       this.normal = new Reason(NORMAL_CLOSURE);
       this.extractor = new ReasonExtractor();
       this.consumer = new FrameConsumer();
+      this.channel = request.getChannel();
       this.cursor = channel.getCursor();
       this.trace = channel.getTrace();
       this.encoder = encoder;

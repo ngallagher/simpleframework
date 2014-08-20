@@ -62,6 +62,8 @@ class ResponseBuilder  {
     */
    private final Response response;
    
+   private final Channel channel;
+   
    /**
     * This is the sender used to send the WebSocket response.
     */
@@ -80,11 +82,11 @@ class ResponseBuilder  {
     * 
     * @param request this is the request that initiated the handshake
     * @param response this is the response for the handshake
-    * @param channel this is the underling TCP channel 
     */
-   public ResponseBuilder(Request request, Response response, Channel channel) throws Exception {
+   public ResponseBuilder(Request request, Response response) throws Exception {
       this.validator = new RequestValidator(request);
       this.token = new AcceptToken(request); 
+      this.channel = request.getChannel();
       this.sender = channel.getSender();
       this.trace = channel.getTrace();
       this.response = response;

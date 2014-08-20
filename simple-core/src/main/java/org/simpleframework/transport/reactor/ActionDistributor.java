@@ -69,7 +69,7 @@ import org.simpleframework.util.thread.Daemon;
   *
   * @see org.simpleframework.transport.reactor.ExecutorReactor
   */ 
-class ActionDistributor extends Daemon implements Distributor {
+class ActionDistributor extends Daemon implements OperationDistributor {
    
    /**
     * This is used to determine the operations that need cancelling.

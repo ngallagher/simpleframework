@@ -37,7 +37,7 @@ public class ExecutorReactor implements Reactor {
   /**
    * This is used to distribute the ready operations for execution.
    */         
-  private final Distributor exchange;
+  private final OperationDistributor exchange;
 
   /**
    * This is used to execute the operations that ready to run.

@@ -37,7 +37,7 @@ class TransportDispatcher implements Operation {
    /**
     * This is the negotiator used to transfer the transport to. 
     */
-   private final Negotiator negotiator;
+   private final Processor processor;
    
    /**
     * This is the transport to be passed to the negotiator.
@@ -51,10 +51,10 @@ class TransportDispatcher implements Operation {
     * used to process the pipeline is not occupied for long.
     * 
     * @param transport this is the transport this exchange uses
-    * @param negotiator this is the negotiation to dispatch to
+    * @param processor this is the negotiation to dispatch to
     */
-   public TransportDispatcher(Transport transport, Negotiator negotiator) {
-      this.negotiator = negotiator;
+   public TransportDispatcher(Transport transport, Processor processor) {
+      this.processor = processor;
       this.transport = transport;
    }
    
@@ -84,7 +84,7 @@ class TransportDispatcher implements Operation {
     */
    public void run() {
       try {
-         negotiator.ready(transport);
+         processor.process(transport);
       }catch(Exception e) {
          cancel();
       }

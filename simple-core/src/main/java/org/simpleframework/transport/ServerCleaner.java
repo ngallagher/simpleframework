@@ -22,15 +22,15 @@ import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.util.thread.Daemon;
 
 /**
- * The <code>ServerTerminator</code> object allows termination of 
- * the server to be done in an asynchronous manner. This ensures that
+ * The <code>ServerCleaner</code> object allows for the termination
+ * and resource resovery to be done asynchronously. This ensures that
  * should a HTTP request be used to terminate the server that it 
  * does not block waiting for the servicing thread pool to terminate 
  * causing a deadlock.
  * 
  * @author Niall Gallagher
  */
-class ServerTerminator extends Daemon {
+class ServerCleaner extends Daemon {
    
    /**
     * This is the internal processor that is to be terminated.
@@ -43,14 +43,14 @@ class ServerTerminator extends Daemon {
    private final Reactor reactor;
    
    /**
-    * Constructor for the <code>ServerTerminator</code> object. For 
+    * Constructor for the <code>ServerCleaner</code> object. For 
     * an orderly termination of the server, the processor and reactor
     * provided to the constructor will be stopped asynchronously.
     *
     * @param processor this is the processor that is to be stopped
     * @param reactor this is the reactor that is to be closed
     */
-   public ServerTerminator(Processor processor, Reactor reactor) {
+   public ServerCleaner(Processor processor, Reactor reactor) {
       this.processor = processor;
       this.reactor = reactor;
    }

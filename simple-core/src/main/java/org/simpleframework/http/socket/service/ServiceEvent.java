@@ -78,7 +78,17 @@ public enum ServiceEvent {
    /**
     * This event is dispatched when a frame is sent over a WebSocket.
     */
-   WRITE_FRAME,
+   WRITE_FRAME,   
+   
+   /**
+    * This indicates that there has been no response to a ping.
+    */
+   PING_EXPIRED,
+   
+   /**
+    * This indicates that there has been no response to a ping.
+    */
+   PONG_RECEIVED,   
    
    /**
     * This event is dispatched when an error occurs with a WebSocket.

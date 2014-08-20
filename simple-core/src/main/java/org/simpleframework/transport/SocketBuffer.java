@@ -33,7 +33,7 @@ import org.simpleframework.transport.trace.Trace;
  * small fragments in to a single buffer before sending them. This
  * is primarily used as a means to avoid sending many small packets
  * rather than reasonable size ones for performance. This also
- * enables a higher level of concurrency, as it will allows data
+ * enables a higher level of concurrency, as it will allow data
  * that can't be sent over the socket to be buffered until it gets
  * the signal that says it can be sent on. 
  * 

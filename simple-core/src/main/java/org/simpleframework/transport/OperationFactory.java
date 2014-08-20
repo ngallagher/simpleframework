@@ -23,6 +23,7 @@ import java.io.IOException;
 import javax.net.ssl.SSLEngine;
 
 import org.simpleframework.transport.reactor.Operation;
+import org.simpleframework.transport.reactor.Reactor;
 
 /**
  * The <code>OperationFactory</code> is used to create operations
@@ -40,7 +41,9 @@ class OperationFactory {
    /**
     * This is the negotiator used to process the created transport.
     */
-   private final Negotiator negotiator;
+   private final Processor processor;
+   
+   private final Reactor reactor;
    
    /**
     * This is the threshold for the asynchronous buffers to use.
@@ -66,8 +69,8 @@ class OperationFactory {
     * @param negotiator the negotiator used to process transports 
     * @param buffer this is the initial size of the buffer to use   
     */
-   public OperationFactory(Negotiator negotiator, int buffer) {
-      this(negotiator, buffer, 20480);
+   public OperationFactory(Processor processor, Reactor reactor, int buffer) {
+      this(processor, reactor, buffer, 20480);
    }
    
    /**
@@ -80,8 +83,8 @@ class OperationFactory {
     * @param buffer this is the initial size of the buffer to use       
     * @param threshold maximum size of the output buffer to use
     */
-   public OperationFactory(Negotiator negotiator, int buffer, int threshold) {
-      this(negotiator, buffer, threshold, false);
+   public OperationFactory(Processor processor, Reactor reactor, int buffer, int threshold) {
+      this(processor, reactor, buffer, threshold, false);
    }
    
    /**
@@ -95,9 +98,10 @@ class OperationFactory {
     * @param threshold maximum size of the output buffer to use
     * @param client determines if the SSL handshake is for a client
     */
-   public OperationFactory(Negotiator negotiator, int buffer, int threshold, boolean client) {
-      this.negotiator = negotiator;
+   public OperationFactory(Processor processor, Reactor reactor, int buffer, int threshold, boolean client) {
+      this.processor = processor;
       this.threshold = threshold;
+      this.reactor = reactor;
       this.buffer = buffer;
       this.client = client;
    }
@@ -130,11 +134,11 @@ class OperationFactory {
     * @return this returns the operation used for processing
     */
    private Operation getInstance(Socket socket, SSLEngine engine) throws IOException {
-      Transport transport = new SocketTransport(socket, negotiator, threshold, buffer);
+      Transport transport = new SocketTransport(socket, reactor, buffer, threshold);
    
       if(engine != null) {
-         return new Handshake(transport, negotiator, client);
+         return new Handshake(transport, processor, reactor, client);
       } 
-      return new TransportDispatcher(transport, negotiator);
+      return new TransportDispatcher(transport, processor);
    }
 }

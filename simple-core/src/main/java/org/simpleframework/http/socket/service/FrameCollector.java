@@ -23,6 +23,7 @@ import static org.simpleframework.http.socket.service.ServiceEvent.ERROR;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 
+import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.transport.Channel;
@@ -77,12 +78,12 @@ class FrameCollector implements Operation {
     * @param channel this is the underlying TCP communication channel
     * @param reactor this is the reactor used for read notifications
     */
-   public FrameCollector(FrameEncoder encoder, Session session, Channel channel, Reactor reactor) {
-      this.processor = new FrameProcessor(encoder, session, channel);      
+   public FrameCollector(FrameEncoder encoder, Session session, Request request, Reactor reactor) {
+      this.processor = new FrameProcessor(encoder, session, request);
+      this.channel = request.getChannel();
       this.cursor = channel.getCursor();
       this.trace = channel.getTrace();
       this.reactor = reactor;
-      this.channel = channel;
    }
    
    

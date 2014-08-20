@@ -23,7 +23,7 @@ import static java.nio.channels.SelectionKey.OP_READ;
 import java.io.IOException;
 
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.TerminateException;
+import org.simpleframework.transport.TransportException;
 import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.util.buffer.Allocator;
@@ -155,7 +155,7 @@ class ContainerController implements Controller {
         executor.stop();
         collect.stop();
      } catch(Exception cause) {
-        throw new TerminateException("Error stopping", cause);
+        throw new TransportException("Error stopping", cause);
      }
    }
 }

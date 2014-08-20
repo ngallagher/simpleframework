@@ -54,11 +54,6 @@ import org.simpleframework.transport.trace.Trace;
  * @see org.simpleframework.http.socket.Frame
  */
 class FrameChannel implements WebSocket {
-
-   /**
-    * This is the checker that is used to monitor sessions.
-    */
-   private final SessionChecker checker;
    
    /**
     * The collector is used to collect frames from the TCP channel.
@@ -76,14 +71,11 @@ class FrameChannel implements WebSocket {
    private final SessionChannel socket;
    
    /**
-    * This is the internal session used for asynchronous tasks. 
-    */
-   private final Session internal;
-   
-   /**
     * This is the external session that has synchronized methods.
     */
-   private final Session external;
+   private final Session session;   
+   
+   private final Channel channel;   
    
    /**
     * The reason that is sent if at any time the channel is closed.
@@ -112,16 +104,15 @@ class FrameChannel implements WebSocket {
     * @param channel this is the underlying TCP channel to communicate on
     * @param reactor this is the reactor used to process frames
     */
-   public FrameChannel(SessionChecker checker, Request request, Response response, Channel channel, Reactor reactor) {
-      this.encoder = new FrameEncoder(channel);
-      this.socket = new SessionChannel(this);
-      this.internal = new RequestSession(this, request, response);      
-      this.external = new RequestSession(socket, request, response);
-      this.operation = new FrameCollector(encoder, external, channel, reactor);
+   public FrameChannel(Request request, Response response, Reactor reactor) {
+      this.encoder = new FrameEncoder(request);
+      this.socket = new SessionChannel(this);    
+      this.session = new RequestSession(socket, request, response);
+      this.operation = new FrameCollector(encoder, session, request, reactor);
       this.reason = new Reason(NORMAL_CLOSURE);
+      this.channel = request.getChannel();
       this.sender = channel.getSender();
       this.trace = channel.getTrace();
-      this.checker = checker;
    }    
    
    /**
@@ -135,8 +126,7 @@ class FrameChannel implements WebSocket {
    public Session open() throws IOException {
       trace.trace(OPEN_SOCKET);
       operation.run();
-      checker.register(internal);
-      return external;
+      return session;
    }
    
    /**

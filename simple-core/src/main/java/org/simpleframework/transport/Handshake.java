@@ -40,6 +40,7 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
+import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -72,7 +73,9 @@ class Handshake implements Negotiation {
    /**
     * This is the negotiator used to process the secure transport.
     */
-   private final Negotiator negotiator;
+   private final  Processor processor;
+   
+   private final Reactor reactor;
    
    /**
     * This is the transport dispatched when the negotiation ends.
@@ -118,8 +121,8 @@ class Handshake implements Negotiation {
     * @param negotiator the negotiator used to check socket events
     * @param transport the transport to perform the negotiation for
     */
-   public Handshake(Transport transport, Negotiator negotiator) {
-      this(transport, negotiator, 20480);           
+   public Handshake(Transport transport, Processor processor, Reactor reactor) {
+      this(transport, processor, reactor, 20480);           
    }
   
    /**
@@ -132,8 +135,8 @@ class Handshake implements Negotiation {
     * @param transport the transport to perform the negotiation for
     * @param size the size of the buffers used for the negotiation
     */
-   public Handshake(Transport transport, Negotiator negotiator, int size) {
-      this(transport, negotiator, size, false);
+   public Handshake(Transport transport, Processor processor, Reactor reactor, int size) {
+      this(transport, processor, reactor, size, false);
    }
    
    /**
@@ -146,8 +149,8 @@ class Handshake implements Negotiation {
     * @param transport the transport to perform the negotiation for
     * @param client determines the side of the SSL handshake
     */
-   public Handshake(Transport transport, Negotiator negotiator, boolean client) {
-      this(transport, negotiator, 20480, client);
+   public Handshake(Transport transport, Processor processor, Reactor reactor, boolean client) {
+      this(transport, processor, reactor, 20480, client);
    }
    
    /**
@@ -161,7 +164,7 @@ class Handshake implements Negotiation {
     * @param size the size of the buffers used for the negotiation
     * @param client determines the side of the SSL handshake
     */
-   public Handshake(Transport transport, Negotiator negotiator, int size, boolean client) {
+   public Handshake(Transport transport, Processor processor, Reactor reactor, int size, boolean client) {
       this.state = new NegotiationState(this, transport);
       this.output = ByteBuffer.allocate(size);
       this.input = ByteBuffer.allocate(size);
@@ -169,8 +172,9 @@ class Handshake implements Negotiation {
       this.engine = transport.getEngine();
       this.trace = transport.getTrace();
       this.empty = ByteBuffer.allocate(0);
-      this.negotiator = negotiator;
+      this.processor = processor;
       this.transport = transport;
+      this.reactor = reactor;
       this.client = client;
    }
    
@@ -268,12 +272,12 @@ class Handshake implements Negotiation {
       PhaseType require = exchange();
       
       if(require == CONSUME) {
-         return new Consumer(this, trace);
+         return new Consumer(this, reactor, trace);
       } 
       if(require == PRODUCE) {
-         return new Producer(this, trace);
+         return new Producer(this, reactor, trace);
       } 
-      return new Committer(this, trace);
+      return new Committer(this, reactor, trace);
    }
    
    /**
@@ -475,9 +479,9 @@ class Handshake implements Negotiation {
    private void dispatch() throws IOException {
       Transport secure = new SecureTransport(transport, state, output, input);
 
-      if(negotiator != null) {
+      if(processor != null) {
          trace.trace(HANDSHAKE_DONE);
-         negotiator.ready(secure);
+         processor.process(secure);
       }
    }  
    
@@ -542,8 +546,8 @@ class Handshake implements Negotiation {
        * @param state this is the underlying negotiation to use
        * @param trace the trace that is used to monitor the handshake        
        */
-      public Committer(Negotiation state, Trace trace) {
-         super(state, negotiator, trace, OP_READ);
+      public Committer(Negotiation state, Reactor reactor, Trace trace) {
+         super(state, reactor, trace, OP_READ);
       }
 
       /**
@@ -576,8 +580,8 @@ class Handshake implements Negotiation {
        * @param state this is the negotiation object that is used
        * @param trace the trace that is used to monitor the handshake        
        */
-      public Consumer(Negotiation state, Trace trace) {
-         super(state, negotiator, trace, OP_READ);
+      public Consumer(Negotiation state, Reactor reactor, Trace trace) {
+         super(state, reactor, trace, OP_READ);
       }
       
       /**
@@ -611,8 +615,8 @@ class Handshake implements Negotiation {
        * @param state this is the negotiation object that is used
        * @param trace the trace that is used to monitor the handshake        
        */
-      public Producer(Negotiation state, Trace trace) {
-         super(state, negotiator, trace, OP_WRITE);
+      public Producer(Negotiation state, Reactor reactor, Trace trace) {
+         super(state, reactor, trace, OP_WRITE);
       }
       
       /**

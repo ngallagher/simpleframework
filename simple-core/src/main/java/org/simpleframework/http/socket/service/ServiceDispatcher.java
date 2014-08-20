@@ -37,25 +37,19 @@ import org.simpleframework.util.thread.ScheduledExecutor;
  */
 class ServiceDispatcher {   
    
+   private final SessionDispatcher dispatcher;   
+   
    /**
     * This is used asynchronously read frames from the TCP channel.
     */
    private final ScheduledExecutor executor;   
    
-   /**
-    * This is used to check the session using ping control frames.
-    */
-   private final SessionChecker checker;
+   private final SessionBuilder builder;
    
    /**
     * This is used to notify of read events on the TCP channel.
     */
    private final Reactor reactor;
-   
-   /**
-    * This is used to select and route to a specific service.
-    */
-   private final Router router;
 
    /**
     * Constructor for the <code>ServiceDispatcher</code> object. The
@@ -93,10 +87,11 @@ class ServiceDispatcher {
     * @param expiry this is the expiry for the session    
     */
    public ServiceDispatcher(Router router, int threads, long ping, long expiry) throws IOException {
-      this.executor = new ScheduledExecutor(FrameCollector.class, threads);
-      this.checker = new SessionChecker(executor, ping, expiry);
+      this.executor = new ScheduledExecutor(FrameCollector.class, threads);      
       this.reactor = new ExecutorReactor(executor);
-      this.router = router;
+      this.builder = new SessionBuilder(executor, reactor, ping);
+      this.dispatcher = new SessionDispatcher(builder, router);       
+     
    }
 
    /**
@@ -108,10 +103,7 @@ class ServiceDispatcher {
     * @param request this is the session initiating request
     * @param response this is the session initiating response
     */
-   public void dispatch(Request request, Response response) {
-      SessionBuilder connector = new SessionBuilder(checker, request, response, reactor);
-      SessionDispatcher dispatcher = new SessionDispatcher(connector, router);      
-      
+   public void dispatch(Request request, Response response) {          
       dispatcher.dispatch(request, response);
    }
 }

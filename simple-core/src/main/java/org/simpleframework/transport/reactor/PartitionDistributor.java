@@ -32,12 +32,12 @@ import java.util.concurrent.Executor;
  * 
  * @author Niall Gallagher
  */
-class PartitionDistributor implements Distributor {
+class PartitionDistributor implements OperationDistributor {
 
    /**
     * This contains the distributors that represent a partition. 
     */
-   private final Distributor[] list;
+   private final OperationDistributor[] list;
    
    /**
     * Constructor for the <code>PartitionDistributor</code> object. 
@@ -61,7 +61,7 @@ class PartitionDistributor implements Distributor {
     * @param expiry this is the expiry duration that is to be used
     */   
    public PartitionDistributor(Executor executor, int count, long expiry) throws IOException {      
-      this.list = new Distributor[count];
+      this.list = new OperationDistributor[count];
       this.start(executor, expiry);
    }
    
@@ -129,7 +129,7 @@ class PartitionDistributor implements Distributor {
     * close further attempts to process operations will fail.
     */    
    public void close() throws IOException {
-      for(Distributor entry : list) {
+      for(OperationDistributor entry : list) {
          entry.close();
       }      
    }

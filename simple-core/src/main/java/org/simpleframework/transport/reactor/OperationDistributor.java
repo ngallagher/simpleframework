@@ -36,7 +36,7 @@ import java.io.IOException;
  *
  * @see org.simpleframework.transport.reactor.ActionDistributor
  */ 
-interface Distributor {
+interface OperationDistributor {
    
    /**
     * This is used to process the <code>Operation</code> object. This

@@ -18,9 +18,11 @@
 
 package org.simpleframework.http.core;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.simpleframework.http.core.ContainerEvent.ERROR;
 import static org.simpleframework.http.core.ContainerEvent.RESPONSE_FINISHED;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.simpleframework.http.message.Entity;
 import org.simpleframework.transport.Channel;
@@ -37,7 +39,22 @@ import org.simpleframework.transport.trace.Trace;
  * 
  * @author Niall Gallagher
  */
-class FlushObserver implements Observer {   
+class FlushObserver implements Observer {  
+   
+   /**
+    * This is used to determine if the response has committed.
+    */
+   private AtomicBoolean committed;
+   
+   /**
+    * This flag determines whether the connection was closed.
+    */
+   private AtomicBoolean closed;
+   
+   /**
+    * This flag determines whether the was a response error.
+    */
+   private AtomicBoolean error;      
    
    /**
     * This is the controller used to initiate a new request.
@@ -60,21 +77,6 @@ class FlushObserver implements Observer {
    private Timer timer;
    
    /**
-    * This is used to determine if the response has committed.
-    */
-   private boolean committed;
-   
-   /**
-    * This flag determines whether the connection was closed.
-    */
-   private boolean closed;
-   
-   /**
-    * This flag determines whether the was a response error.
-    */
-   private boolean error;   
-   
-   /**
     * Constructor for the <code>FlushObserver</code> object. This is
     * used to create an observer using a HTTP request entity and an
     * initiator which is used to reprocess a channel if there was a
@@ -84,7 +86,10 @@ class FlushObserver implements Observer {
     * @param entity this is the entity associated with the channel
     */ 
    public FlushObserver(Controller controller, Entity entity) {
-      this.timer = new Timer(MILLISECONDS);
+      this.timer = new Timer(MILLISECONDS);       
+      this.committed = new AtomicBoolean();     
+      this.closed = new AtomicBoolean();
+      this.error = new AtomicBoolean();
       this.channel = entity.getChannel();
       this.trace = channel.getTrace();
       this.controller = controller;
@@ -102,7 +107,7 @@ class FlushObserver implements Observer {
    public void close(Sender sender) {
       try {
          if(!isClosed()) {
-            closed = true;
+            closed.set(true);
             timer.set();
             trace.trace(RESPONSE_FINISHED);
             sender.close();
@@ -125,7 +130,7 @@ class FlushObserver implements Observer {
    public void error(Sender sender) {
       try {
          if(!isClosed()) {
-            error = true;
+            error.set(true);
             timer.set();
             trace.trace(RESPONSE_FINISHED);
             sender.close();
@@ -147,7 +152,7 @@ class FlushObserver implements Observer {
    public void ready(Sender sender) {
       try {
          if(!isClosed()) {
-            closed = true;
+            closed.set(true);
             sender.flush();
             timer.set();
             trace.trace(RESPONSE_FINISHED);
@@ -162,7 +167,7 @@ class FlushObserver implements Observer {
    /**
     * This is used to purge the sender so that it closes the socket
     * ensuring there is no connection leak on shutdown. This is used
-    * when there is an exception signaling the state of the sender. 
+    * when there is an exception signalling the state of the sender. 
     * 
     * @param sender this is the sender that is to be purged
     */
@@ -182,7 +187,7 @@ class FlushObserver implements Observer {
     * @param sender this is the sender used to send the response
     */
    public void commit(Sender sender) {
-      committed = true;
+      committed.set(true);
    }
    
    /**
@@ -194,7 +199,7 @@ class FlushObserver implements Observer {
     * @return true if the response headers have been committed
     */ 
    public boolean isCommitted() {
-      return committed;
+      return committed.get();
    }
    
    /**
@@ -205,7 +210,7 @@ class FlushObserver implements Observer {
     * @return this returns true if there was an error or close
     */   
    public boolean isClosed() {
-      return closed || error;
+      return closed.get() || error.get();
    }
    
    /**
@@ -216,7 +221,7 @@ class FlushObserver implements Observer {
     * @return this returns true if there was a response error
     */   
    public boolean isError(){
-      return error;
+      return error.get();
    }
    
    /**

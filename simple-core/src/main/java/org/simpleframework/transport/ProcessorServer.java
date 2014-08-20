@@ -20,7 +20,10 @@ package org.simpleframework.transport;
 
 import java.io.IOException;
 
+import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Operation;
+import org.simpleframework.transport.reactor.Reactor;
+import org.simpleframework.util.thread.ConcurrentExecutor;
 import org.simpleframework.util.thread.Daemon;
 
 /**
@@ -33,6 +36,11 @@ import org.simpleframework.util.thread.Daemon;
  * @author Niall Gallagher
  */
 public class ProcessorServer implements Server {
+   
+   /**
+    * This is the executor used to execute the I/O operations.
+    */
+   private final ConcurrentExecutor executor;   
 
    /**
     * This is the factory used to create the required operations.
@@ -42,12 +50,12 @@ public class ProcessorServer implements Server {
    /**
     * This is the processor used to process transport objects.
     */
-   private final Negotiator negotiator;
+   private final Reactor reactor;
    
    /**
-    * This is used to terminate the internals of the processor.
+    * This is used to clean the internals of the processor.
     */
-   private final Daemon terminator;
+   private final Daemon cleaner;   
 
    /**
     * Constructor for the <code>ProcessorServer</code> object. 
@@ -116,9 +124,10 @@ public class ProcessorServer implements Server {
     * @param client determines if the SSL handshake is for a client
     */
    public ProcessorServer(Processor processor, int threads, int buffer, int threshold, boolean client) throws IOException {
-      this.negotiator = new SecureNegotiator(processor, threads);
-      this.factory = new OperationFactory(negotiator, buffer, threshold, client);
-      this.terminator = new ServerTerminator(processor, negotiator);
+      this.executor = new ConcurrentExecutor(Operation.class, threads);     
+      this.reactor = new ExecutorReactor(executor);
+      this.factory = new OperationFactory(processor, reactor, buffer, threshold, client);
+      this.cleaner = new ServerCleaner(processor, reactor);
    }
 
    /**
@@ -138,7 +147,7 @@ public class ProcessorServer implements Server {
       Operation task = factory.getInstance(socket);
       
       if(task != null) {
-         negotiator.process(task);
+         reactor.process(task);
       }
    }
    
@@ -160,6 +169,7 @@ public class ProcessorServer implements Server {
     * even worse causing a deadlock.
     */    
    public void stop() throws IOException {
-      terminator.start();
+      cleaner.start();
+      executor.stop();
    }
  }

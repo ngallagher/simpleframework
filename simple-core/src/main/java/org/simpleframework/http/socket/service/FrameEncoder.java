@@ -25,6 +25,7 @@ import static org.simpleframework.http.socket.service.ServiceEvent.WRITE_FRAME;
 
 import java.io.IOException;
 
+import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.CloseCode;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameType;
@@ -56,6 +57,8 @@ class FrameEncoder {
     */
    private final Sender sender;
    
+   private final Channel channel;
+   
    /**
     * This is used to trace the traffic on the channel.
     */
@@ -67,10 +70,10 @@ class FrameEncoder {
     * channel. Frames send remain unflushed so they can be batched
     * on a single output buffer.
     * 
-    * @param channel this is the underlying channel to write to
+    * @param request contains the opening handshake information
     */
-   public FrameEncoder(Channel channel) {
-      this(channel, "UTF-8");
+   public FrameEncoder(Request request) {
+      this(request, "UTF-8");
    }
    
    /**
@@ -79,10 +82,11 @@ class FrameEncoder {
     * channel. Frames send remain unflushed so they can be batched
     * on a single output buffer.
     * 
-    * @param channel this is the underlying channel to write to
+    * @param request contains the opening handshake information
     * @param charset this is the character encoding to encode with
     */
-   public FrameEncoder(Channel channel, String charset) {
+   public FrameEncoder(Request request, String charset) {
+      this.channel = request.getChannel();
       this.sender = channel.getSender();
       this.trace = channel.getTrace();
       this.charset = charset;

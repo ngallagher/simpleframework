@@ -145,10 +145,10 @@ public class WebSocketPerformanceTest {
       
       public MessageGeneratorContainer(MessageGeneratorService service, Analyzer agent, int port) throws Exception {
          this.negotiator = new SingletonRouter(service);
-         this.container = new RouterContainer(this, negotiator, 10, 1000, 100000);
+         this.container = new RouterContainer(this, negotiator, 10, 100000);
          this.allocator = new ArrayAllocator();
          this.processor = new ContainerProcessor(container, allocator, 10);
-         this.server = new ProcessorServer(processor, 10);
+         this.server = new ProcessorServer(processor, 10, 8192);
          this.connection = new SocketConnection(server, agent);
          this.address = new InetSocketAddress(port);
       }

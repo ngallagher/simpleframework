@@ -66,7 +66,7 @@ public class RouterContainer implements Container {
     * @param threads this contains the number of threads to use
     */
    public RouterContainer(Container container, Router router, int threads) throws IOException {
-      this(container, router, threads, 5000);
+      this(container, router, threads, 10000);
    }
    
    /**
@@ -81,23 +81,7 @@ public class RouterContainer implements Container {
     * @param ping this is the frequency to send ping frames with
     */
    public RouterContainer(Container container, Router router, int threads, long ping) throws IOException {
-      this(container, router, threads, ping, 20000);
-   }
-   
-   /**
-    * Constructor for the <code>RouterContainer</code> object. This
-    * requires a container to delegate traditional requests to and
-    * a <code>Router</code> implementation which can be used to 
-    * select a service to dispatch a WebSocket session to.
-    * 
-    * @param container this is the container to delegate to
-    * @param router this is the router used to select services
-    * @param threads this contains the number of threads to use
-    * @param ping this is the frequency to send ping frames with
-    * @param expiry the length of time a connection can be idle for
-    */
-   public RouterContainer(Container container, Router router, int threads, long ping, long expiry) throws IOException {
-      this.dispatcher = new ServiceDispatcher(router, threads, ping, expiry);
+      this.dispatcher = new ServiceDispatcher(router, threads, ping);
       this.container = container;
       this.router = router;
    }

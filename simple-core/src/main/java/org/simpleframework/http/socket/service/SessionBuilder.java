@@ -23,8 +23,8 @@ import java.io.IOException;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.reactor.Reactor;
+import org.simpleframework.util.thread.ScheduledExecutor;
 
 /**
  * The <code>SessionBuilder</code> object is used to create sessions
@@ -40,27 +40,14 @@ class SessionBuilder {
    /**
     * This is the checker that is used to ping WebSocket sessions.
     */
-   private final SessionChecker checker;
-
-   /**
-    * This is the response associated with the WebSocket session.
-    */
-   private final Response response;
-   
-   /**
-    * This is the request associated with the WebSocket session.
-    */
-   private final Request request;
+   private final ScheduledExecutor executor;
    
    /**
     * This is the reactor used to notify of read events.
     */
    private final Reactor reactor;
    
-   /**
-    * This is the underlying TCP channel associated with the session.
-    */
-   private final Channel channel;
+   private final long ping;
    
    /**
     * Constructor for the <code>SessionBuilder</code> object. This is
@@ -71,12 +58,10 @@ class SessionBuilder {
     * @param response the response involved in initiating the session
     * @param reactor the reactor used to notify of read events
     */
-   public SessionBuilder(SessionChecker checker, Request request, Response response, Reactor reactor) {
-      this.channel = request.getChannel();
-      this.response = response;
-      this.request = request;
+   public SessionBuilder(ScheduledExecutor executor, Reactor reactor, long ping) {
+      this.executor = executor;
       this.reactor = reactor;
-      this.checker = checker;
+      this.ping = ping;
    }
    
    /**
@@ -86,12 +71,14 @@ class SessionBuilder {
     * 
     * @return this returns the session associated with the WebSocket
     */
-   public Session create() throws Exception {
-      FrameChannel operation = new FrameChannel(checker, request, response, channel, reactor);
-      ResponseBuilder responder = new ResponseBuilder(request, response, channel);
+   public Session create(Request request, Response response) throws Exception {
+      FrameChannel operation = new FrameChannel(request, response, reactor);
+      ResponseBuilder responder = new ResponseBuilder(request, response);
+      StatusChecker checker = new StatusChecker(executor, operation, request, ping);
 
       try {
          responder.commit();
+         checker.start();
       } catch(Exception e) {
          throw new IOException("Could not send response", e);
       }
