@@ -1,10 +1,15 @@
 package org.simpleframework.http.socket.service;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.nio.channels.SelectableChannel;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,6 +20,7 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerProcessor;
 import org.simpleframework.http.core.StreamCursor;
+import org.simpleframework.http.core.ThreadDumper;
 import org.simpleframework.http.message.ReplyConsumer;
 import org.simpleframework.http.socket.DataFrame;
 import org.simpleframework.http.socket.Frame;
@@ -30,8 +36,10 @@ import org.simpleframework.transport.Server;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.Trace;
 import org.simpleframework.util.buffer.Allocator;
 import org.simpleframework.util.buffer.ArrayAllocator;
+import org.simpleframework.util.thread.Daemon;
 
 public class WebSocketPerformanceTest {
 
@@ -64,6 +72,8 @@ public class WebSocketPerformanceTest {
    
    public static class MessageGeneratorService extends Thread implements Service {
       
+      
+      /*
       private static final String MESSAGE = 
       "{'product': {\r\n"+
       "  'id': '1234',\r\n"+
@@ -75,7 +85,7 @@ public class WebSocketPerformanceTest {
       "      {'volume': '100000'}\r\n"+
       "    ]\r\n"+
       "  }\r\n"+
-      "}}";
+      "}}";*/
       
       private final Set<WebSocket> sockets;
       private final MessageCounter listener;
@@ -125,7 +135,7 @@ public class WebSocketPerformanceTest {
       public void run() {
          try {
             for(int i = 0; i < 10000000; i++) {
-               distribute(new DataFrame(FrameType.TEXT, System.currentTimeMillis() + ":" + MESSAGE));
+               distribute(new DataFrame(FrameType.TEXT, System.currentTimeMillis() + ":" + "message-"+1));
             }
          } catch(Exception e) {
             e.printStackTrace();
@@ -287,15 +297,134 @@ public class WebSocketPerformanceTest {
          }
       }
    }
+
+   public static class ConsoleAnalyzer extends Daemon implements Analyzer {
+      
+      private final Queue<TraceRecord> queue;
+      private final AtomicLong count;
+      private final String filter;
+      
+      public ConsoleAnalyzer() {
+         this(null);
+      }
+      
+      public ConsoleAnalyzer(String filter) {
+         this.queue = new ConcurrentLinkedQueue<TraceRecord>();
+         this.count = new AtomicLong();
+         this.filter = filter;
+      } 
+      
+      public Trace attach(SelectableChannel channel) {     
+         return new TraceFeeder(channel);
+      }
+      
+      public void run() {
+         try {
+            while(isActive()) {
+               Thread.sleep(1000);
+               
+               while(!queue.isEmpty()) {
+                  TraceRecord record = queue.poll();
+                  
+                  if(filter != null) {
+                     Object event = record.event;
+                     Class type = event.getClass();
+                     String name = type.getName();
+                     
+                     if(name.contains(filter)) {
+                        System.err.println(record);
+                     }
+                  } else {               
+                     System.err.println(record);
+                  }
+               }        
+            }
+         } catch(Exception e) {
+            e.printStackTrace();
+         }
+         
+      }
+      
+      private class TraceFeeder implements Trace {
+         
+         private final SelectableChannel channel;
+         private final long sequence;
+         
+         public TraceFeeder(SelectableChannel channel) {
+            this.sequence = count.getAndIncrement();
+            this.channel = channel;
+         }
+         
+         public void trace(Object event) {
+            trace(event, null);
+         }
+
+         public void trace(Object event, Object value) {
+            TraceRecord record = new TraceRecord(channel, event, value, sequence);
+            
+            if(isActive()) {
+               queue.offer(record);
+            }
+         }
+         
+      }
+      
+      private class TraceRecord {
+         
+         private final SelectableChannel channel;
+         private final String thread;
+         private final Object event;
+         private final Object value;
+         private final long sequence;
+         
+         public TraceRecord(SelectableChannel channel, Object event, Object value, long sequence) {
+            this.thread = Thread.currentThread().getName();
+            this.sequence = sequence;
+            this.channel = channel;
+            this.event = event;
+            this.value = value;
+         }
+         
+         public String toString() {
+            StringWriter builder = new StringWriter();
+            PrintWriter writer = new PrintWriter(builder);
+            
+            writer.print(sequence);         
+            writer.print(" ["); 
+            writer.print(channel);
+            writer.print("]");
+            writer.print(" ");
+            writer.print(thread);
+            writer.print(": ");
+            writer.print(event);
+            
+            if(value != null) {
+               if(value instanceof Throwable) {
+                  ((Throwable)value).printStackTrace(writer);
+               } else {
+                  writer.print(" -> ");
+                  writer.print(value);
+               }
+            }
+            writer.close();
+            return builder.toString();
+         }
+      }
+
+   }
+   
    
    public static void main(String[] list) throws Exception {
-      Analyzer agent = new WebSocketAnalyzer(false);
+      ThreadDumper dumper = new ThreadDumper();
+      ConsoleAnalyzer agent = new ConsoleAnalyzer();
       AtomicLong duration = new AtomicLong();
       AtomicInteger counter = new AtomicInteger();
       MessageGeneratorService service = new MessageGeneratorService();
       MessageGeneratorContainer container = new MessageGeneratorContainer(service, agent, 7070);
       MessageTimer timer = new MessageTimer(counter, duration);
       
+      agent.start();
+      dumper.start();
       timer.start();
       container.connect();
       

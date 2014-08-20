@@ -167,7 +167,6 @@ class FrameChannel implements WebSocket {
     */
    public void send(byte[] data) throws IOException {
       encoder.encode(data);  
-      sender.flush();
    }
 
    /**
@@ -183,7 +182,6 @@ class FrameChannel implements WebSocket {
     */
    public void send(String text) throws IOException {
       encoder.encode(text);  
-      sender.flush();
    }
    
    /**
@@ -198,8 +196,7 @@ class FrameChannel implements WebSocket {
     * @param frame this is the frame that is to be sent
     */
    public void send(Frame frame) throws IOException {           
-      encoder.encode(frame);  
-      sender.flush();
+      encoder.encode(frame); 
    } 
 
    /**

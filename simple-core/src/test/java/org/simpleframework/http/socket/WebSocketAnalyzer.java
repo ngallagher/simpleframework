@@ -36,7 +36,9 @@ public class WebSocketAnalyzer implements Analyzer {
       return new Trace() {
          
          public void trace(Object event) {
-            trace(event, "");
+            if(debug) {
+               trace(event, "");
+            }
          }
          
          public void trace(Object event, Object value) {

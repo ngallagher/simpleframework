@@ -74,8 +74,8 @@ class OutputBarrier {
    }
    
    /**
-    * This method is used to send all frames. It is important that a
-    * lock is used to protect this so that if there is an attempt
+    * This method is used to send all frames. It is important that 
+    * a lock is used to protect this so that if there is an attempt
     * to send out a control frame while the connection is blocked
     * there is an exception thrown.
     * 
@@ -88,7 +88,7 @@ class OutputBarrier {
          }
          try {
             sender.send(frame);
-            sender.flush();            
+            sender.flush();  // less throughput, better latency          
          } finally {
             lock.unlock();                           
          }
