@@ -85,8 +85,8 @@ public class PerformanceAnalyzer extends Thread implements Service {
                      long maximumRoundTripTime = roundTripAverager.maximum();
                      long maximumNetworkTime = networkTimeAverager.maximum();                     
                      long averageRowChanges = rowChangesAverager.average();
-                     long averagePaintTime = roundTripAverager.average();
-                     long averageRoundTripTime = paintAverager.average();                     
+                     long averagePaintTime = paintAverager.average();
+                     long averageRoundTripTime = roundTripAverager.average();                     
                      long averageNetworkTime = networkTimeAverager.average();
                      long rowChangesSum = rowChangesAverager.sum();
                      long time = System.currentTimeMillis();

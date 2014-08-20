@@ -11,6 +11,7 @@ import org.simpleframework.demo.table.TableSubscription;
 import org.simpleframework.demo.table.extract.RowExtractor;
 import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.schema.TableSchema;
+import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.WebSocket;
 import org.simpleframework.util.thread.Daemon;
 
@@ -32,10 +33,20 @@ public class TableUpdater extends Daemon {
       this.model = model;      
    }
    
-   public void refresh() {
+   public void acknowledge(Session session, String table, long number) {
       for(TableConnection connection : ready) {
          try {
-            connection.refresh();
+            connection.acknowledge(session, table, number);
+         } catch(Exception e) {
+            e.printStackTrace();
+         }
+      }
+   }
+   
+   public void refresh(Session session) {
+      for(TableConnection connection : ready) {
+         try {
+            connection.refresh(session);
          } catch(Exception e) {
             e.printStackTrace();
          }

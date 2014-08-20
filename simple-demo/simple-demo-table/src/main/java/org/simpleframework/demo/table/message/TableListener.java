@@ -30,25 +30,31 @@ public class TableListener implements FrameListener {
             String[] values = parameters.split(",");
             
             if(values.length > 0) {
+               String table = null;
                String user = null;
                long roundTripTime = 0;
                long paintTime = 0;
                long rowChanges = 0;
+               long sequence = 0;
                
                for(String value : values) {
                   String[] pair = value.split("=");
                   
                   if(operation.equals("refresh")) {
-                     updater.refresh();
+                     updater.refresh(socket);
                   }else if(operation.equals("status")) {
                      if(pair.length > 1) {
                         if(pair[0].equals("sequence")) {
                            if(pair[1].indexOf("@") != -1) {
-                              String time = pair[1].split("@")[1];
-                              long sent = Long.parseLong(time);
+                              String[] sequenceAndTime = pair[1].split("@");
+                              long sent = Long.parseLong(sequenceAndTime[1]);
+                              sequence = Long.parseLong(sequenceAndTime[0]);
                               roundTripTime = (System.currentTimeMillis() - sent);                           
-                           }                        
-                        }
+                           }                           
+                        }  
+                        if(pair[0].equals("address")) {
+                           table = pair[1];                        
+                        }                        
                         if(pair[0].equals("duration")) {
                            paintTime = Long.parseLong(pair[1]);                        
                         }
@@ -57,12 +63,13 @@ public class TableListener implements FrameListener {
                         }
                         if(pair[0].equals("user")) {
                            user = pair[1];                        
-                        }                    
+                        }                   
                      }
                   }
                }
                if(text != null && text.startsWith("status:")) {
                   service.update(user, paintTime, roundTripTime, rowChanges);
+                  updater.acknowledge(socket, table, sequence);                       
                }
             }
          }

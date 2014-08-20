@@ -108,15 +108,4 @@ public class ArrayAllocator implements Allocator {
       }
       return new ArrayBuffer(required, limit);
    }
-   
-   /**
-    * This method is used to close the allocator so that resources
-    * that are occupied by the allocator can be freed. This will
-    * allow the allocator to be created and closed repeatedly in
-    * a single process without holding on to resources such as
-    * mapped file buffers or threads.
-    */
-   public void close() throws IOException {
-      return;
-   }  
 }

@@ -42,7 +42,7 @@ public class FileAllocator implements Allocator {
    /**
     * This is the file manager used to create the buffer files.
     */
-   private FileManager manager;
+   private FileWatcher manager;
    
    /**
     * This is the limit up to which buffers are allocated in memory.
@@ -93,7 +93,7 @@ public class FileAllocator implements Allocator {
     * @param limit this is the maximum size for a heap buffer
     */
    public FileAllocator(String prefix, int limit) {
-      this.manager = new FileManager(prefix);
+      this.manager = new FileWatcher(prefix);
       this.limit = limit;
    }
    
@@ -133,16 +133,5 @@ public class FileAllocator implements Allocator {
          return new ArrayBuffer(required); 
       }
       return allocate();
-   }
-   
-   /**
-    * This method is used to close the allocator so that resources
-    * that are occupied by the allocator can be freed. This will
-    * allow the allocator to be created and closed repeatedly in
-    * a single process without holding on to resources such as
-    * mapped file buffers or threads.
-    */
-   public void close() throws IOException {
-      manager.close();
    }
 }

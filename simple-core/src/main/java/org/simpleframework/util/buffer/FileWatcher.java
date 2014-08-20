@@ -1,5 +1,5 @@
 /*
- * FileManager.java February 2008
+ * FileWatcher.java February 2008
  *
  * Copyright (C) 2008, Niall Gallagher <niallg@users.sf.net>
  *
@@ -22,19 +22,16 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 
-import org.simpleframework.util.thread.Daemon;
-
 /**
- * The <code>FileManager</code> object is used to create files that
+ * The <code>FileWatcher</code> object is used to create files that
  * are to be used for file buffers. All files created by this are
  * created in the <code>java.io.tmpdir</code> path. Temporary files
- * created in this directory last for five minutes before being
- * deleted. This ensures that if the server is running for a long
- * period of time the file system is not exhausted.
+ * created in this directory last for a configurable length of time
+ * before they are deleted.
  * 
  * @author Niall Gallagher
  */
-class FileManager extends Daemon implements FileFilter {
+class FileWatcher implements FileFilter {
    
    /**
     * This is the prefix for the temporary files created.
@@ -47,30 +44,33 @@ class FileManager extends Daemon implements FileFilter {
    private final long duration;
    
    /**
-    * Constructor for the <code>FileManager</code> object. This will
-    * create a thread that runs every five minutes and cleans up
-    * files that have been created for buffers. Due to the period
-    * of time polled, files could exist for up to ten minutes.
+    * Constructor for the <code>FileWatcher</code> object. This will
+    * allow temporary files to exist for five minutes. After this 
+    * time the will be removed from the underlying directory. Any
+    * request for a new file will result in a sweep of the temporary
+    * directory for all matching files, if they have expired they
+    * will be deleted.
     * 
     * @param prefix this is the file name prefix for the files
     */
-   public FileManager(String prefix) {
+   public FileWatcher(String prefix) {
       this(prefix, 300000);  
    }
    
    /**
-    * Constructor for the <code>FileManager</code> object. This will
-    * create a thread that runs every five minutes and cleans up
-    * files that have been created for buffers. Due to the period
-    * of time polled, files could exist for up to ten minutes.
+    * Constructor for the <code>FileWatcher</code> object. This will
+    * allow temporary files to exist for a configurable length of time.
+    * After this time the will be removed from the underlying directory. 
+    * Any request for a new file will result in a sweep of the temporary
+    * directory for all matching files, if they have expired they
+    * will be deleted.
     * 
     * @param prefix this is the file name prefix for the files
     * @param duration this is the duration the files exist for
     */
-   public FileManager(String prefix, long duration) {
+   public FileWatcher(String prefix, long duration) {
       this.duration = duration;
       this.prefix = prefix;
-      this.start();
    }
    
    /**
@@ -84,7 +84,16 @@ class FileManager extends Daemon implements FileFilter {
     * @return this returns a created temporary file for buffers
     */
    public File create() throws IOException {
-      return create(prefix);
+      File path = create(prefix);      
+      
+      if(!path.isDirectory()) {
+         File parent = path.getParentFile();
+         
+         if(parent.isDirectory()) {
+            clean(parent);
+         }
+      }
+      return path;  
    }
    
    /**
@@ -107,40 +116,7 @@ class FileManager extends Daemon implements FileFilter {
       }
       return file;
    }
-   
-   /**
-    * This is the run method that will periodically poll the file
-    * file system for temporary buffer files. If files matching the
-    * pattern are found and have not been modified in the duration
-    * period of time then they will be deleted to ensure that the
-    * file system is not exhausted during a long server execution.
-    */
-   public void run() {
-      while(isActive()) {
-         try {
-            Thread.sleep(duration);
-            clean();
-         } catch(Exception e) {
-            continue;
-         }
-      }
-   }
-   
-   /**
-    * When this method is invoked the files that match the pattern
-    * of the temporary files are evaluated for deletion. Only those
-    * files that have not been modified in the duration period can
-    * be deleted. This ensures the file system is not exhausted.
-    */
-   private void clean() throws IOException {
-      File path = create();
-      
-      if(!path.isDirectory()) {
-         path = path.getParentFile();
-      }
-      clean(path);  
-   }
-   
+
    /**
     * When this method is invoked the files that match the pattern
     * of the temporary files are evaluated for deletion. Only those
@@ -153,7 +129,11 @@ class FileManager extends Daemon implements FileFilter {
       File[] list = path.listFiles(this);
       
       for(File next : list) {
-         next.delete();
+         for(int i = 0; i < 3; i++) {
+            if(next.delete()) {
+               break;
+            }
+         }
       }
    }
    
@@ -195,20 +175,5 @@ class FileManager extends Daemon implements FileFilter {
          return false;
       }
       return name.startsWith(prefix);
-   }
-   
-   /**
-    * This method is used to close the allocator so that resources
-    * that are occupied by the allocator can be freed. This will
-    * allow the allocator to be created and closed repeatedly in
-    * a single process without holding on to resources such as
-    * mapped file buffers or threads.
-    */
-   public void close() throws IOException {
-      if(isActive()) {
-         stop();
-         interrupt();
-         clean();
-      }
    }
 }

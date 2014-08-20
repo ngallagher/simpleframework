@@ -41,11 +41,6 @@ public class ContainerProcessor implements Processor {
     * This is the controller used to process the created channels.
     */
    private final Controller controller;   
-   
-   /**
-    * This is the allocator used internally be this processor.
-    */
-   private final Allocator allocator;
 
    /**
     * Constructor for the <code>ContainerProcessor</code> object.
@@ -74,7 +69,6 @@ public class ContainerProcessor implements Processor {
     */
    public ContainerProcessor(Container container, Allocator allocator, int count, int select) throws IOException {
      this.controller = new ContainerController(container, allocator, count, select);
-     this.allocator = allocator;
    }        
 
    /**
@@ -105,6 +99,5 @@ public class ContainerProcessor implements Processor {
     */    
    public void stop() throws IOException {
       controller.stop();
-      allocator.close();
    }
  }

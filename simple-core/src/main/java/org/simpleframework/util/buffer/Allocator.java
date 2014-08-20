@@ -18,7 +18,6 @@
 
 package org.simpleframework.util.buffer;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -30,7 +29,7 @@ import java.io.IOException;
  *
  * @author Niall Gallagher
  */ 
-public interface Allocator extends Closeable {
+public interface Allocator {
  
    /**
     * This method is used to allocate a default buffer. Typically this
@@ -53,13 +52,4 @@ public interface Allocator extends Closeable {
     * @return this returns an allocated buffer with a specified size
     */
    Buffer allocate(long size) throws IOException;
-   
-   /**
-    * This method is used to close the allocator so that resources
-    * that are occupied by the allocator can be freed. This will
-    * allow the allocator to be created and closed repeatedly in
-    * a single process without holding on to resources such as
-    * mapped file buffers or threads.
-    */
-   void close() throws IOException;
 }
