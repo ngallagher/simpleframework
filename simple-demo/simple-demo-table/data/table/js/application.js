@@ -15,6 +15,7 @@ function start() {
 	var products = extractParameter("products");
 	var companies = extractParameter("companies");	
 	
+	subscription['panic'] = false;
 	subscription['companies'] = companies;
 	subscription['products'] = products;
 	subscription['company'] = company;
@@ -31,6 +32,7 @@ function reconnect(type) {
 	var products = extractParameter("products");
 	var companies = extractParameter("companies");	
 	
+	subscription['panic'] = false;
 	subscription['companies'] = companies;
 	subscription['products'] = products;
 	subscription['company'] = company;
@@ -38,6 +40,15 @@ function reconnect(type) {
 	subscription['type'] = type;
 	subscription['address'] = "ws://localhost:6060/" + type + "?user=" + user + "&company=" + company + "&products=" + products + "&companies=" + companies;
 	
+	socket.close();
+}
+
+function disconnect() {	
+	if(subscription.panic == true) {
+		subscription['panic'] = false;
+	} else {
+		subscription['panic'] = true;
+	}
 	socket.close();
 }
 
@@ -77,7 +88,9 @@ function connect() {
 		var data = message.data.substring(1);
 
 		if (message.data.charAt(0) == 'T') {
-			deltaUpdate(this, data);			
+			if(subscription.panic == false) {
+				deltaUpdate(this, data);
+			}
 		} else if (message.data.charAt(0) == 'S') {
 			schemaUpdate(this, data);
 		}
@@ -394,12 +407,15 @@ function clearTable(table) {
 		for( var j = 0; j < schema.length; j++) {
 			var name = schema[j].name;
 			
+			template.style[j] = '';
 			template[name] = '';
 			record[name] = '';
 		}		
 		templates[table.name][i] = template;
 		records[table.name][i] = record;
+		table.set(template.recid, template, true); // noRefresh=true do not refresh		
 	}
+	table.refresh();
 }
 
 function expandWidth(table) {

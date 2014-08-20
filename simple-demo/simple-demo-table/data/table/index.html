@@ -58,6 +58,9 @@ function showMyPrices(){
 	reconnect("company");
 	//location.href = "http://localhost:6060/grid.html?user=tom&company=ANZ&type=company";
 }
+function panic() {
+	disconnect();
+}
 $(function () {
 
     // -- LAYOUT
@@ -79,9 +82,9 @@ $(function () {
         name: 'topLayout',
         padding: 0,
         panels: [                      
-            { type: 'left', size: '40%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Outright/EFP</span></td><td><button class='btn'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn' onclick='showMarket()'>Market</button></td><td><button class='btn' onclick='showMyPrices()'>My Prices</button></td></tr></table></div>" },        
-            { type: 'main', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Lit EFP</span></td><td><button class='btn'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn'>My Levels</button></td></tr></table></div>" },
-            { type: 'right', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Lit Switches</span></td><td><button class='btn'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn'>My Levels</button></td></tr></table></div>" }            
+            { type: 'left', size: '40%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Outright/EFP</span></td><td><button class='btn' onclick='panic()'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn' onclick='showMarket()'>Market</button></td><td><button class='btn' onclick='showMyPrices()'>My Prices</button></td></tr></table></div>" },        
+            { type: 'main', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Lit EFP</span></td><td><button class='btn' onclick='panic()'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn' onclick='showMyPrices()'>My Levels</button></td></tr></table></div>" },
+            { type: 'right', size: '30%', style: pstyle, content: "<div class='titleTop'><table><tr><td><span style='font-weight: bold; padding: 4px;'>Lit Switches</span></td><td><button class='btn' onclick='panic()'>Panic</button></td><td><button class='btn'>Shrink</button></td><td><button class='btn' onclick='showMyPrices()'>My Levels</button></td></tr></table></div>" }            
         ]
     });    
 
