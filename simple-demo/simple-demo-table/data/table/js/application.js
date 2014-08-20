@@ -98,7 +98,8 @@ function connect() {
 }
 
 function openDialog(address, name, width, height) {	
-	var handle = window.open(address, name, 'height=' + height + ',width=' + width);
+	var time = currentTime();
+	var handle = window.open(address, name + time, 'height=' + height + ',width=' + width);
 		
 	if(handle != undefined) {
 		if (handle.focus) {

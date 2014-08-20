@@ -31,7 +31,6 @@ import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameType;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Sender;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -48,9 +47,9 @@ import org.simpleframework.transport.trace.Trace;
 class FrameEncoder {
 
    /**
-    * This is the charset used to encode the text frames with.
+    * This is the underlying sender used to send the frames.
     */
-   private final String charset;
+   private final OutputBarrier barrier;   
    
    /**
     * This is the TCP channel the frames are delivered over.
@@ -58,14 +57,14 @@ class FrameEncoder {
    private final Channel channel;
    
    /**
-    * This is the underlying sender used to send the frames.
-    */
-   private final Sender sender;
-   
-   /**
     * This is used to trace the traffic on the channel.
     */
-   private final Trace trace;
+   private final Trace trace;      
+
+   /**
+    * This is the charset used to encode the text frames with.
+    */
+   private final String charset;
 
    /**
     * Constructor for the <code>FrameEncoder</code> object. This is 
@@ -89,9 +88,9 @@ class FrameEncoder {
     * @param charset this is the character encoding to encode with
     */
    public FrameEncoder(Request request, String charset) {
+      this.barrier = new OutputBarrier(request, 5000);
       this.channel = request.getChannel();
-      this.sender = channel.getSender();
-      this.trace = channel.getTrace();
+      this.trace = channel.getTrace();      
       this.charset = charset;
    }
    
@@ -223,7 +222,7 @@ class FrameEncoder {
          reply[i + count] = data[i];
       }
       trace.trace(WRITE_FRAME, type);
-      sender.send(reply);
+      barrier.send(reply);
       
       return reply.length;
    }

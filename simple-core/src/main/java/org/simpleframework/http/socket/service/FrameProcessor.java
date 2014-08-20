@@ -182,10 +182,13 @@ class FrameProcessor {
                listener.onFrame(session, frame);
             }             
             if(type.isClose()){
-               Reason reason = extractor.extract(frame);
-               
-               close(reason); 
-               encoder.encode(reason);               
+               Reason reason = extractor.extract(frame);               
+              
+               if(reason != null) {
+                  close(reason);
+               } else {
+                  close();
+               }
             } 
             consumer.clear();           
          }

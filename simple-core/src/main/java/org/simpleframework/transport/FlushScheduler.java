@@ -77,6 +77,11 @@ class FlushScheduler {
    private volatile boolean closed;
    
    /**
+    * This is used to determine if there is currently a flush.
+    */
+   private volatile boolean flushing;
+   
+   /**
     * Constructor for the <code>FlushScheduler</code> object. This 
     * is* used to create a scheduler that will execute the provided
     * task when the associated socket is write ready. 
@@ -138,10 +143,18 @@ class FlushScheduler {
     * an <code>IOException</code> with the root cause.
     */
    private void listen() throws IOException {
+      if(flushing) {
+         throw new TransportException("Socket already flushing");
+      }
       try {
-         if(!closed) {   
-            trace.trace(WRITE_BLOCKING);
-            lock.wait(120000);
+         if(!closed) {
+            try {
+               flushing = true;
+               trace.trace(WRITE_BLOCKING);
+               lock.wait(120000);
+            } finally {
+               flushing = false;
+            }
          }
       } catch(Exception e) {
          throw new TransportException("Could not schedule for flush", e);

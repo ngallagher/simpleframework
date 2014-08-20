@@ -19,6 +19,7 @@
 package org.simpleframework.transport;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.simpleframework.transport.reactor.Reactor;
 
@@ -50,7 +51,7 @@ class SocketFlusher {
    /**
     * This is the writer used to queue the buffers written.
     */
-   private SocketBuffer buffer;      
+   private SocketBuffer buffer;    
    
    /**
     * This is used to determine if the socket flusher is closed.
