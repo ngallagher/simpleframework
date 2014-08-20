@@ -2,17 +2,47 @@ var templates = {};
 var records = {};
 var schemas = {};
 var footer = {};
+var subscription = {};
+var socket = null;
 var connections = 0;
 var attempts = 0;
 var total = 1;
 
-function connect() {
-	var user = extractParameter("user");
+function start() {
 	var type = extractParameter("type");	
+	var user = extractParameter("user");
 	var company = extractParameter("company");
 	var products = extractParameter("products");
-	var companies = extractParameter("companies");		
-	var socket = new WebSocket("ws://localhost:6060/" + type + "?user=" + user + "&company=" + company + "&products=" + products + "&companies=" + companies);
+	var companies = extractParameter("companies");	
+	
+	subscription['companies'] = companies;
+	subscription['products'] = products;
+	subscription['company'] = company;
+	subscription['user'] = user;
+	subscription['type'] = type;
+	subscription['address'] = "ws://localhost:6060/" + type + "?user=" + user + "&company=" + company + "&products=" + products + "&companies=" + companies;
+	
+	connect();
+}
+
+function reconnect(type) {	
+	var user = extractParameter("user");
+	var company = extractParameter("company");
+	var products = extractParameter("products");
+	var companies = extractParameter("companies");	
+	
+	subscription['companies'] = companies;
+	subscription['products'] = products;
+	subscription['company'] = company;
+	subscription['user'] = user;
+	subscription['type'] = type;
+	subscription['address'] = "ws://localhost:6060/" + type + "?user=" + user + "&company=" + company + "&products=" + products + "&companies=" + companies;
+	
+	socket.close();
+}
+
+function connect() {
+	socket = new WebSocket(subscription.address);
 
 	socket.onopen = function() {
 		attempts = 1;
@@ -129,7 +159,8 @@ function schemaUpdate(socket, message) {
 		if(width < minimum) {
 			expandWidth(table);
 			requestRefresh(socket, 'schemaUpdate');
-		}	
+		}
+		clearTable(table);
 	}
 }
 
@@ -351,6 +382,26 @@ function decodeValue(value) {
 	return text;
 }
 
+function clearTable(table) {
+	var schema = schemas[table.name];	
+	var height = table.total;
+	var count = 0;
+	
+	for ( var i = 0; i < height; i++) {
+		var record = {recid : i, style: []};
+		var template = {recid : i, style: []};		
+		
+		for( var j = 0; j < schema.length; j++) {
+			var name = schema[j].name;
+			
+			template[name] = '';
+			record[name] = '';
+		}		
+		templates[table.name][i] = template;
+		records[table.name][i] = record;
+	}
+}
+
 function expandWidth(table) {
 	var schema = schemas[table.name];	
 	var width = table.columns.length;	
@@ -400,4 +451,4 @@ function expandHeight(table, row) {
 	}
 }
 
-window.addEventListener("load", connect, false);
+window.addEventListener("load", start, false);

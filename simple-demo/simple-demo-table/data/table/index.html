@@ -51,10 +51,12 @@
 
 <script>
 function showMarket(){
-	location.href = "http://localhost:6060/grid.html?user=tom&company=ANZ&type=best";
+	reconnect("best");
+	//location.href = "http://localhost:6060/grid.html?user=tom&company=ANZ&type=best";
 }
 function showMyPrices(){
-	location.href = "http://localhost:6060/grid.html?user=tom&company=ANZ&type=company";
+	reconnect("company");
+	//location.href = "http://localhost:6060/grid.html?user=tom&company=ANZ&type=company";
 }
 $(function () {
 

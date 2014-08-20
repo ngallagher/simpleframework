@@ -54,7 +54,9 @@ class SocketTrace implements Trace {
     * @param event this is the event that occurred on the socket
     */
    public void trace(Object event) {
-      trace(event, null);
+      if(trace != null) {
+         trace.trace(event);
+      }
    }
 
    /**
@@ -65,13 +67,9 @@ class SocketTrace implements Trace {
     * @param event this is the event that occurred on the socket
     * @param value provides additional information such as an exception
     */
-   public void trace(Object event, Object value) {
-      try {
-         if(trace != null) {
-            trace.trace(event, value);
-         }
-      } catch(Throwable e) {
-         return;
+   public void trace(Object event, Object value) {     
+      if(trace != null) {
+         trace.trace(event, value);
       }
    }      
 }

@@ -90,7 +90,7 @@ public abstract class Daemon implements Runnable {
       
       if (!active.get()) {
          Thread thread = factory.newThread(delegate, type);
-
+         
          reference.set(thread);
          active.set(true);
          thread.start();
