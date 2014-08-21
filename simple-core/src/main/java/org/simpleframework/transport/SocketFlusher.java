@@ -19,7 +19,6 @@
 package org.simpleframework.transport;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.simpleframework.transport.reactor.Reactor;
 
