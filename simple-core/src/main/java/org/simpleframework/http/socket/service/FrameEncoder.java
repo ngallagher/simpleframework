@@ -42,7 +42,7 @@ import org.simpleframework.transport.trace.Trace;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.http.socket.service.FrameChannel
+ * @see org.simpleframework.http.socket.service.FrameConnection
  */
 class FrameEncoder {
 

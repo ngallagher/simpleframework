@@ -15,17 +15,17 @@ import org.simpleframework.transport.trace.Analyzer;
 public class WebSocketChatRoom extends Thread implements Service {
    
    private final WebSocketChatRoomListener listener;
-   private final Map<String, WebSocket> sockets;
+   private final Map<String, FrameChannel> sockets;
    private final Set<String> users;
    
    public WebSocketChatRoom() {
       this.listener = new WebSocketChatRoomListener(this);
-      this.sockets = new ConcurrentHashMap<String, WebSocket>();
+      this.sockets = new ConcurrentHashMap<String, FrameChannel>();
       this.users = new CopyOnWriteArraySet<String>();
    }  
   
    public void connect(Session connection) {
-      WebSocket socket = connection.getSocket();
+      FrameChannel socket = connection.getChannel();
       Request req = connection.getRequest();      
       Cookie user = req.getCookie("user");
       
@@ -43,12 +43,12 @@ public class WebSocketChatRoom extends Thread implements Service {
       
    }
    
-   public void join(String user, WebSocket operation) {
+   public void join(String user, FrameChannel operation) {
       sockets.put(user, operation);
       users.add(user);
    }
    
-   public void leave(String user, WebSocket operation){
+   public void leave(String user, FrameChannel operation){
       sockets.put(user, operation);
       users.add(user);
    }
@@ -56,7 +56,7 @@ public class WebSocketChatRoom extends Thread implements Service {
    public void distribute(Frame frame) {
       try {         
          for(String user : users) {
-            WebSocket operation = sockets.get(user);
+            FrameChannel operation = sockets.get(user);
             
             try {
                

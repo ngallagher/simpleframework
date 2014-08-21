@@ -9,21 +9,21 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.service.Service;
 
 public class MemoryAnalyzer extends Thread implements Service {
 
    private static final Logger LOG = Logger.getLogger(MemoryAnalyzer.class);
 
-   private final Set<WebSocket> sockets;
+   private final Set<FrameChannel> sockets;
 
    public MemoryAnalyzer() {
-      this.sockets = new CopyOnWriteArraySet<WebSocket>();
+      this.sockets = new CopyOnWriteArraySet<FrameChannel>();
    }
 
    public void connect(Session connection) {
-      WebSocket socket = connection.getSocket();
+      FrameChannel socket = connection.getChannel();
 
       try {
          sockets.add(socket);
@@ -47,7 +47,7 @@ public class MemoryAnalyzer extends Thread implements Service {
             String heapFreePoint = String.format("heapFree:%s,%s", time, free);
             String threadCountPoint = String.format("threadCount:%s,%s", time, count);            
             
-            for (WebSocket socket : sockets) {
+            for (FrameChannel socket : sockets) {
                try {
                   socket.send(heapUsedPoint);
                   socket.send(heapFreePoint);

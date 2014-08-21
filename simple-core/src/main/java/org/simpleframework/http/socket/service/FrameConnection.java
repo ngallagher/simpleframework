@@ -1,5 +1,5 @@
 /*
- * FrameChannel.java February 2014
+ * FrameConnection.java February 2014
  *
  * Copyright (C) 2014, Niall Gallagher <niallg@users.sf.net>
  *
@@ -29,15 +29,15 @@ import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.Sender;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
 
 /**
- * The <code>FrameChannel</code> represents a full duplex communication
- * channel as defined by RFC 6455. Any instance of this will provide
+ * The <code>FrameConnection</code> represents a connection that can
+ * send and receivd WebSocket frames. Any instance of this will provide
  * a means to perform asynchronous writes and reads to a remote client
  * using a lightweight framing protocol. A frame is a finite length
  * sequence of bytes that can hold either text or binary data. Also,
@@ -49,11 +49,8 @@ import org.simpleframework.transport.trace.Trace;
  * communication, which greatly reduces overhead and complication.
  * 
  * @author Niall Gallagher
- * 
- * @see org.simpleframework.http.socket.FrameListener
- * @see org.simpleframework.http.socket.Frame
  */
-class FrameChannel implements WebSocket {
+class FrameConnection implements FrameChannel {
    
    /**
     * The collector is used to collect frames from the TCP channel.
@@ -66,12 +63,7 @@ class FrameChannel implements WebSocket {
    private final FrameEncoder encoder;
    
    /**
-    * This is the socket that is used to reading and writing frames.
-    */
-   private final SessionChannel socket;
-   
-   /**
-    * This is the session object that has a synchronized socket.
+    * This is the session object that has a synchronized channel.
     */
    private final Session session;   
    
@@ -96,7 +88,7 @@ class FrameChannel implements WebSocket {
    private final Trace trace;
    
    /**
-    * Constructor for the <code>FrameChannel</code> object. This is used
+    * Constructor for the <code>FrameConnection</code> object. This is used
     * to create a channel that can read and write frames over a TCP
     * channel. For asynchronous read and dispatch operations this will
     * produce an operation to collect and process RFC 6455 frames.
@@ -105,10 +97,9 @@ class FrameChannel implements WebSocket {
     * @param response this is the initiating response for the WebSocket
     * @param reactor this is the reactor used to process frames
     */
-   public FrameChannel(Request request, Response response, Reactor reactor) {
-      this.encoder = new FrameEncoder(request);
-      this.socket = new SessionChannel(this);    
-      this.session = new RequestSession(socket, request, response);
+   public FrameConnection(Request request, Response response, Reactor reactor) {
+      this.encoder = new FrameEncoder(request);  
+      this.session = new ServiceSession(this, request, response);
       this.operation = new FrameCollector(encoder, session, request, reactor);
       this.reason = new Reason(NORMAL_CLOSURE);
       this.channel = request.getChannel();
@@ -120,7 +111,7 @@ class FrameChannel implements WebSocket {
     * This is used to open the channel and begin consuming frames. This
     * will also return the session that contains the details for the
     * created WebSocket such as the initiating request and response as
-    * well as the <code>WebSocket</code> object.
+    * well as the <code>FrameChannel</code> object.
     * 
     * @return the session associated with the WebSocket
     */

@@ -28,7 +28,7 @@ import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.FrameType;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.WebSocketAnalyzer;
 import org.simpleframework.transport.Processor;
 import org.simpleframework.transport.ProcessorServer;
@@ -70,10 +70,8 @@ public class WebSocketPerformanceTest {
       }
    }
    
-   public static class MessageGeneratorService extends Thread implements Service {
-      
-      
-      /*
+   public static class MessageGeneratorService extends Thread implements Service {     
+     
       private static final String MESSAGE = 
       "{'product': {\r\n"+
       "  'id': '1234',\r\n"+
@@ -85,15 +83,15 @@ public class WebSocketPerformanceTest {
       "      {'volume': '100000'}\r\n"+
       "    ]\r\n"+
       "  }\r\n"+
-      "}}";*/
+      "}}";
       
-      private final Set<WebSocket> sockets;
+      private final Set<FrameChannel> sockets;
       private final MessageCounter listener;
       private final AtomicInteger counter;
       private final AtomicBoolean begin;
 
       public MessageGeneratorService() {
-         this.sockets = new CopyOnWriteArraySet<WebSocket>();
+         this.sockets = new CopyOnWriteArraySet<FrameChannel>();
          this.counter = new AtomicInteger();
          this.listener = new MessageCounter(counter);
          this.begin = new AtomicBoolean();
@@ -106,7 +104,7 @@ public class WebSocketPerformanceTest {
       }
      
       public void connect(Session connection) {
-         WebSocket socket = connection.getSocket();   
+         FrameChannel socket = connection.getChannel();   
          
          try {
             sockets.add(socket);
@@ -118,7 +116,7 @@ public class WebSocketPerformanceTest {
 
       public void distribute(Frame frame) {
          try {         
-            for(WebSocket socket : sockets) {
+            for(FrameChannel socket : sockets) {
                try {                  
                   socket.send(frame);
                } catch(Exception e){
@@ -135,7 +133,7 @@ public class WebSocketPerformanceTest {
       public void run() {
          try {
             for(int i = 0; i < 10000000; i++) {
-               distribute(new DataFrame(FrameType.TEXT, System.currentTimeMillis() + ":" + "message-"+1));
+               distribute(new DataFrame(FrameType.TEXT, System.currentTimeMillis() + ":" + MESSAGE));
             }
          } catch(Exception e) {
             e.printStackTrace();
@@ -158,7 +156,7 @@ public class WebSocketPerformanceTest {
          this.container = new RouterContainer(this, negotiator, 10, 100000);
          this.allocator = new ArrayAllocator();
          this.processor = new ContainerProcessor(container, allocator, 10);
-         this.server = new ProcessorServer(processor, 10, 8192);
+         this.server = new ProcessorServer(processor, 10, 8192*10);
          this.connection = new SocketConnection(server, agent);
          this.address = new InetSocketAddress(port);
       }
@@ -246,6 +244,10 @@ public class WebSocketPerformanceTest {
                   }
                   consumer.clear();
                }
+               
+               if(!cursor.isReady()) { // wait for it to fill                  
+                  Thread.sleep(1);
+               }               
             }
          } catch(Exception e) {
             e.printStackTrace();
@@ -261,13 +263,13 @@ public class WebSocketPerformanceTest {
             String time = text.substring(0, index);            
             long sendTime = Long.parseLong(time);
             long timeElapsed = System.currentTimeMillis() - sendTime;
-            
+         
             duration.getAndAdd(timeElapsed);
             counter.getAndIncrement();
-            
+
             if(debug) {                                    
                System.err.println("count=" + counter + " text="+text + " time="+duration);            
-            }
+            }            
          }
       }
    }
@@ -423,12 +425,12 @@ public class WebSocketPerformanceTest {
       MessageGeneratorContainer container = new MessageGeneratorContainer(service, agent, 7070);
       MessageTimer timer = new MessageTimer(counter, duration);
       
-      agent.start();
+      //agent.start();
       dumper.start();
       timer.start();
       container.connect();
       
-      for(int i = 0; i < 50; i++) {
+      for(int i = 0; i < 100; i++) {
          MessageGeneratorClient client = new MessageGeneratorClient(service, counter, duration, 7070, false);
          client.start();
       }

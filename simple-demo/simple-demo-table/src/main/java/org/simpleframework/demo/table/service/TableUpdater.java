@@ -12,7 +12,7 @@ import org.simpleframework.demo.table.extract.RowExtractor;
 import org.simpleframework.demo.table.format.RowFormatter;
 import org.simpleframework.demo.table.schema.TableSchema;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.util.thread.Daemon;
 
 public class TableUpdater extends Daemon {   
@@ -54,7 +54,7 @@ public class TableUpdater extends Daemon {
    }
   
 
-   public void subscribe(WebSocket socket, Query client) {
+   public void subscribe(FrameChannel socket, Query client) {
       TableSubscription subscription = model.subscribe(client);
       
       if(subscription != null) {

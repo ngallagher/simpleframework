@@ -1,5 +1,5 @@
 /*
- * SessionChannel.java February 2014
+ * FrameChannel.java February 2014
  *
  * Copyright (C) 2014, Niall Gallagher <niallg@users.sf.net>
  *
@@ -16,17 +16,12 @@
  * permissions and limitations under the License.
  */
 
-package org.simpleframework.http.socket.service;
+package org.simpleframework.http.socket;
 
 import java.io.IOException;
 
-import org.simpleframework.http.socket.Frame;
-import org.simpleframework.http.socket.FrameListener;
-import org.simpleframework.http.socket.Reason;
-import org.simpleframework.http.socket.WebSocket;
-
 /**
- * The <code>SessionChannel</code> represents a full duplex communication
+ * The <code>FrameChannel</code> represents a full duplex communication
  * channel as defined by RFC 6455. Any instance of this will provide
  * a means to perform asynchronous writes and reads to a remote client
  * using a lightweight framing protocol. A frame is a finite length
@@ -39,25 +34,12 @@ import org.simpleframework.http.socket.WebSocket;
  * communication, which greatly reduces overhead and complication.
  * 
  * @author Niall Gallagher
+ * 
+ * @see org.simpleframework.http.socket.FrameListener
+ * @see org.simpleframework.http.socket.Frame
  */
-class SessionChannel implements WebSocket {
+public interface FrameChannel {
    
-   /**
-    * This is the internal channel for full duplex communication. 
-    */
-   private final FrameChannel channel;
-   
-   /**
-    * Constructor for the <code>SessionChannel</code> object. This is 
-    * used to create a channel that is given to the application. This
-    * is synchronized so only one frame can be dispatched at a time.     
-    * 
-    * @param channel this is the channel to delegate to
-    */
-   public SessionChannel(FrameChannel channel) {
-      this.channel = channel;
-   }
-
    /**
     * This is used to send data to the connected client. To prevent
     * an application code from causing resource issues this will block
@@ -69,9 +51,7 @@ class SessionChannel implements WebSocket {
     * 
     * @param data this is the data that is to be sent
     */
-   public synchronized void send(byte[] data) throws IOException {
-      channel.send(data);
-   }
+   void send(byte[] data) throws IOException;
    
    /**
     * This is used to send text to the connected client. To prevent
@@ -84,9 +64,7 @@ class SessionChannel implements WebSocket {
     * 
     * @param text this is the text that is to be sent
     */
-   public synchronized void send(String text) throws IOException {
-      channel.send(text);
-   }
+   void send(String text) throws IOException;
    
    /**
     * This is used to send data to the connected client. To prevent
@@ -99,9 +77,7 @@ class SessionChannel implements WebSocket {
     * 
     * @param frame this is the frame that is to be sent
     */
-   public synchronized void send(Frame frame) throws IOException {
-      channel.send(frame);
-   }
+   void send(Frame frame) throws IOException;
    
    /**
     * This is used to register a <code>FrameListener</code> to this
@@ -112,9 +88,7 @@ class SessionChannel implements WebSocket {
     * 
     * @param listener this is the listener that is to be registered
     */
-   public synchronized void register(FrameListener listener) throws IOException {
-      channel.register(listener);
-   }
+   void register(FrameListener listener) throws IOException;
    
    /**
     * This is used to remove a <code>FrameListener</code> from this
@@ -123,9 +97,7 @@ class SessionChannel implements WebSocket {
     * 
     * @param listener this is the listener to be removed
     */
-   public synchronized void remove(FrameListener listener) throws IOException {
-      channel.remove(listener);
-   }
+   void remove(FrameListener listener) throws IOException;
    
    /**
     * This is used to close the connection with a specific reason.
@@ -134,16 +106,12 @@ class SessionChannel implements WebSocket {
     * 
     * @param reason the reason for closing the connection
     */
-   public synchronized void close(Reason reason) throws IOException {
-      channel.close(reason);
-   }
+   void close(Reason reason) throws IOException;   
    
    /**
     * This is used to close the connection without a specific reason.
     * The close reason will be sent as a control frame before the
     * TCP connection is terminated.
     */
-   public  void close() throws IOException {
-      channel.close();
-   }
+   void close() throws IOException;
 }

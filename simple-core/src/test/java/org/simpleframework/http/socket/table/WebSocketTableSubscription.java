@@ -4,17 +4,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 
 public class WebSocketTableSubscription {
 
    private final Set<Integer> missedUpdates;
    private final AtomicLong timeStamp;
-   private final WebSocket socket;
+   private final FrameChannel socket;
    private final AtomicLong send;
    private final AtomicLong received;
       
-   public WebSocketTableSubscription(WebSocket socket) {
+   public WebSocketTableSubscription(FrameChannel socket) {
       this.timeStamp = new AtomicLong();
       this.received = new AtomicLong();
       this.send = new AtomicLong();
@@ -38,7 +38,7 @@ public class WebSocketTableSubscription {
       return timeStamp;
    }
    
-   public WebSocket getSocket() {
+   public FrameChannel getSocket() {
       return socket;
    }
 }

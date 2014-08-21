@@ -27,7 +27,7 @@ package org.simpleframework.http.socket;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.http.socket.WebSocket
+ * @see org.simpleframework.http.socket.FrameChannel
  */
 public interface FrameListener {
    

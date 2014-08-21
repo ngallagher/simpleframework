@@ -64,7 +64,7 @@ class FrameConsumer {
    public FrameConsumer() {
       this.header = new FrameHeaderConsumer();
       this.builder = new FrameBuilder(header);
-      this.buffer = new byte[0];
+      this.buffer = new byte[2048];
    }
    
    /**

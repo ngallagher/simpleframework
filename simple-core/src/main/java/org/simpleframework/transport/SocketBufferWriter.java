@@ -78,15 +78,15 @@ class SocketBufferWriter {
 
    /**
     * This method is used to flush all of the queued buffers to 
-    * the client. This method will block not block but will simply
-    * flush any data to the underlying transport. Internally the
-    * data will be queued for delivery to the connected entity.    
+    * the client. This method will not block but will simply flush 
+    * any data to the underlying transport. Internally the data 
+    * will be queued for delivery to the connected entity.    
     */ 
    public void flush() throws IOException {
       boolean done = writer.flush(); // returns true only if everything is delivered
 
       if(!done) {
-         flusher.flush(); // here we will block for an op write event!!
+         flusher.flush(); // here we will block for an op write event if the buffer contains a reference
       }
    }
 

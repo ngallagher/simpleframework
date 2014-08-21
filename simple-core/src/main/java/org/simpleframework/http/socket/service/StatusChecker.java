@@ -40,7 +40,7 @@ import org.simpleframework.util.thread.ScheduledExecutor;
  * The <code>StatusChecker</code> object is used to perform health 
  * checks on connected sessions. Health is determined using the ping
  * pong protocol defined in RFC 6455. The ping pong protocol requires
- * that any enpoint must respond to a ping control frame with a pong
+ * that any endpoint must respond to a ping control frame with a pong
  * control frame containing the same payload. This session checker 
  * will send out out ping controls frames and wait for a pong frame.
  * If it does not receive a pong frame after a configured expiry time
@@ -61,14 +61,14 @@ class StatusChecker implements Runnable{
    private final ScheduledExecutor scheduler;   
    
    /**
-    * This is a count of the number of unacknowledged ping frames.
-    */
-   private final AtomicLong counter;     
-   
-   /**
     * This is the WebSocket this this pinger will be monitoring.
     */
-   private final FrameChannel socket;      
+   private final FrameConnection connection;      
+   
+   /**
+    * This is a count of the number of unacknowledged ping frames.
+    */
+   private final AtomicLong counter;        
    
    /**
     * This is the underling TCP channel that is being checked.
@@ -107,11 +107,11 @@ class StatusChecker implements Runnable{
     * three times the duration of the ping the connection is reset.
     * 
     * @param scheduler this is the scheduler used to execute this
-    * @param socket this is the WebSocket to send the frames over
+    * @param connection this is the WebSocket to send the frames
     * @param request this is the associated request
     * @param frequency this is the frequency with which to ping
     */
-   public StatusChecker(ScheduledExecutor scheduler, FrameChannel socket, Request request, long frequency) {
+   public StatusChecker(ScheduledExecutor scheduler, FrameConnection connection, Request request, long frequency) {
       this.listener = new StatusResultListener(this);
       this.error = new Reason(INTERNAL_SERVER_ERROR);
       this.normal = new Reason(NORMAL_CLOSURE);      
@@ -119,9 +119,9 @@ class StatusChecker implements Runnable{
       this.counter = new AtomicLong();
       this.channel = request.getChannel();
       this.trace = channel.getTrace();
+      this.connection = connection;       
       this.scheduler = scheduler;
-      this.frequency = frequency;
-      this.socket = socket;
+      this.frequency = frequency;        
    }   
    
    /**
@@ -132,9 +132,9 @@ class StatusChecker implements Runnable{
     */
    public void start() {
       try {            
-         socket.register(listener);
+         connection.register(listener);
          trace.trace(WRITE_PING);           
-         socket.send(frame);    
+         connection.send(frame);    
          counter.getAndIncrement();         
          scheduler.execute(this, frequency); 
       } catch(Exception cause) {
@@ -156,12 +156,12 @@ class StatusChecker implements Runnable{
       try { 
          if(count < 3) {
             trace.trace(WRITE_PING);           
-            socket.send(frame);
+            connection.send(frame);
             counter.getAndIncrement();
             scheduler.execute(this, frequency); // schedule the next one
          } else {
             trace.trace(PING_EXPIRED);
-            socket.close(normal);
+            connection.close(normal);
          }
       } catch (Exception cause) {              
          trace.trace(ERROR, cause);
@@ -194,7 +194,7 @@ class StatusChecker implements Runnable{
     */ 
    public void failure() {
       try {
-         socket.close(error);
+         connection.close(error);
          channel.close();           
       } catch(Exception cause) {
          trace.trace(ERROR, cause);       
@@ -210,7 +210,7 @@ class StatusChecker implements Runnable{
     */ 
    public void close() {
       try {
-         socket.close(normal);
+         connection.close(normal);
          channel.close();           
       } catch(Exception cause) {
          trace.trace(ERROR, cause);       

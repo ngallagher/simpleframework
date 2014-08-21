@@ -78,16 +78,16 @@ class SessionBuilder {
     * @return this returns the session associated with the WebSocket
     */
    public Session create(Request request, Response response) throws Exception {
-      FrameChannel operation = new FrameChannel(request, response, reactor);
-      ResponseBuilder responder = new ResponseBuilder(request, response);
-      StatusChecker checker = new StatusChecker(executor, operation, request, ping);
+      FrameConnection connection = new FrameConnection(request, response, reactor);
+      ResponseBuilder builder = new ResponseBuilder(request, response);
+      StatusChecker checker = new StatusChecker(executor, connection, request, ping);
 
       try {
-         responder.commit();
+         builder.commit();
          checker.start();
       } catch(Exception e) {
          throw new IOException("Could not send response", e);
       }
-      return operation.open();
+      return connection.open();
    }
 }

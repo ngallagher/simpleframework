@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.apache.log4j.Logger;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.service.Service;
 
 public class PerformanceAnalyzer extends Thread implements Service {
@@ -68,7 +68,7 @@ public class PerformanceAnalyzer extends Thread implements Service {
             
             for (Session session : sessions) {
                Request request = session.getRequest();
-               WebSocket socket = session.getSocket();
+               FrameChannel socket = session.getChannel();
             
                try {
                   Map attributes = session.getAttributes();

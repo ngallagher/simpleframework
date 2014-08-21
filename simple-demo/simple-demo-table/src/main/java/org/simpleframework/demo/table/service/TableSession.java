@@ -2,21 +2,21 @@ package org.simpleframework.demo.table.service;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 
 public class TableSession {
    
    private final AtomicLong received;
    private final AtomicLong send;
-   private final WebSocket socket;
+   private final FrameChannel socket;
    
-   public TableSession(WebSocket socket) {
+   public TableSession(FrameChannel socket) {
       this.received = new AtomicLong();
       this.send = new AtomicLong();
       this.socket = socket;
    }   
    
-   public WebSocket getSocket() {
+   public FrameChannel getSocket() {
       return socket;
    }
    

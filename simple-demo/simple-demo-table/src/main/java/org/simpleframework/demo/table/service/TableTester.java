@@ -8,9 +8,9 @@ import org.simpleframework.demo.table.Query;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.Reason;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 
-public class TableTester extends Thread implements WebSocket {
+public class TableTester extends Thread implements FrameChannel {
    
    private final TableUpdater updater;
    

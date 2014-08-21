@@ -8,7 +8,7 @@ import org.simpleframework.demo.table.TableCursor;
 import org.simpleframework.demo.table.extract.RowChange;
 import org.simpleframework.demo.table.schema.TableSchema;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 
 public class TableConnection {
    
@@ -27,8 +27,8 @@ public class TableConnection {
    }
    
    public void acknowledge(Session session, String table, long number) {
-      WebSocket socket = session.getSocket();
-      WebSocket expect = this.session.getSocket();
+      FrameChannel socket = session.getChannel();
+      FrameChannel expect = this.session.getSocket();
       
       if(socket == expect) {
          if(this.table.equals(table)) {
@@ -54,7 +54,7 @@ public class TableConnection {
    }
    
    public void updateSchema() throws IOException {
-      WebSocket socket = session.getSocket();
+      FrameChannel socket = session.getSocket();
       AtomicLong counter = session.getSendCount();                         
       long count = counter.get();
       
@@ -68,7 +68,7 @@ public class TableConnection {
    }
    
    public void updateTable() throws IOException {
-      WebSocket socket = session.getSocket();
+      FrameChannel socket = session.getSocket();
       AtomicLong counter = session.getSendCount();      
       List<RowChange> changes = cursor.update();
       long count = counter.get();
@@ -83,8 +83,8 @@ public class TableConnection {
    }   
    
    public void refresh(Session session) throws IOException {
-      WebSocket socket = session.getSocket();
-      WebSocket expect = this.session.getSocket();
+      FrameChannel socket = session.getChannel();
+      FrameChannel expect = this.session.getSocket();
       
       if(socket == expect) {
          cursor.clear();

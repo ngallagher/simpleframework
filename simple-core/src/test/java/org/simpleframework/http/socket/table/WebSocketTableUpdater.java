@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.WebSocketAnalyzer;
 import org.simpleframework.http.socket.service.Service;
 import org.simpleframework.transport.trace.Analyzer;
@@ -32,8 +32,8 @@ public class WebSocketTableUpdater extends Thread implements Service {
    
    public void refresh(Session session) {
       for(WebSocketTableSubscription subscription : subscriptions) {
-         WebSocket socket = subscription.getSocket();  
-         WebSocket other = session.getSocket();
+         FrameChannel socket = subscription.getSocket();  
+         FrameChannel other = session.getChannel();
          
          if(socket == other) {
             AtomicLong timeStamp = subscription.getTimeStamp();
@@ -50,7 +50,7 @@ public class WebSocketTableUpdater extends Thread implements Service {
             Thread.sleep(200);
             
             for(WebSocketTableSubscription subscription : subscriptions) {
-               WebSocket socket = subscription.getSocket();            
+               FrameChannel socket = subscription.getSocket();            
                AtomicLong timeStamp = subscription.getTimeStamp();
                AtomicLong sendCount = subscription.getSendCount();
                long before = System.currentTimeMillis();
@@ -84,7 +84,7 @@ public class WebSocketTableUpdater extends Thread implements Service {
    }
 
    public void connect(Session connection) {
-      WebSocket socket = connection.getSocket();   
+      FrameChannel socket = connection.getChannel();   
       
       try {
          WebSocketTableSubscription subscription = new WebSocketTableSubscription(socket);

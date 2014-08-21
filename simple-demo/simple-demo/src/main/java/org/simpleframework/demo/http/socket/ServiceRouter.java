@@ -6,7 +6,7 @@ import org.simpleframework.demo.thread.ThreadDumper;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.service.Service;
 
 public class ServiceRouter implements Service {
@@ -25,7 +25,7 @@ public class ServiceRouter implements Service {
          Path path = request.getPath();
          String normal = path.getPath();
          Service service = services.get(normal);
-         WebSocket socket = session.getSocket();
+         FrameChannel socket = session.getChannel();
          
          if(service != null) {
             service.connect(session);

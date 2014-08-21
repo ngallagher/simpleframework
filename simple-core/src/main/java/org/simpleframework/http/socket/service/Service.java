@@ -29,7 +29,7 @@ import org.simpleframework.http.socket.Session;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.http.socket.WebSocket
+ * @see org.simpleframework.http.socket.FrameChannel
  */
 public interface Service {
    

@@ -1,16 +1,14 @@
 package org.simpleframework.demo.table.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.simpleframework.demo.table.Query;
 import org.simpleframework.demo.table.product.ProductStaticSource;
 import org.simpleframework.demo.table.telemetry.PerformanceAnalyzer;
 import org.simpleframework.http.Request;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.WebSocket;
 import org.simpleframework.http.socket.service.Service;
 
 public class TableService implements Service {
@@ -27,7 +25,7 @@ public class TableService implements Service {
 
    @Override
    public void connect(Session session) {      
-      WebSocket socket = session.getSocket();
+      FrameChannel socket = session.getChannel();
       Request request = session.getRequest();      
       String user = request.getParameter("user");
       String company = request.getParameter("company");
