@@ -208,7 +208,7 @@
     <constructor-arg value="2" />
   </bean>
 
-  <bean id="WebServerAnalyzer" class="org.simpleframework.demo.trace.ConsoleAnalyzer" init-method="start" />
+  <bean id="WebServerAnalyzer" class="org.simpleframework.demo.trace.ConsoleAnalyzer" />
 
   <bean id="WebServer" class="org.simpleframework.demo.http.WebServer" init-method="start">
     <constructor-arg ref="WebSocketContainer" />

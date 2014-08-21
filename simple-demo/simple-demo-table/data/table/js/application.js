@@ -175,6 +175,7 @@ function schemaUpdate(socket, message) {
 			requestRefresh(socket, 'schemaUpdate');
 		}
 		clearTable(table);
+		finishedLoading();
 	}
 }
 
@@ -263,6 +264,7 @@ function updateTable(socket, table, rows) {
 	}
 	if(total > 0) {
 		drawTable(socket, table, changes);
+		hideSpinner();
 	}
 	return total;
 }
