@@ -2,11 +2,10 @@ package org.simpleframework.demo.http.socket;
 
 import java.util.Map;
 
-import org.simpleframework.demo.thread.ThreadDumper;
 import org.simpleframework.http.Path;
 import org.simpleframework.http.Request;
-import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.FrameChannel;
+import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.service.Service;
 
 public class ServiceRouter implements Service {
@@ -14,7 +13,6 @@ public class ServiceRouter implements Service {
    private final Map<String, Service> services;
    
    public ServiceRouter(Map<String, Service> services) {
-      new ThreadDumper(5000).start();
       this.services = services;
    }
 

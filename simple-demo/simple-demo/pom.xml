@@ -63,7 +63,17 @@
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
       <version>1.7</version>
-    </dependency>       
+    </dependency>  
+    <dependency>
+      <groupId>com.betfair.net.java.opendmk</groupId>
+      <artifactId>core</artifactId>
+      <version>1.0-b02</version>
+    </dependency>      
+    <dependency>
+      <groupId>org.glassfish.external</groupId>
+      <artifactId>opendmk_jmxremote_optional_jar</artifactId>
+      <version>1.0-b01-ea</version>
+    </dependency>             
   </dependencies>
   <reporting>
     <plugins>

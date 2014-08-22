@@ -1,126 +1,112 @@
 package org.simpleframework.demo.thread;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.util.concurrent.CountDownLatch;
 
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
-public class ThreadDumper extends Thread {
+@ManagedResource(description="A JMX tool for building a thread dump")
+public class ThreadDumper {
 
-   private static String INDENT = "    ";
-   private CountDownLatch latch;
-   private volatile boolean dead;
-   private int wait;
+   @ManagedOperation(description="Provides a dump of the threads")
+   public String dumpThreads() {
+      ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+      long[] threadIds = threadBean.getAllThreadIds();
+      ThreadInfo[] threadInfos = threadBean.getThreadInfo(threadIds, Integer.MAX_VALUE);
 
-   public ThreadDumper() {
-      this(10000);
+      return generateDump(threadInfos);
    }
-   
-   public ThreadDumper(int wait) {
-      this.latch = new CountDownLatch(1);
-      this.wait = wait;
-  }
-   
-   public void waitUntilStarted() throws InterruptedException{
-      latch.await();
+
+   public String dumpCurrentThread() {
+      ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+      Thread thread = Thread.currentThread();
+      long threadId = thread.getId();
+      ThreadInfo threadInfo = bean.getThreadInfo(threadId, Integer.MAX_VALUE);
+
+      return generateDump(threadInfo);
    }
-   
-   public void kill(){        
-      try {
-         Thread.sleep(1000);
-         dead = true;
-         dumpThreadInfo();            
-      }catch(Exception e){
-         e.printStackTrace();
+
+   public static String generateDump(ThreadInfo threadInfo) {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append("<pre>");
+      builder.append("\n");
+
+      generateThreadDetail(threadInfo, builder);
+
+      builder.append("</pre>");
+      return builder.toString();
+   }
+
+   public static String generateDump(ThreadInfo[] threadInfos) {
+      StringBuilder builder = new StringBuilder();
+
+      builder.append("<pre>");
+      builder.append("<b>Full Java thread dump</b>");
+      builder.append("\n");
+
+      for (ThreadInfo threadInfo : threadInfos) {
+         generateThreadDetail(threadInfo, builder);
+      }
+      builder.append("</pre>");
+      return builder.toString();
+   }
+
+   public static void generateThreadDetail(ThreadInfo threadInfo, StringBuilder builder) {
+      generateDescription(threadInfo, builder);
+      generateLockDetails(threadInfo, builder);
+      generateStackFrames(threadInfo, builder);
+   }
+
+   public static void generateStackFrames(ThreadInfo threadInfo, StringBuilder builder) {
+      StackTraceElement[] stackTrace = threadInfo.getStackTrace();
+
+      for (StackTraceElement stackTraceElement : stackTrace) {
+         builder.append("    at ");
+         builder.append(stackTraceElement);
+         builder.append("\n");
       }
    }
-   public void run() {
-      while(!dead) {
-         try{
-            latch.countDown();
-            dumpThreadInfo();
-            findDeadlock();
-            Thread.sleep(wait);
-         }catch(Exception e){
-            e.printStackTrace();
-         }
+
+   public static void generateLockDetails(ThreadInfo threadInfo, StringBuilder builder) {
+      String lockOwnerName = threadInfo.getLockOwnerName();
+      long lockOwnerId = threadInfo.getLockOwnerId();
+
+      if (lockOwnerName != null) {
+         builder.append("    owned by ");
+         builder.append(lockOwnerName);
+         builder.append(" Id=");
+         builder.append(lockOwnerId);
+         builder.append("\n");
       }
    }
 
-  /**
-   * Prints the thread dump information to System.out.
-   */
-  public static void dumpThreadInfo(){
-     System.out.println(getThreadInfo());
-  }
-  
-  public static String getThreadInfo() {
-     ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
-     long[] tids = tmbean.getAllThreadIds();
-     ThreadInfo[] tinfos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
-     StringWriter str = new StringWriter();
-     PrintWriter log = new PrintWriter(str);
-     log.println("Full Java thread dump");
-     
-     for (ThreadInfo ti : tinfos) {
-         printThreadInfo(ti, log);
-     }
-     log.flush();
-     return str.toString();
-  }
-  
-  private static void printThreadInfo(ThreadInfo ti, PrintWriter log) {
-     if(ti != null) {
-        StringBuilder sb = new StringBuilder("\"" + ti.getThreadName() + "\"" +
-                                             " Id=" + ti.getThreadId() +
-                                             " in " + ti.getThreadState());
-        if (ti.getLockName() != null) {
-            sb.append(" on lock=" + ti.getLockName()); 
-        }
-        if (ti.isSuspended()) {
-            sb.append(" (suspended)");
-        }
-        if (ti.isInNative()) {
-            sb.append(" (running in native)");
-        }
-        log.println(sb.toString());
-        if (ti.getLockOwnerName() != null) {
-             log.println(INDENT + " owned by " + ti.getLockOwnerName() +
-                                " Id=" + ti.getLockOwnerId());
-        }
-        for (StackTraceElement ste : ti.getStackTrace()) {
-            log.println(INDENT + "at " + ste.toString());
-        }
-        log.println();
-     }
-  }
+   public static void generateDescription(ThreadInfo threadInfo, StringBuilder builder) {
+      Thread.State threadState = threadInfo.getThreadState();
+      String threadName = threadInfo.getThreadName();
+      String lockName = threadInfo.getLockName();
+      long threadId = threadInfo.getThreadId();
 
-  /**
-   * Checks if any threads are deadlocked. If any, print
-   * the thread dump information.
-   */
-  public static boolean findDeadlock() {
-     ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
-     long[] tids = tmbean.findMonitorDeadlockedThreads();
-     if (tids == null) { 
-         return false;
-     } else {
-        StringWriter str = new StringWriter();
-        PrintWriter log = new PrintWriter(str);
-        
-         tids = tmbean.getAllThreadIds();
-         System.out.println("Deadlock found :-");
-         ThreadInfo[] tinfos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
-         for (ThreadInfo ti : tinfos) {
-             printThreadInfo(ti, log);
-         }
-         log.flush();
-         System.out.println(str.toString());
-         return true;
-     }
-  }
+      builder.append("\n");
+      builder.append("<b>");
+      builder.append(threadName);
+      builder.append("</b> Id=");
+      builder.append(threadId);
+      builder.append(" in ");
+      builder.append(threadState);
 
+      if (lockName != null) {
+         builder.append(" on lock=");
+         builder.append(lockName);
+      }
+      if (threadInfo.isSuspended()) {
+         builder.append(" (suspended)");
+      }
+      if (threadInfo.isInNative()) {
+         builder.append(" (running in native)");
+      }
+      builder.append("\n");
+   }
 }
