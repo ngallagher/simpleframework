@@ -23,15 +23,15 @@ import java.net.SocketAddress;
 
 import javax.net.ssl.SSLContext;
 
-import org.simpleframework.transport.Server;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 /**
  * The <code>SocketConnection</code>is used to manage connections
  * from a server socket. In order to achieve this it spawns a task
  * to listen for incoming connect requests. When a TCP connection
  * request arrives it hands off the <code>SocketChannel</code> to
- * the <code>Server</code> which processes the request.
+ * the <code>SocketConnector</code> which processes the request.
  * <p>
  * This handles connections from a <code>ServerSocketChannel</code> 
  * object so that features such as SSL can be used by a server that 
@@ -40,7 +40,7 @@ import org.simpleframework.transport.trace.Analyzer;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.transport.Server
+ * @see org.simpleframework.transport.SocketConnector
  */
 public class SocketConnection implements Connection {
    
@@ -52,7 +52,7 @@ public class SocketConnection implements Connection {
    /** 
     * The processor is used to process connected HTTP pipelines.
     */
-   private Server server;
+   private SocketConnector connector;
    
    /**
     * This is used to determine if the connection has been closed.
@@ -63,13 +63,13 @@ public class SocketConnection implements Connection {
     * Constructor for the <code>SocketConnection</code> object. This
     * will create a new connection that accepts incoming connections
     * and hands these connections as <code>Socket</code> objects
-    * to the specified processor. This in turn will deliver request
+    * to the specified connector. This in turn will deliver request
     * and response objects to the internal container.
     * 
-    * @param server this is the processor that receives requests
+    * @param connector this is the connector that receives requests
     */    
-   public SocketConnection(Server server) throws IOException {
-      this(server, null);
+   public SocketConnection(SocketConnector connector) throws IOException {
+      this(connector, null);
    }
 
    /** 
@@ -79,21 +79,19 @@ public class SocketConnection implements Connection {
     * to the specified processor. This in turn will deliver request
     * and response objects to the internal container.
     * 
-    * @param server this is the processor that receives requests
+    * @param connector this is the connector that receives requests
     * @param analyzer this is used to create a trace for the socket
     */    
-   public SocketConnection(Server server, Analyzer analyzer) throws IOException {
-      this.manager = new SocketListenerManager(server, analyzer);
-      this.server = server;
+   public SocketConnection(SocketConnector connector, TraceAnalyzer analyzer) throws IOException {
+      this.manager = new SocketListenerManager(connector, analyzer);
+      this.connector = connector;
    }
    
    /**
     * This creates a new background task that will listen to the 
     * specified <code>ServerAddress</code> for incoming TCP connect
     * requests. When an connection is accepted it is handed to the
-    * internal <code>Server</code> implementation as a pipeline. The
-    * background task is a non daemon task to ensure the server is
-    * kept active, to terminate the connection this can be closed.
+    * internal socket connector.
     * 
     * @param address this is the address used to accept connections
     * 
@@ -110,9 +108,7 @@ public class SocketConnection implements Connection {
     * This creates a new background task that will listen to the 
     * specified <code>ServerAddress</code> for incoming TCP connect
     * requests. When an connection is accepted it is handed to the
-    * internal <code>Server</code> implementation as a pipeline. The
-    * background task is a non daemon task to ensure the server is
-    * kept active, to terminate the connection this can be closed.
+    * internal socket connector.
     * 
     * @param address this is the address used to accept connections
     * @param context this is used for secure SSL connections
@@ -138,7 +134,7 @@ public class SocketConnection implements Connection {
    public void close() throws IOException {
       if(!closed) {
          manager.close();
-         server.stop(); 
+         connector.stop(); 
       }
       closed = true;
    }

@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 
 import org.simpleframework.common.buffer.ArrayBuffer;
 import org.simpleframework.common.buffer.Buffer;
-import org.simpleframework.transport.Cursor;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteCursor;
+import org.simpleframework.transport.ByteWriter;
 
-public class MockSender implements Sender {
+public class MockSender implements ByteWriter {
    
    private Buffer buffer;
    
@@ -24,15 +24,15 @@ public class MockSender implements Sender {
       return buffer;
    }
    
-   public Cursor getCursor() throws IOException {
+   public ByteCursor getCursor() throws IOException {
       return new StreamCursor(buffer.encode("UTF-8"));
    }
    
-   public void send(byte[] array) throws IOException {
+   public void write(byte[] array) throws IOException {
       buffer.append(array);
    }
    
-   public void send(byte[] array, int off, int len) throws IOException {
+   public void write(byte[] array, int off, int len) throws IOException {
       buffer.append(array, off, len);
    }
    
@@ -52,7 +52,7 @@ public class MockSender implements Sender {
       return true;
    }
 
-   public void send(ByteBuffer source) throws IOException {
+   public void write(ByteBuffer source) throws IOException {
       int mark = source.position();
       int limit = source.limit();
       
@@ -61,7 +61,7 @@ public class MockSender implements Sender {
       buffer.append(array);
    }
 
-   public void send(ByteBuffer source, int off, int len) throws IOException {
+   public void write(ByteBuffer source, int off, int len) throws IOException {
       int mark = source.position();
       int limit = source.limit();
       

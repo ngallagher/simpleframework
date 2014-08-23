@@ -9,14 +9,14 @@ import org.simpleframework.common.buffer.ArrayAllocator;
 import org.simpleframework.http.core.DribbleCursor;
 import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.message.TokenConsumer;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 public class TokenConsumerTest extends TestCase {
    
    public void testTokenConsumer() throws IOException {
       Allocator allocator = new ArrayAllocator();
       TokenConsumer consumer = new TokenConsumer(allocator, "\r\n".getBytes());
-      Cursor cursor = new StreamCursor("\r\n");
+      ByteCursor cursor = new StreamCursor("\r\n");
       
       consumer.consume(cursor);
       
@@ -27,7 +27,7 @@ public class TokenConsumerTest extends TestCase {
    public void testTokenConsumerException() throws IOException {
       Allocator allocator = new ArrayAllocator();
       TokenConsumer consumer = new TokenConsumer(allocator, "\r\n".getBytes());
-      Cursor cursor = new StreamCursor("--\r\n");
+      ByteCursor cursor = new StreamCursor("--\r\n");
       boolean exception = false;
       
       try {

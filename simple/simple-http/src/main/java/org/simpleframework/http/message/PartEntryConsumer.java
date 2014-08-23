@@ -21,7 +21,7 @@ package org.simpleframework.http.message;
 import java.io.IOException;
 
 import org.simpleframework.common.buffer.Allocator;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>PartEntryConsumer</code> object is used to consume each
@@ -31,7 +31,7 @@ import org.simpleframework.transport.Cursor;
  *
  * @author Niall Gallagher
  */  
-class PartEntryConsumer implements Consumer {
+class PartEntryConsumer implements ByteConsumer {
    
    /**
     * This is used to consume the boundary at the end of a part.
@@ -41,7 +41,7 @@ class PartEntryConsumer implements Consumer {
    /**
     * This is used to consume the actual part from the list.
     */  
-   private final Consumer consumer;
+   private final ByteConsumer consumer;
    
    /**
     * Constructor for the <code>PartEntryConsumer</code> object. This 
@@ -67,7 +67,7 @@ class PartEntryConsumer implements Consumer {
     *
     * @param cursor this is the cursor to consume the body from
     */       
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       while(cursor.isReady()) {
          if(!boundary.isFinished()) {
             boundary.consume(cursor);

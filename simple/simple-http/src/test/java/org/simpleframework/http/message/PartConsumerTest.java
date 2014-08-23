@@ -7,7 +7,7 @@ import org.simpleframework.http.Part;
 import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.message.PartConsumer;
 import org.simpleframework.http.message.PartData;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 public class PartConsumerTest extends TestCase {
    
@@ -20,7 +20,7 @@ public class PartConsumerTest extends TestCase {
    public void testHeader() throws Exception {
       PartData list = new PartData();
       PartConsumer consumer = new PartConsumer(new ArrayAllocator(), list, "AaB03x".getBytes("UTF-8"), 8192);
-      Cursor cursor = new StreamCursor(SOURCE);
+      ByteCursor cursor = new StreamCursor(SOURCE);
       
       while(!consumer.isFinished()) {
          consumer.consume(cursor);

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.simpleframework.common.buffer.Allocator;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>FileUploadConsumer</code> object is used to consume a
@@ -79,13 +79,13 @@ public class FileUploadConsumer implements BodyConsumer {
     * This method is used to consume bytes from the provided cursor.
     * Consuming of bytes from the cursor should be done in such a
     * way that it does not block. So typically only the number of
-    * ready bytes in the <code>Cursor</code> object should be read.
-    * If there are no ready bytes then this method should return.
+    * ready bytes in the <code>ByteCursor</code> object should be 
+    * read. If there are no ready bytes then this will return.
     *
     * @param cursor used to consume the bytes from the HTTP pipeline
     */ 
-   public void consume(Cursor cursor) throws IOException {
-      Counter counter = new Counter(cursor);
+   public void consume(ByteCursor cursor) throws IOException {
+      ByteCounter counter = new ByteCounter(cursor);
       
       while(counter.isReady()) {
          if(consumer.isFinished()) {
@@ -113,17 +113,17 @@ public class FileUploadConsumer implements BodyConsumer {
    }
    
    /**
-    * The <code>Counter</code> is a wrapper for a cursor that can
+    * The <code>ByteCounter</code> is a wrapper for a cursor that can
     * be used to restrict the number of bytes consumed. This will
     * count the bytes consumed and ensure that any requested data is
     * restricted to a chunk less than or equal to the remaining bytes.
     */
-   private class Counter implements Cursor {
+   private class ByteCounter implements ByteCursor {
       
       /**
        * This is the cursor that this counter will delegate to.
        */
-      private final Cursor cursor;
+      private final ByteCursor cursor;
       
       /**
        * Constructor for the <code>Counter</code> object. This is used
@@ -132,7 +132,7 @@ public class FileUploadConsumer implements BodyConsumer {
        * 
        * @param cursor this is the cursor that is delegated to
        */
-      public Counter(Cursor cursor) {
+      public ByteCounter(ByteCursor cursor) {
          this.cursor = cursor;
       }
 

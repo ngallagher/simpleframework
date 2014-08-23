@@ -43,7 +43,7 @@ import org.simpleframework.http.ResponseHeader;
  * @author Niall Gallagher
  *
  * @see org.simpleframework.http.core.ResponseBuffer
- * @see org.simpleframework.http.core.Transfer
+ * @see org.simpleframework.http.core.ResponseEncoder
  */
 public class Conversation {
    

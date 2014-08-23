@@ -62,11 +62,11 @@ class RequestCertificate implements Certificate {
     * used to create a wrapper for the raw SSL certificate that
     * is provided by the underlying SSL session. 
     * 
+    * @param observer the observer used to observe the transaction     
     * @param entity the request entity containing the data
-    * @param observer the observer used to observe the transaction
     */
-   public RequestCertificate(Entity entity, Observer observer) {
-      this.challenge = new Challenge(entity, observer);
+   public RequestCertificate(BodyObserver observer, Entity entity) {
+      this.challenge = new Challenge(observer, entity);
       this.channel = entity.getChannel();
       this.certificate = channel.getCertificate();
    }
@@ -114,17 +114,17 @@ class RequestCertificate implements Certificate {
     * will also throw an exception if a challenge is issued for 
     * a request that already has a client certificate.
     */
-   private static class Challenge implements CertificateChallenge {
+   private static class Challenge implements CertificateChallenge {      
+      
+      /**
+       * This is the observer used to keep track of the HTTP transaction.
+       */
+      private final BodyObserver observer;      
       
       /**
        * This is the certificate associated with the SSL connection. 
        */
       private final Certificate certificate;
-      
-      /**
-       * This is the observer used to keep track of the HTTP transaction.
-       */
-      private final Observer observer;
       
       /**
        * This is the channel representing the underlying TCP stream.
@@ -136,10 +136,10 @@ class RequestCertificate implements Certificate {
        * basically a wrapper for the raw certificate challenge that 
        * will enforce some of the workflow required by HTTPS.
        * 
+       * @param observer this observer used to track the transaction        
        * @param entity this entity containing the request data
-       * @param observer this observer used to track the transaction
        */
-      public Challenge(Entity entity, Observer observer) {
+      public Challenge(BodyObserver observer, Entity entity) {
          this.channel = entity.getChannel();
          this.certificate = channel.getCertificate();
          this.observer = observer;

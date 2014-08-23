@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 import org.simpleframework.transport.trace.Trace;
 
-public class WebSocketAnalyzer implements Analyzer {
+public class WebSocketAnalyzer implements TraceAnalyzer {
    
    private final Map<SelectableChannel, Integer> map;
    private final AtomicInteger count;

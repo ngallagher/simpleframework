@@ -30,7 +30,7 @@ import org.simpleframework.http.message.Body;
 import org.simpleframework.http.message.EntityConsumer;
 import org.simpleframework.http.message.Header;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -49,17 +49,17 @@ class RequestCollector implements Collector {
    /**
     * This is used to consume the request entity from the channel.
     */
-   private final EntityConsumer entity; 
+   private final EntityConsumer entity;   
+   
+   /**
+    * This is the cursor used to read and reset the data.
+    */
+   private final ByteCursor cursor;      
    
    /**
     * This is the channel used to acquire the underlying data.
     */
    private final Channel channel;
-   
-   /**
-    * This is the cursor used to read and reset the data.
-    */
-   private final Cursor cursor;   
    
    /**
     * This is the trace used to listen for various collect events.

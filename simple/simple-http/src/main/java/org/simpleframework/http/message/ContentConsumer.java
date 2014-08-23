@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.Part;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>ContentConsumer</code> object represents a consumer for
@@ -149,7 +149,7 @@ class ContentConsumer extends UpdateConsumer {
     * @param cursor this is the cursor used by this consumer
     */
    @Override
-   protected void commit(Cursor cursor) throws IOException {
+   protected void commit(ByteCursor cursor) throws IOException {
       cursor.push(boundary);
       cursor.push(START);
    }

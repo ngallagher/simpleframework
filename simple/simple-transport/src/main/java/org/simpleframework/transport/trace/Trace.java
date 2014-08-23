@@ -32,7 +32,7 @@ package org.simpleframework.transport.trace;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.transport.trace.Analyzer
+ * @see org.simpleframework.transport.trace.TraceAnalyzer
  */
 public interface Trace {
    

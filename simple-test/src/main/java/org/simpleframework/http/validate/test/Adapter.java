@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerServer;
-import org.simpleframework.transport.Server;
+import org.simpleframework.http.core.ContainerSocketConnector;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
@@ -19,7 +19,7 @@ class Adapter implements Container {
    private final Analyser handler;
    private final Scenario scenario;
    private final Connection connection;
-   private final Server server;
+   private final SocketConnector server;
    private final SecurityManager manager;
    private final AtomicInteger requests;
    private final AtomicInteger failures;
@@ -28,7 +28,7 @@ class Adapter implements Container {
    
    public Adapter(Analyser handler, Scenario scenario) throws Exception {
       this.requestIds = Collections.synchronizedSet(new HashSet<String>());
-      this.server = new ContainerServer(this, 10);
+      this.server = new ContainerSocketConnector(this, 10);
       this.connection = new SocketConnection(server);
       this.manager = new SecurityManager();
       this.requests = new AtomicInteger();

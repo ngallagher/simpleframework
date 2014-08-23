@@ -38,14 +38,14 @@ import org.simpleframework.transport.Channel;
  *
  * @author Niall Gallagher
  *
- * @see org.simpleframework.http.core.Transfer
+ * @see org.simpleframework.http.core.ResponseEncoder
  */ 
 class ResponseBuffer extends OutputStream implements WritableByteChannel {
   
    /**
     * This is the transfer object used to transfer the response.
     */         
-   private Transfer transfer;
+   private ResponseEncoder encoder;
    
    /**
     * This is the buffer used to accumulate the response bytes.
@@ -74,12 +74,13 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * are reported to the monitor so the server can process other
     * requests within the pipeline when the current one is finished.
     *
+    * @param observer this is used to notify of response completion
+    * @param response this is the response header for this buffer       
     * @param support this is used to determine the response semantics
-    * @param entity this is used to acquire the underlying transport
-    * @param observer this is used to report I/O events to the kernel    
+    * @param entity this is used to acquire the underlying transport   
     */ 
-   public ResponseBuffer(Response response, Conversation support, Entity entity, Observer observer) {
-      this(response, support, entity.getChannel(), observer);
+   public ResponseBuffer(BodyObserver observer, Response response, Conversation support, Entity entity) {
+      this(observer, response, support, entity.getChannel());
    }   
    
    /**
@@ -89,12 +90,13 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * are reported to the monitor so the server can process other
     * requests within the pipeline when the current one is finished.
     *
+    * @param observer this is used to notify of response completion
+    * @param response this is the response header for this buffer    
     * @param support this is used to determine the response semantics
-    * @param channel this is the channel used to write the data to
-    * @param observer this is used to report I/O events to the kernel    
+    * @param channel this is the channel used to write the data to 
     */       
-   public ResponseBuffer(Response response, Conversation support, Channel channel, Observer observer) {
-      this.transfer = new Transfer(response, support, channel, observer);
+   public ResponseBuffer(BodyObserver observer, Response response, Conversation support, Channel channel) {
+      this.encoder = new ResponseEncoder(observer, response, support, channel);
       this.buffer = new byte[] {};
    }
    
@@ -174,7 +176,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
       int size = source.limit();
       
       if(mark > size) {
-         throw new TransferException("Buffer position greater than limit");
+         throw new ResponseException("Buffer position greater than limit");
       }
       return write(source, 0, size - mark);
    }
@@ -205,7 +207,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
          flush(false);
       }
       if(size > buffer.length){
-         transfer.write(source);
+         encoder.write(source);
       } else {
          source.get(buffer, count, size);
          count += size;
@@ -253,13 +255,13 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     */ 
    private void flush(boolean flush) throws IOException {
       if(!flushed) {
-         transfer.start();
+         encoder.start();
       }
       if(count > 0) {
-         transfer.write(buffer, 0, count);
+         encoder.write(buffer, 0, count);
       }
       if(flush) {
-         transfer.flush();
+         encoder.flush();
       }
       flushed = true;
       count = 0;   
@@ -289,12 +291,12 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     */ 
    private void commit() throws IOException {
       if(!flushed) {
-         transfer.start(count);
+         encoder.start(count);
       }
       if(count > 0) {		      
-         transfer.write(buffer, 0, count);
+         encoder.write(buffer, 0, count);
       }
-      transfer.close();      
+      encoder.close();      
    }
 }
 

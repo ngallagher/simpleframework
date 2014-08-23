@@ -7,7 +7,7 @@ import org.simpleframework.http.core.DribbleCursor;
 import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.message.PartData;
 import org.simpleframework.http.message.PartSeriesConsumer;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 public class PartSeriesConsumerTest extends TestCase {
    
@@ -58,7 +58,7 @@ public class PartSeriesConsumerTest extends TestCase {
    public void testSimple() throws Exception {
       PartData list = new PartData();
       PartSeriesConsumer consumer = new PartSeriesConsumer(new ArrayAllocator(), list, "AaB03x".getBytes("UTF-8"));
-      Cursor cursor = new StreamCursor(SIMPLE);
+      ByteCursor cursor = new StreamCursor(SIMPLE);
       
       while(!consumer.isFinished()) {
          consumer.consume(cursor);
@@ -75,7 +75,7 @@ public class PartSeriesConsumerTest extends TestCase {
    public void testNormal() throws Exception {
       PartData list = new PartData();
       PartSeriesConsumer consumer = new PartSeriesConsumer(new ArrayAllocator(), list, "AaB03x".getBytes("UTF-8"));
-      Cursor cursor = new StreamCursor(NORMAL);
+      ByteCursor cursor = new StreamCursor(NORMAL);
       
       while(!consumer.isFinished()) {
          consumer.consume(cursor);
@@ -100,7 +100,7 @@ public class PartSeriesConsumerTest extends TestCase {
    public void testMixed() throws Exception {
       PartData list = new PartData();
       PartSeriesConsumer consumer = new PartSeriesConsumer(new ArrayAllocator(), list, "AaB03x".getBytes("UTF-8"));
-      Cursor cursor = new StreamCursor(MIXED);
+      ByteCursor cursor = new StreamCursor(MIXED);
       
       while(!consumer.isFinished()) {
          consumer.consume(cursor);
@@ -129,7 +129,7 @@ public class PartSeriesConsumerTest extends TestCase {
    public void testDribble() throws Exception {
       PartData list = new PartData();
       PartSeriesConsumer consumer = new PartSeriesConsumer(new ArrayAllocator(), list, "AaB03x".getBytes("UTF-8"));
-      Cursor cursor = new DribbleCursor(new StreamCursor(NORMAL), 1);
+      ByteCursor cursor = new DribbleCursor(new StreamCursor(NORMAL), 1);
       
       while(!consumer.isFinished()) {
          consumer.consume(cursor);

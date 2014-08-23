@@ -8,16 +8,16 @@ import org.simpleframework.common.lease.Lease;
 import org.simpleframework.http.MockTrace;
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteCursor;
+import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.trace.Trace;
 
 
 public class MockChannel implements Channel {
    
-   private Cursor cursor;
+   private ByteCursor cursor;
    
-   public MockChannel(Cursor cursor) {
+   public MockChannel(ByteCursor cursor) {
       this.cursor = cursor;
    }
    
@@ -37,11 +37,11 @@ public class MockChannel implements Channel {
       return null;
    }
    
-   public Cursor getCursor() {
+   public ByteCursor getCursor() {
       return cursor;
    }
    
-   public Sender getSender() {
+   public ByteWriter getWriter() {
       return new MockSender();
    }
    

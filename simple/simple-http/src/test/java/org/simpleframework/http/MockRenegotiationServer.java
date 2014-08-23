@@ -34,17 +34,17 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Client.AnonymousTrustManager;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerProcessor;
+import org.simpleframework.http.core.ContainerTransportConnector;
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.CertificateChallenge;
-import org.simpleframework.transport.Processor;
-import org.simpleframework.transport.ProcessorServer;
-import org.simpleframework.transport.Server;
+import org.simpleframework.transport.TransportConnector;
+import org.simpleframework.transport.TransportSocketConnector;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.Socket;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 import org.simpleframework.transport.trace.Trace;
 
 public class MockRenegotiationServer implements Container {   
@@ -53,7 +53,7 @@ public class MockRenegotiationServer implements Container {
    private final Connection connection;
    private final SocketAddress address;
    private final SSLContext context;
-   private final Analyzer agent;
+   private final TraceAnalyzer agent;
    
    public static void main(String[] list) throws Exception {
       System.err.println("Starting renegotiation test.....");
@@ -71,9 +71,9 @@ public class MockRenegotiationServer implements Container {
 
    public MockRenegotiationServer(SSLContext context, boolean certRequired, int port) throws IOException {
       Allocator allocator = new FileAllocator();
-      ContainerProcessor processor = new ContainerProcessor(this, allocator, 4);
+      ContainerTransportConnector processor = new ContainerTransportConnector(this, allocator, 4);
       TransportGrabber grabber = new TransportGrabber(processor);
-      ProcessorServer processorServer = new ProcessorServer(grabber);
+      TransportSocketConnector processorServer = new TransportSocketConnector(grabber);
       
       this.server = new ConfigurableCertificateServer(processorServer, certRequired);  
       this.agent = new ConsoleAgent();
@@ -214,7 +214,7 @@ public class MockRenegotiationServer implements Container {
       connection.close();
    }
    
-   private static class ConsoleAgent implements Analyzer {
+   private static class ConsoleAgent implements TraceAnalyzer {
       
       private final Map<SelectableChannel, Integer> map;
       private final AtomicInteger count;
@@ -259,17 +259,17 @@ public class MockRenegotiationServer implements Container {
       }
    }
 
-   public static class TransportGrabber implements Processor {
+   public static class TransportGrabber implements TransportConnector {
       
-      private Processor processor;
+      private TransportConnector processor;
       
-      public TransportGrabber(Processor processor) {
+      public TransportGrabber(TransportConnector processor) {
          this.processor = processor;
       }
 
-      public void process(Transport transport) throws IOException {
+      public void connect(Transport transport) throws IOException {
          transport.getAttributes().put(Transport.class, transport);
-         processor.process(transport);
+         processor.connect(transport);
          
       }
 
@@ -279,16 +279,16 @@ public class MockRenegotiationServer implements Container {
       
    }
    
-   public static class ConfigurableCertificateServer implements Server {
+   public static class ConfigurableCertificateServer implements SocketConnector {
       
-      private Server server;
+      private SocketConnector server;
       private boolean certRequired;
 
-      public ConfigurableCertificateServer(Server server) {
+      public ConfigurableCertificateServer(SocketConnector server) {
          this(server, false);
       }
       
-      public ConfigurableCertificateServer(Server server, boolean certRequired) {
+      public ConfigurableCertificateServer(SocketConnector server, boolean certRequired) {
          this.certRequired = certRequired;
          this.server = server;
       }
@@ -297,13 +297,13 @@ public class MockRenegotiationServer implements Container {
          this.certRequired = certRequired;
       }
 
-      public void process(Socket socket) throws IOException {
+      public void connect(Socket socket) throws IOException {
          SSLEngine engine = socket.getEngine();
          socket.getAttributes().put(SSLEngine.class, engine);
          if(certRequired) {
             socket.getEngine().setNeedClientAuth(true);
          }
-         server.process(socket);
+         server.connect(socket);
       }
 
       public void stop() throws IOException {

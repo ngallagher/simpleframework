@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.simpleframework.http.StreamTransport;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.TransportCursor;
 
-public class StreamCursor implements Cursor {
+public class StreamCursor implements ByteCursor {
 
    private TransportCursor cursor;
    private Transport transport;

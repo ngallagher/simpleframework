@@ -2,15 +2,15 @@ package org.simpleframework.http.core;
 
 import java.io.IOException;
 
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
-public class DribbleCursor implements Cursor {
+public class DribbleCursor implements ByteCursor {
    
-   private Cursor cursor;
+   private ByteCursor cursor;
    private byte[] swap;
    private int dribble;
    
-   public DribbleCursor(Cursor cursor, int dribble) {
+   public DribbleCursor(ByteCursor cursor, int dribble) {
       this.cursor = cursor;
       this.dribble = dribble;
       this.swap = new byte[1];

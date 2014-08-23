@@ -10,7 +10,7 @@ import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.WebSocketAnalyzer;
 import org.simpleframework.http.socket.service.Service;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 public class WebSocketTableUpdater extends Thread implements Service {
    
@@ -101,7 +101,7 @@ public class WebSocketTableUpdater extends Thread implements Service {
    }
    
    public static void main(String[] list) throws Exception {
-      Analyzer agent = new WebSocketAnalyzer();
+      TraceAnalyzer agent = new WebSocketAnalyzer();
       Map<String, WebSocketTableColumnStyle> columns = new LinkedHashMap<String, WebSocketTableColumnStyle>();
       
       WebSocketTableSchema schema = new WebSocketTableSchema(columns);      

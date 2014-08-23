@@ -23,17 +23,17 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.X509TrustManager;
 
 import org.simpleframework.http.core.Client.AnonymousTrustManager;
-import org.simpleframework.transport.Cursor;
-import org.simpleframework.transport.Processor;
-import org.simpleframework.transport.ProcessorServer;
-import org.simpleframework.transport.Server;
+import org.simpleframework.transport.ByteCursor;
+import org.simpleframework.transport.TransportConnector;
+import org.simpleframework.transport.TransportSocketConnector;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.Socket;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.TransportCursor;
-import org.simpleframework.transport.TransportSender;
+import org.simpleframework.transport.TransportWriter;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 import org.simpleframework.transport.trace.Trace;
 
 public class RenegotiationExample {
@@ -59,9 +59,9 @@ public class RenegotiationExample {
       KeyStoreReader reader = new KeyStoreReader(KeyStoreType.PKCS12, file, "p", "p");
       SecureSocketContext context = new SecureSocketContext(reader, SecureProtocol.TLS);
       SSLContext sslContext = context.getContext();
-      Analyzer agent = new MockAgent();
+      TraceAnalyzer agent = new MockAgent();
       TransportProcessor processor = new TransportProcessor();
-      ProcessorServer server = new ProcessorServer(processor);
+      TransportSocketConnector server = new TransportSocketConnector(processor);
       ConfigurableCertificateServer certServer = new ConfigurableCertificateServer(server);
       SocketConnection con = new SocketConnection(certServer, agent);
       SocketAddress serverAddress = new InetSocketAddress(listenPort);
@@ -86,12 +86,12 @@ public class RenegotiationExample {
       return socket;
    }
    
-   public static class ConfigurableCertificateServer implements Server {
+   public static class ConfigurableCertificateServer implements SocketConnector {
       
-      private Server server;
+      private SocketConnector server;
       private boolean certRequired;
       
-      public ConfigurableCertificateServer(Server server) {
+      public ConfigurableCertificateServer(SocketConnector server) {
          this.server = server;
       }
       
@@ -99,11 +99,11 @@ public class RenegotiationExample {
          this.certRequired = certRequired;
       }
 
-      public void process(Socket socket) throws IOException {
+      public void connect(Socket socket) throws IOException {
          if(certRequired) {
             socket.getEngine().setNeedClientAuth(true);
          }
-         server.process(socket);
+         server.connect(socket);
       }
 
       public void stop() throws IOException {
@@ -113,7 +113,7 @@ public class RenegotiationExample {
    
    public static class TransportPoller extends Thread {
       
-      private final Cursor cursor;
+      private final ByteCursor cursor;
       private final Transport transport;
       
       
@@ -166,8 +166,8 @@ public class RenegotiationExample {
                         certificateInfo = e.getMessage();
                      }
                   }
-                  TransportSender sender = new TransportSender(transport);
-                  sender.send(
+                  TransportWriter sender = new TransportWriter(transport);
+                  sender.write(
                         ("HTTP/1.1 200 OK\r\n" + 
                         "Connection: keep-alive\r\n"+
                         "Content-Length: 5\r\n"+
@@ -193,9 +193,9 @@ public class RenegotiationExample {
    
    
    
-   public static class TransportProcessor implements Processor {
+   public static class TransportProcessor implements TransportConnector {
 
-      public void process(Transport transport) throws IOException {
+      public void connect(Transport transport) throws IOException {
          System.err.println("New transport");        
          TransportPoller poller = new TransportPoller(transport);
          poller.start(); 
@@ -206,7 +206,7 @@ public class RenegotiationExample {
       }      
    }
    
-   private static class MockAgent implements Analyzer {
+   private static class MockAgent implements TraceAnalyzer {
 
       public Trace attach(SelectableChannel channel) {
          return new Trace() {

@@ -20,7 +20,7 @@ import org.simpleframework.transport.trace.Trace;
 
 public class SocketTransportPipeTest extends TestCase {
    
-   private static final int ITERATIONS = 1000000;
+   private static final int ITERATIONS = 100000;
 
    public void testPipe() throws Exception {
       ServerSocket server = new ServerSocket(0);

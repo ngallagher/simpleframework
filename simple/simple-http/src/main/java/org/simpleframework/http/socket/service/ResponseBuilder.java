@@ -32,7 +32,7 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -58,6 +58,11 @@ class ResponseBuilder  {
    private final AcceptToken token;
    
    /**
+    * This is the sender used to send the WebSocket response.
+    */
+   private final ByteWriter writer;   
+   
+   /**
     * This is the response to the WebSocket handshake.
     */
    private final Response response;
@@ -66,11 +71,6 @@ class ResponseBuilder  {
     * This is the underlying TCP channel for the request.
     */
    private final Channel channel;
-   
-   /**
-    * This is the sender used to send the WebSocket response.
-    */
-   private final Sender sender;
    
    /**
     * This is used to trace the activity for the handshake.
@@ -90,7 +90,7 @@ class ResponseBuilder  {
       this.validator = new RequestValidator(request);
       this.token = new AcceptToken(request); 
       this.channel = request.getChannel();
-      this.sender = channel.getSender();
+      this.writer = channel.getWriter();
       this.trace = channel.getTrace();
       this.response = response;
    }
@@ -127,9 +127,9 @@ class ResponseBuilder  {
       byte[] message = header.getBytes("UTF-8");
       
       trace.trace(WRITE_HEADER, header);
-      sender.send(message);
-      sender.flush();
-      sender.close();
+      writer.write(message);
+      writer.flush();
+      writer.close();
    }
    
    /**
@@ -153,7 +153,7 @@ class ResponseBuilder  {
       byte[] message = header.getBytes("UTF-8");
       
       trace.trace(WRITE_HEADER, header);
-      sender.send(message);
-      sender.flush();      
+      writer.write(message);
+      writer.flush();      
    }
 }

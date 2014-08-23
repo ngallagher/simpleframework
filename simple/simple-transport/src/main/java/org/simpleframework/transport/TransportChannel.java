@@ -37,7 +37,7 @@ import org.simpleframework.transport.trace.Trace;
  *
  * @author Niall Gallagher
  *
- * @see org.simpleframework.transport.Processor
+ * @see org.simpleframework.transport.TransportConnector
  */ 
 public class TransportChannel implements Channel {
    
@@ -59,12 +59,12 @@ public class TransportChannel implements Channel {
    /**
     * This is used to provide a cursor view on the input.
     */ 
-   private final Cursor cursor;
+   private final ByteCursor cursor;
 
    /**
     * This is used to provide a blocking means for sending data.
     */ 
-   private final Sender sender;
+   private final ByteWriter writer;
    
    /**
     * This is the trace used to monitor events on the channel.
@@ -82,7 +82,7 @@ public class TransportChannel implements Channel {
     */ 
    public TransportChannel(Transport transport) throws IOException {
       this.cursor = new TransportCursor(transport);
-      this.sender = new TransportSender(transport);
+      this.writer = new TransportWriter(transport);
       this.certificate = transport.getCertificate();
       this.engine = transport.getEngine();
       this.trace = transport.getTrace();
@@ -153,14 +153,14 @@ public class TransportChannel implements Channel {
 
    /**
     * This provides the <code>Cursor</code> for this channel. The
-    * cursor provides a resettable view of the input buffer and will
+    * cursor provides a seekable view of the input buffer and will
     * allow the server kernel to peek into the input buffer without
     * having to take the data from the input. This allows overflow
     * to be pushed back on to the cursor for subsequent reads.
     *
     * @return this returns the input cursor for the channel
     */  
-   public Cursor getCursor() {
+   public ByteCursor getCursor() {
       return cursor;
    }
 
@@ -174,16 +174,16 @@ public class TransportChannel implements Channel {
     *
     * @return this returns the output sender for this channel
     */    
-   public Sender getSender() {
-      return sender;
+   public ByteWriter getWriter() {
+      return writer;
    }
       
    /**
     * Because the channel represents a duplex means of communication
     * there needs to be a means to close it down. This provides such
     * a means. By closing the channel the cursor and sender will no
-    * longer send or recieve data to or from the network. The client
-    * will also be signaled that the connection has been severed.
+    * longer send or receive data to or from the network. The client
+    * will also be signalled that the connection has been severed.
     */  
    public void close() {
       try {

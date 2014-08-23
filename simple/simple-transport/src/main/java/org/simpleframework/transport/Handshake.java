@@ -52,13 +52,18 @@ import org.simpleframework.transport.trace.Trace;
  * expected next, whether this is a response to the client or a 
  * message from it. During the negotiation this may need to wait 
  * for either a write ready event or a read ready event. Event 
- * notification is done using the processor provided.
+ * notification is done using the connector provided.
  *
  * @author Niall Gallagher
  *
- * @see org.simpleframework.transport.Processor
+ * @see org.simpleframework.transport.TransportConnector
  */
-class Handshake implements Negotiation {
+class Handshake implements Negotiation {   
+   
+   /**
+    * This is the connector used to process the secure transport.
+    */
+   private final TransportConnector connector;   
    
    /**
     * This is the certificate associated with this negotiation.
@@ -71,19 +76,14 @@ class Handshake implements Negotiation {
    private final SocketChannel channel;
    
    /**
-    * This is the processor used to process the secure transport.
+    * This is the transport dispatched when the negotiation ends.
     */
-   private final Processor processor;
+   private final Transport transport;   
    
    /**
     * This is the reactor used to register for I/O notifications.
     */
-   private final Reactor reactor;
-   
-   /**
-    * This is the transport dispatched when the negotiation ends.
-    */
-   private final Transport transport;
+   private final Reactor reactor;   
    
    /**
     * This is the output buffer used to generate data to.
@@ -121,12 +121,12 @@ class Handshake implements Negotiation {
     * for SSL connections. Typically this is used to perform request
     * response negotiations, such as a handshake or termination.
     *
-    * @param transport the transport to perform the negotiation for
-    * @param processor the processor used to dispatch the transport
+    * @param connector the connector to perform the negotiation for
+    * @param connector the connector used to dispatch the transport
     * @param reactor this is the reactor used for I/O notifications      
     */
-   public Handshake(Transport transport, Processor processor, Reactor reactor) {
-      this(transport, processor, reactor, 20480);           
+   public Handshake(TransportConnector connector, Transport transport, Reactor reactor) {
+      this(connector, transport, reactor, 20480);           
    }
   
    /**
@@ -136,12 +136,12 @@ class Handshake implements Negotiation {
     * response negotiations, such as a handshake or termination.
     *
     * @param transport the transport to perform the negotiation for
-    * @param processor the processor used to dispatch the transport
+    * @param connector the connector used to dispatch the transport
     * @param reactor this is the reactor used for I/O notifications     
     * @param size the size of the buffers used for the negotiation
     */
-   public Handshake(Transport transport, Processor processor, Reactor reactor, int size) {
-      this(transport, processor, reactor, size, false);
+   public Handshake(TransportConnector connector, Transport transport, Reactor reactor, int size) {
+      this(connector, transport, reactor, size, false);
    }
    
    /**
@@ -151,12 +151,12 @@ class Handshake implements Negotiation {
     * response negotiations, such as a handshake or termination.
     *
     * @param transport the transport to perform the negotiation for
-    * @param processor the processor used to dispatch the transport
+    * @param connector the connector used to dispatch the transport
     * @param reactor this is the reactor used for I/O notifications     
     * @param client determines the side of the SSL handshake
     */
-   public Handshake(Transport transport, Processor processor, Reactor reactor, boolean client) {
-      this(transport, processor, reactor, 20480, client);
+   public Handshake(TransportConnector connector, Transport transport, Reactor reactor, boolean client) {
+      this(connector, transport, reactor, 20480, client);
    }
    
    /**
@@ -166,12 +166,12 @@ class Handshake implements Negotiation {
     * response negotiations, such as a handshake or termination.
     *
     * @param transport the transport to perform the negotiation for
-    * @param processor the processor used to dispatch the transport
+    * @param connector the connector used to dispatch the transport
     * @param reactor this is the reactor used for I/O notifications  
     * @param size the size of the buffers used for the negotiation
     * @param client determines the side of the SSL handshake
     */
-   public Handshake(Transport transport, Processor processor, Reactor reactor, int size, boolean client) {
+   public Handshake(TransportConnector connector, Transport transport, Reactor reactor, int size, boolean client) {
       this.state = new NegotiationState(this, transport);
       this.output = ByteBuffer.allocate(size);
       this.input = ByteBuffer.allocate(size);
@@ -179,7 +179,7 @@ class Handshake implements Negotiation {
       this.engine = transport.getEngine();
       this.trace = transport.getTrace();
       this.empty = ByteBuffer.allocate(0);
-      this.processor = processor;
+      this.connector = connector;
       this.transport = transport;
       this.reactor = reactor;
       this.client = client;
@@ -227,7 +227,7 @@ class Handshake implements Negotiation {
    /**
     * This is used to terminate the negotiation. This is excecuted
     * when the negotiation times out. When the negotiation expires it
-    * is rejected by the processor and must be canceled. Canceling
+    * is rejected by the connector and must be canceled. Canceling
     * is basically termination of the connection to free resources.
     */
    public void cancel() {
@@ -488,14 +488,14 @@ class Handshake implements Negotiation {
     * This method is invoked when the negotiation is done and the
     * next phase of the connection is to take place. This will
     * be invoked when the SSL handshake has completed and the new
-    * secure transport is to be handed to the processor.
+    * secure transport is to be handed to the connector.
     */
    private void dispatch() throws IOException {
       Transport secure = new SecureTransport(transport, state, output, input);
 
-      if(processor != null) {
+      if(connector != null) {
          trace.trace(HANDSHAKE_DONE);
-         processor.process(secure);
+         connector.connect(secure);
       }
    }  
    
@@ -533,7 +533,7 @@ class Handshake implements Negotiation {
     * next phase of the connection is to take place. If a certificate
     * challenge was issued then the completion task is executed, if
     * this was the handshake for the initial connection a transport
-    * is created and handed to the processor.
+    * is created and handed to the connector.
     */
    public void commit() throws IOException {
       if(!state.isChallenge()) {
@@ -545,7 +545,7 @@ class Handshake implements Negotiation {
    
    /**
     * The <code>Committer</code> task is used to transfer the transport
-    * created to the processor. This is executed when the SSL
+    * created to the connector. This is executed when the SSL
     * handshake is completed. It allows the transporter to use the
     * newly created transport to read and write in plain text and
     * to have the SSL transport encrypt and decrypt transparently.
@@ -554,7 +554,7 @@ class Handshake implements Negotiation {
       
       /**
        * Constructor for the <code>Committer</code> task. This is used to
-       * pass the transport object object to the processor when the
+       * pass the transport object object to the connector when the
        * SSL handshake has completed. 
        * 
        * @param state this is the underlying negotiation to use

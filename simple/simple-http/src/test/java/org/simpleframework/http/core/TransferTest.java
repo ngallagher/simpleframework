@@ -3,7 +3,7 @@ package org.simpleframework.http.core;
 import java.io.IOException;
 
 import org.simpleframework.http.core.Conversation;
-import org.simpleframework.http.core.Transfer;
+import org.simpleframework.http.core.ResponseEncoder;
 
 import junit.framework.TestCase;
 
@@ -15,7 +15,7 @@ public class TransferTest extends TestCase {
       MockRequest request = new MockRequest();
       MockResponse response = new MockResponse();
       Conversation support = new Conversation(request, response);
-      Transfer transfer = new Transfer(response, support, channel, monitor);
+      ResponseEncoder transfer = new ResponseEncoder(monitor, response, support, channel);
       
       // Start a HTTP/1.1 conversation
       request.setMajor(1);
@@ -33,7 +33,7 @@ public class TransferTest extends TestCase {
       request = new MockRequest();
       response = new MockResponse();
       support = new Conversation(request, response);
-      transfer = new Transfer(response, support, channel, monitor);
+      transfer = new ResponseEncoder(monitor, response, support, channel);
       
       // Start a HTTP/1.0 conversation
       request.setMajor(1);
@@ -53,7 +53,7 @@ public class TransferTest extends TestCase {
       MockRequest request = new MockRequest();
       MockResponse response = new MockResponse();
       Conversation support = new Conversation(request, response);
-      Transfer transfer = new Transfer(response, support, channel, monitor);
+      ResponseEncoder transfer = new ResponseEncoder(monitor, response, support, channel);
       
       // Start a HTTP/1.1 conversation
       request.setMajor(1);
@@ -71,7 +71,7 @@ public class TransferTest extends TestCase {
       request = new MockRequest();
       response = new MockResponse();
       support = new Conversation(request, response);
-      transfer = new Transfer(response, support, channel, monitor);
+      transfer = new ResponseEncoder(monitor, response, support, channel);
       
       // Start a HTTP/1.0 conversation
       request.setMajor(1);
@@ -89,7 +89,7 @@ public class TransferTest extends TestCase {
       request = new MockRequest();
       response = new MockResponse();
       support = new Conversation(request, response);
-      transfer = new Transfer(response, support, channel, monitor);
+      transfer = new ResponseEncoder(monitor, response, support, channel);
       
       // Start a HTTP/1.0 conversation
       request.setMajor(1);
@@ -112,7 +112,7 @@ public class TransferTest extends TestCase {
       MockRequest request = new MockRequest();
       MockResponse response = new MockResponse();
       Conversation support = new Conversation(request, response);
-      Transfer transfer = new Transfer(response, support, channel, monitor);
+      ResponseEncoder transfer = new ResponseEncoder(monitor, response, support, channel);
 
       request.setMajor(1);
       request.setMinor(0);
@@ -135,7 +135,7 @@ public class TransferTest extends TestCase {
       MockRequest request = new MockRequest();
       MockResponse response = new MockResponse();
       Conversation support = new Conversation(request, response);
-      Transfer transfer = new Transfer(response, support, channel, monitor);
+      ResponseEncoder transfer = new ResponseEncoder(monitor, response, support, channel);
 
       request.setMajor(1);
       request.setMinor(1);
@@ -157,7 +157,7 @@ public class TransferTest extends TestCase {
       MockRequest request = new MockRequest();
       MockResponse response = new MockResponse();
       Conversation support = new Conversation(request, response);
-      Transfer transfer = new Transfer(response, support, channel, monitor);
+      ResponseEncoder transfer = new ResponseEncoder(monitor, response, support, channel);
 
       request.setMajor(1);
       request.setMinor(1);
@@ -178,7 +178,7 @@ public class TransferTest extends TestCase {
       MockRequest request = new MockRequest();
       MockResponse response = new MockResponse();
       Conversation support = new Conversation(request, response);
-      Transfer transfer = new Transfer(response, support, channel, monitor);
+      ResponseEncoder transfer = new ResponseEncoder(monitor, response, support, channel);
 
       request.setMajor(1);
       request.setMinor(1);

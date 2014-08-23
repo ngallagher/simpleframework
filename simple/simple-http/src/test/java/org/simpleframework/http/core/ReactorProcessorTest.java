@@ -16,8 +16,8 @@ import org.simpleframework.http.Response;
 import org.simpleframework.http.core.ReactorTest.TestChannel;
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteCursor;
+import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.trace.Trace;
 
 public class ReactorProcessorTest extends TestCase implements Container {
@@ -94,7 +94,7 @@ public class ReactorProcessorTest extends TestCase implements Container {
    
    public static class MockChannel implements Channel {
       
-      private Cursor cursor;
+      private ByteCursor cursor;
       
       public MockChannel(StreamCursor cursor, int dribble) {
          this.cursor = new DribbleCursor(cursor, dribble);
@@ -111,11 +111,11 @@ public class ReactorProcessorTest extends TestCase implements Container {
          return null;
       }
       
-      public Cursor getCursor() {
+      public ByteCursor getCursor() {
          return cursor;
       }
       
-      public Sender getSender() {
+      public ByteWriter getWriter() {
          return null;
       }
       

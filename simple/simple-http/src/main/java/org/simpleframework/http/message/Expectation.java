@@ -23,7 +23,7 @@ import static org.simpleframework.http.core.ContainerEvent.EXPECT_CONTINUE;
 import java.io.IOException;
 
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -50,7 +50,7 @@ class Expectation {
    /**
     * This is the sender that is used to deliver the continue.
     */
-   private final Sender sender;
+   private final ByteWriter sender;
    
    /**
     * This is the trace used to capture a continue response if any.
@@ -66,7 +66,7 @@ class Expectation {
     * @param channel this is the channel used to deliver the prompt
     */
    public Expectation(Channel channel) {
-      this.sender = channel.getSender();
+      this.sender = channel.getWriter();
       this.trace = channel.getTrace();
    }
    
@@ -80,8 +80,8 @@ class Expectation {
    public void execute(Header header) throws IOException {
       if(header.isExpectContinue()) {
          trace.trace(EXPECT_CONTINUE);
-         sender.send(STATUS);
-         sender.send(MESSAGE);
+         sender.write(STATUS);
+         sender.write(MESSAGE);
          sender.flush();
       }
    }

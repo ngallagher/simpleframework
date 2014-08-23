@@ -21,7 +21,7 @@ import org.simpleframework.common.thread.Daemon;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerProcessor;
+import org.simpleframework.http.core.ContainerTransportConnector;
 import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.core.ThreadDumper;
 import org.simpleframework.http.message.ReplyConsumer;
@@ -33,12 +33,12 @@ import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.WebSocketAnalyzer;
-import org.simpleframework.transport.Processor;
-import org.simpleframework.transport.ProcessorServer;
-import org.simpleframework.transport.Server;
+import org.simpleframework.transport.TransportConnector;
+import org.simpleframework.transport.TransportSocketConnector;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 import org.simpleframework.transport.trace.Trace;
 
 public class WebSocketPerformanceTest {
@@ -147,16 +147,16 @@ public class WebSocketPerformanceTest {
       private final SocketAddress address;
       private final Connection connection;
       private final Allocator allocator;
-      private final Processor processor;
+      private final TransportConnector processor;
       private final Router negotiator;
-      private final Server server;
+      private final SocketConnector server;
       
-      public MessageGeneratorContainer(MessageGeneratorService service, Analyzer agent, int port) throws Exception {
+      public MessageGeneratorContainer(MessageGeneratorService service, TraceAnalyzer agent, int port) throws Exception {
          this.negotiator = new SingletonRouter(service);
          this.container = new RouterContainer(this, negotiator, 10, 100000);
          this.allocator = new ArrayAllocator();
-         this.processor = new ContainerProcessor(container, allocator, 10);
-         this.server = new ProcessorServer(processor, 10, 8192*10);
+         this.processor = new ContainerTransportConnector(container, allocator, 10);
+         this.server = new TransportSocketConnector(processor, 10, 8192*10);
          this.connection = new SocketConnection(server, agent);
          this.address = new InetSocketAddress(port);
       }
@@ -300,7 +300,7 @@ public class WebSocketPerformanceTest {
       }
    }
 
-   public static class ConsoleAnalyzer extends Daemon implements Analyzer {
+   public static class ConsoleAnalyzer extends Daemon implements TraceAnalyzer {
       
       private final Queue<TraceRecord> queue;
       private final AtomicLong count;

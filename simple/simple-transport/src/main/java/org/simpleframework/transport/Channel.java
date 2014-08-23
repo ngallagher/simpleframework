@@ -85,14 +85,14 @@ public interface Channel {
    
    /**
     * This provides the <code>Cursor</code> for this channel. The
-    * cursor provides a resettable view of the input buffer and will
+    * cursor provides a seekable view of the input buffer and will
     * allow the server kernel to peek into the input buffer without
     * having to take the data from the input. This allows overflow
     * to be pushed back on to the cursor for subsequent reads.
     *
     * @return this returns the input cursor for the channel
     */   
-   Cursor getCursor();
+   ByteCursor getCursor();
   
    /**
     * This provides the <code>Sender</code> for the channel. This is
@@ -104,7 +104,7 @@ public interface Channel {
     *
     * @return this returns the output sender for this channel
     */  
-   Sender getSender();
+   ByteWriter getWriter();
  
    /**
     * This returns the <code>Map</code> of attributes used to hold

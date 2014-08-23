@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameType;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>FrameConsumer</code> object is used to read a WebSocket
@@ -97,7 +97,7 @@ class FrameConsumer {
     * 
     * @param cursor the cursor to consume the frame data from
     */
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       while (cursor.isReady()) {
          if(!header.isFinished()) {
             header.consume(cursor);

@@ -27,7 +27,7 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.reactor.Operation;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
@@ -46,7 +46,12 @@ class FrameCollector implements Operation {
    /**
     * This decodes the frame bytes from the channel and processes it.
     */
-   private final FrameProcessor processor;
+   private final FrameProcessor processor;   
+   
+   /**
+    * This is the cursor used to maintain a stream seek position.
+    */
+   private final ByteCursor cursor;   
    
    /**
     * This is the underlying channel for this frame collector.
@@ -57,11 +62,6 @@ class FrameCollector implements Operation {
     * This is the reactor used to schedule this operation for reads.
     */
    private final Reactor reactor;
-   
-   /**
-    * This is the cursor used to maintain a stream seek position.
-    */
-   private final Cursor cursor;
    
    /**
     * This is the tracer that is used to trace the frame collection.

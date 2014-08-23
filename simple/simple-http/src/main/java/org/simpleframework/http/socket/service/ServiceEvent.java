@@ -22,11 +22,11 @@ package org.simpleframework.http.socket.service;
  * The <code>ServiceEvent</code> enumeration contains the events that
  * are dispatched processing a WebSocket. To see how a WebSocket is
  * behaving and to gather performance statistics the service events 
- * can be intercepted using a custom <code>Analyzer</code> object.  
+ * can be intercepted using a custom <code>TraceAnalyzer</code> object.  
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.transport.trace.Analyzer
+ * @see org.simpleframework.transport.trace.TraceAnalyzer
  */
 public enum ServiceEvent {
    

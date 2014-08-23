@@ -16,8 +16,8 @@ import org.simpleframework.http.message.Entity;
 import org.simpleframework.http.message.Header;
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteCursor;
+import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.trace.Trace;
 
 public class ReactorTest extends TestCase implements Controller {
@@ -56,7 +56,7 @@ public class ReactorTest extends TestCase implements Controller {
    
    public static class TestChannel implements Channel {
       
-      private Cursor cursor;
+      private ByteCursor cursor;
       
       public TestChannel(StreamCursor cursor, int dribble) {
          this.cursor = new DribbleCursor(cursor, dribble);
@@ -78,11 +78,11 @@ public class ReactorTest extends TestCase implements Controller {
 	      return null;
       }
       
-      public Cursor getCursor() {
+      public ByteCursor getCursor() {
          return cursor;
       }
       
-      public Sender getSender() {
+      public ByteWriter getWriter() {
          return null;
       }
       
@@ -129,7 +129,7 @@ public class ReactorTest extends TestCase implements Controller {
    public void ready(Collector collector) throws IOException {
       Entity entity = collector;
       Channel channel = entity.getChannel();
-      Cursor cursor = channel.getCursor();
+      ByteCursor cursor = channel.getCursor();
       Header header = entity.getHeader();
       Body body = entity.getBody();
       List<Part> list = body.getParts();

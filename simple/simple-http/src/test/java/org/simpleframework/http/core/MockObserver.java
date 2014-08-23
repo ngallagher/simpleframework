@@ -2,10 +2,10 @@ package org.simpleframework.http.core;
 
 import java.io.IOException;
 
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteWriter;
 
 
-public class MockObserver implements Observer {
+public class MockObserver implements BodyObserver {
    
    private boolean close;
    
@@ -19,7 +19,7 @@ public class MockObserver implements Observer {
       super();
    }
    
-   public void close(Sender sender) {
+   public void close(ByteWriter sender) {
       close = true;
    }
    
@@ -31,7 +31,7 @@ public class MockObserver implements Observer {
       return error;
    }
    
-   public void ready(Sender sender) {
+   public void ready(ByteWriter sender) {
       ready = true;
    }
    
@@ -39,7 +39,7 @@ public class MockObserver implements Observer {
       return ready;
    }
 
-   public void error(Sender sender) {
+   public void error(ByteWriter sender) {
       error = true;      
    }
 
@@ -51,7 +51,7 @@ public class MockObserver implements Observer {
       return 0;
    }
 
-   public void commit(Sender sender) {
+   public void commit(ByteWriter sender) {
       this.commit = commit;
    }
 

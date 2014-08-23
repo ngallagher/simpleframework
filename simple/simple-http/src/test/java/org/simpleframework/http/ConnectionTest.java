@@ -19,11 +19,11 @@ import org.simpleframework.common.thread.ConcurrentExecutor;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerProcessor;
+import org.simpleframework.http.core.ContainerTransportConnector;
 import org.simpleframework.http.core.ThreadDumper;
-import org.simpleframework.transport.Processor;
-import org.simpleframework.transport.ProcessorServer;
-import org.simpleframework.transport.Server;
+import org.simpleframework.transport.TransportConnector;
+import org.simpleframework.transport.TransportSocketConnector;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.Socket;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
@@ -73,17 +73,17 @@ public class ConnectionTest extends TestCase {
       pinger.stop(); // wait for it all to finish
    }
    
-   private static class DebugServer implements Server {
+   private static class DebugServer implements SocketConnector {
       
-      private Server server;
+      private SocketConnector server;
       
-      public DebugServer(Server server) {
+      public DebugServer(SocketConnector server) {
          this.server = server;
       }
       
-      public void process(Socket socket) throws IOException {
+      public void connect(Socket socket) throws IOException {
          System.err.println("Connect...");
-         server.process(socket);
+         server.connect(socket);
       }
       
       public void stop() throws IOException {
@@ -100,8 +100,8 @@ public class ConnectionTest extends TestCase {
       
       public PingServer(int port, String message) throws Exception {
          Allocator allocator = new FileAllocator();
-         Processor processor  = new ContainerProcessor(this, allocator, 5);
-         Server server = new ProcessorServer(processor);
+         TransportConnector processor  = new ContainerTransportConnector(this, allocator, 5);
+         SocketConnector server = new TransportSocketConnector(processor);
          DebugServer debug = new DebugServer(server);
          
          this.connection = new SocketConnection(debug);

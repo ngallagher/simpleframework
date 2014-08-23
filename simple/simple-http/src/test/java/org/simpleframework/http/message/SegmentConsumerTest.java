@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.simpleframework.http.core.DribbleCursor;
 import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.message.SegmentConsumer;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 import junit.framework.TestCase;
 
@@ -42,7 +42,7 @@ public class SegmentConsumerTest extends TestCase {
    }
    
    public void testHeader() throws Exception {  
-      Cursor cursor = new StreamCursor(SOURCE);
+      ByteCursor cursor = new StreamCursor(SOURCE);
       
       while(!header.isFinished()) {
          header.consume(cursor);
@@ -64,7 +64,7 @@ public class SegmentConsumerTest extends TestCase {
    }
    
    public void testEmptyHeader() throws Exception {  
-      Cursor cursor = new StreamCursor(EMPTY);
+      ByteCursor cursor = new StreamCursor(EMPTY);
       
       while(!header.isFinished()) {
          header.consume(cursor);
@@ -82,7 +82,7 @@ public class SegmentConsumerTest extends TestCase {
    }
    
    public void testDribble() throws Exception {  
-      Cursor cursor = new DribbleCursor(new StreamCursor(SOURCE), 1);
+      ByteCursor cursor = new DribbleCursor(new StreamCursor(SOURCE), 1);
       
       while(!header.isFinished()) {
          header.consume(cursor);

@@ -32,12 +32,12 @@ import java.io.IOException;
  * 
  * @see org.simpleframework.transport.Transport
  */
-public class TransportCursor implements Cursor {
+public class TransportCursor implements ByteCursor {
    
    /**
-    * This is the stream for the bytes read by this cursor object.
+    * This is the reader for the bytes read by this cursor object.
     */
-   private Stream stream;
+   private ByteReader reader;
    
    /**
     * This is the buffer used to collect the bytes pushed back.
@@ -86,7 +86,7 @@ public class TransportCursor implements Cursor {
     * @param size this is the size of the internal buffer to use
     */  
    public TransportCursor(Transport transport, int size) {
-      this.stream = new TransportStream(transport, size);
+      this.reader = new TransportReader(transport, size);
       this.buffer = new byte[0];
       this.limit = size;
    }
@@ -100,7 +100,7 @@ public class TransportCursor implements Cursor {
     * @return true if there is nothing more to be read from this
     */ 
    public boolean isOpen() throws IOException {
-      return stream.isOpen();
+      return reader.isOpen();
    }
 
    /**
@@ -126,7 +126,7 @@ public class TransportCursor implements Cursor {
       if(count > 0) {
          return count;
       }
-      return stream.ready();
+      return reader.ready();
    }
 
    /**
@@ -158,7 +158,7 @@ public class TransportCursor implements Cursor {
    public int read(byte[] data, int off, int len) throws IOException {
       if(count <= 0) {
          mark = pos;
-         return stream.read(data, off, len);
+         return reader.read(data, off, len);
       }
       int size = Math.min(count, len);
       
@@ -246,7 +246,7 @@ public class TransportCursor implements Cursor {
     */
    public int reset(int size) throws IOException {
       if(mark == pos) {
-         return stream.reset(size);
+         return reader.reset(size);
       }
       if(pos - size < mark) {
          size = pos - mark;

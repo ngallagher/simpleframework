@@ -8,7 +8,7 @@ import org.simpleframework.common.buffer.ArrayAllocator;
 import org.simpleframework.http.Part;
 import org.simpleframework.http.Request;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 public class RequestTest extends TestCase {
       
@@ -68,7 +68,7 @@ public class RequestTest extends TestCase {
    
    public void testPayload(int dribble) throws Exception {
       System.out.println("Testing dribbling cursor of "+dribble+" ...");
-      Cursor cursor = new StreamCursor(PAYLOAD);
+      ByteCursor cursor = new StreamCursor(PAYLOAD);
       
       if(dribble < PAYLOAD.length) {
          cursor = new DribbleCursor(cursor, dribble);
@@ -80,7 +80,7 @@ public class RequestTest extends TestCase {
       while(!selector.isReady()) {
          body.collect(selector);
       }   
-      Request request = new RequestEntity(body, null);
+      Request request = new RequestEntity(null, body);
       List<Part> list = request.getParts();      
       
       assertEquals(request.getParameter("a"), "b");

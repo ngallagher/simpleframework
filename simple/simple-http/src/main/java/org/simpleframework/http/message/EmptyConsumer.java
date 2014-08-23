@@ -18,7 +18,7 @@
 
 package org.simpleframework.http.message;
 
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>EmptyConsumer</code> object is used to represent a body
@@ -50,7 +50,7 @@ public class EmptyConsumer implements BodyConsumer {
     *
     * @param cursor this is the cursor which will not be read from
     */         
-   public void consume(Cursor cursor) {
+   public void consume(ByteCursor cursor) {
       return;
    }
  

@@ -11,7 +11,7 @@ public class ProducerExceptionTest extends TestCase {
          throw new IOException("Error");
       }catch(Exception main) {
          try {
-            throw new ProducerException("Wrapper", main);
+            throw new BodyEncoderException("Wrapper", main);
          }catch(Exception cause) {
             cause.printStackTrace();
             

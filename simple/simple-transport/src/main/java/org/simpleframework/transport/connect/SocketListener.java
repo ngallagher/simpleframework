@@ -1,5 +1,5 @@
 /*
- * Listener.java October 2002
+ * SocketListener.java October 2002
  *
  * Copyright (C) 2002, Niall Gallagher <niallg@users.sf.net>
  *
@@ -26,10 +26,10 @@ import java.net.SocketAddress;
 
 import javax.net.ssl.SSLContext;
 
-import org.simpleframework.transport.Server;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.reactor.SynchronousReactor;
 import org.simpleframework.transport.reactor.Reactor;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 /**
  * The <code>SocketListener</code> object is represents the interface 
@@ -62,8 +62,8 @@ class SocketListener implements Closeable {
     * @param server this is the server that pipelines are handed to
     * @param analyzer this is used to create a trace to monitor events
     */
-   public SocketListener(SocketAddress address, Server server, Analyzer analyzer) throws IOException {
-      this(address, null, server, analyzer);
+   public SocketListener(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer) throws IOException {
+      this(address, server, analyzer, null);
    }
    
    /**
@@ -73,14 +73,13 @@ class SocketListener implements Closeable {
     * acceptor when there is a new connection waiting to be accepted.
     * 
     * @param address this is the address to listen for new sockets
-    * @param context this is the SSL context used for secure HTTPS
     * @param server this is the server that pipelines are handed to
     * @param analyzer this is used to create a trace to monitor events
+    * @param context this is the SSL context used for secure HTTPS     
     */
-   public SocketListener(SocketAddress address, SSLContext context, Server server, Analyzer analyzer) throws IOException {
-      this.acceptor = new SocketAcceptor(address, context, server, analyzer);
+   public SocketListener(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer, SSLContext context) throws IOException {
+      this.acceptor = new SocketAcceptor(address, server, analyzer, context);
       this.reactor = new SynchronousReactor();
-      this.process();
    }
    
    /**
@@ -96,15 +95,14 @@ class SocketListener implements Closeable {
    }
    
    /**
-    * This is used to register the <code>Acceptor</code> to listen
-    * for new connections that are ready to be accepted. Once this
-    * is registered it will remain registered until the interface
-    * is closed, at which point the socket is closed.
-    * 
-    * @throws IOException thrown if there is a problem registering
+    * This is used to register the socket acceptor to listen for 
+    * new connections that are ready to be accepted. Once this is 
+    * registered it will remain registered until the interface is 
+    * closed, at which point the socket is closed.
     */
-   private void process() throws IOException {
+   public void process() throws IOException {
       try {
+         acceptor.bind();
          reactor.process(acceptor, OP_ACCEPT);
       } catch(Exception cause) {
          throw new ConnectionException("Listen error", cause);
@@ -114,10 +112,7 @@ class SocketListener implements Closeable {
    /**
     * This is used to close the connection and the server socket
     * used to accept connections. This will perform a close of the
-    * connected server socket that have been created from using
-    * the <code>Acceptor</code> object. 
-    * 
-    * @throws IOException thrown if there is a problem closing
+    * connected server socket and the dispatching thread.
     */   
    public void close() throws IOException {
       try {

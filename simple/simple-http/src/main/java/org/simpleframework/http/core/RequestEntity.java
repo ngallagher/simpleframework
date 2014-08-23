@@ -112,11 +112,11 @@ class RequestEntity extends RequestMessage implements Request {
     * convenient manner, all parts and parameters, as well as cookies
     * can be accessed and used without much effort.
     * 
+    * @param observer this is the observer used to monitor events     
     * @param entity this is the entity that was sent by the client
-    * @param observer this is the observer used to monitor events
     */
-   public RequestEntity(Entity entity, Observer observer) {
-      this.certificate = new RequestCertificate(entity, observer);
+   public RequestEntity(ResponseObserver observer, Entity entity) {
+      this.certificate = new RequestCertificate(observer, entity);
       this.builder = new QueryBuilder(this, entity);
       this.channel = entity.getChannel();
       this.header = entity.getHeader();      

@@ -17,35 +17,35 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.Status;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerProcessor;
+import org.simpleframework.http.core.ContainerTransportConnector;
 import org.simpleframework.http.socket.service.Router;
 import org.simpleframework.http.socket.service.RouterContainer;
 import org.simpleframework.http.socket.service.SingletonRouter;
-import org.simpleframework.transport.Processor;
-import org.simpleframework.transport.ProcessorServer;
-import org.simpleframework.transport.Server;
+import org.simpleframework.transport.TransportConnector;
+import org.simpleframework.transport.TransportSocketConnector;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
-public class WebSocketChatApplication implements Container, Processor {   
+public class WebSocketChatApplication implements Container, TransportConnector {   
 
    private final WebSocketCertificate certificate;
    private final Router negotiator;
    private final RouterContainer container;
    private final SocketAddress address;
    private final Connection connection;
-   private final Processor processor;
+   private final TransportConnector processor;
    private final Allocator allocator;
-   private final Server server;
+   private final SocketConnector server;
    
-   public WebSocketChatApplication(WebSocketChatRoom service, WebSocketCertificate certificate, Analyzer agent, int port) throws Exception {
+   public WebSocketChatApplication(WebSocketChatRoom service, WebSocketCertificate certificate, TraceAnalyzer agent, int port) throws Exception {
       this.negotiator = new SingletonRouter(service);
       this.container = new RouterContainer(this, negotiator, 10);
       this.allocator = new ArrayAllocator();
-      this.processor = new ContainerProcessor(container, allocator, 1);
-      this.server = new ProcessorServer(this);
+      this.processor = new ContainerTransportConnector(container, allocator, 1);
+      this.server = new TransportSocketConnector(this);
       this.connection = new SocketConnection(server, agent);
       this.address = new InetSocketAddress(port);
       this.certificate = certificate;
@@ -158,10 +158,10 @@ public class WebSocketChatApplication implements Container, Processor {
       return out.toString();
    }
 
-   public void process(Transport transport) throws IOException {
+   public void connect(Transport transport) throws IOException {
       Map map = transport.getAttributes();
       map.put(Transport.class, transport);
-      processor.process(transport);
+      processor.connect(transport);
    }
 
    public void stop() throws IOException {

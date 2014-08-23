@@ -27,8 +27,8 @@ import org.simpleframework.http.message.Entity;
  * data used to form a request entity. This will collect the data
  * fragment by fragment from the underlying transport. When all
  * of the data is consumed and the entity is created and then it
- * is sent to the <code>Selector</code> object for processing. If
- * the request has completed the next request can be collected
+ * is sent to the <code>Controller</code> object for processing. 
+ * If the request has completed the next request can be collected
  * from the underlying transport using a new collector object.  
  * 
  * @author Niall Gallagher
@@ -38,13 +38,13 @@ interface Collector extends Entity {
    /**
     * This is used to collect the data from a <code>Channel</code>
     * which is used to compose the entity. If at any stage there
-    * are no ready bytes on the socket the selector provided can be
+    * are no ready bytes on the socket the controller provided can be
     * used to queue the collector until such time as the socket is
     * ready to read. Also, should the entity have completed reading
-    * all required content it is handed to the selector as ready,
+    * all required content it is handed to the controller as ready,
     * which processes the entity as a new client HTTP request.
     * 
-    * @param selector this is the selector used to queue this
+    * @param controller this is the controller used to queue this
     */
-   void collect(Controller selector) throws IOException;
+   void collect(Controller controller) throws IOException;
 }

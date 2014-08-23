@@ -21,12 +21,13 @@ package org.simpleframework.transport.connect;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.net.ssl.SSLContext;
 
-import org.simpleframework.transport.Server;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 /**
  * The <code>SocketListenerManager</code> contains all the listeners
@@ -39,17 +40,22 @@ import org.simpleframework.transport.trace.Analyzer;
  * 
  * @see org.simpleframework.transport.connect.SocketConnection
  */
-class SocketListenerManager extends HashSet<SocketListener> implements Closeable {   
+class SocketListenerManager implements Closeable {
    
    /**
-    * This is the analyzer used to create a trace for the sockets.
+    * This is the set of active socket listeners for this manager.
     */
-   private final Analyzer analyzer; 
+   private final Set<SocketListener> listeners;
    
    /**
     * This is the server that listeners will dispatch sockets to.
     */
-   private final Server server;
+   private final SocketConnector connector;   
+   
+   /**
+    * This is the analyzer used to create a trace for the sockets.
+    */
+   private final TraceAnalyzer analyzer; 
    
    /**
     * Constructor for the <code>SocketListenerManager</code> object. 
@@ -57,21 +63,20 @@ class SocketListenerManager extends HashSet<SocketListener> implements Closeable
     * be created to listen to specified sockets for incoming TCP
     * connections, which will be converted to socket objects.
     * 
-    * @param server this is the server that sockets are handed to
+    * @param connector this is the connector to hand sockets to
     * @param analyzer this is the agent used to trace socket events
     */
-   public SocketListenerManager(Server server, Analyzer analyzer) {
+   public SocketListenerManager(SocketConnector connector, TraceAnalyzer analyzer) {
+      this.listeners = new CopyOnWriteArraySet<SocketListener>();
       this.analyzer = new SocketAnalyzer(analyzer);
-      this.server = server;
+      this.connector = connector;
    }
    
    /**
     * This creates a new background task that will listen to the 
     * specified <code>ServerAddress</code> for incoming TCP connect
     * requests. When an connection is accepted it is handed to the
-    * internal <code>Server</code> implementation as a pipeline. The
-    * background task is a non daemon task to ensure the server is
-    * kept active, to terminate the connection this can be closed.
+    * internal socket connector.
     * 
     * @param address this is the address used to accept connections
     * 
@@ -85,9 +90,7 @@ class SocketListenerManager extends HashSet<SocketListener> implements Closeable
     * This creates a new background task that will listen to the 
     * specified <code>ServerAddress</code> for incoming TCP connect
     * requests. When an connection is accepted it is handed to the
-    * internal <code>Server</code> implementation as a pipeline. The
-    * background task is a non daemon task to ensure the server is
-    * kept active, to terminate the connection this can be closed.
+    * internal socket connector.
     * 
     * @param address this is the address used to accept connections
     * @param context this is used for secure SSL connections
@@ -95,10 +98,11 @@ class SocketListenerManager extends HashSet<SocketListener> implements Closeable
     * @return this returns the actual local address that is used
     */ 
    public SocketAddress listen(SocketAddress address, SSLContext context) throws IOException {
-      SocketListener listener = new SocketListener(address, context, server, analyzer);
+      SocketListener listener = new SocketListener(address, connector, analyzer, context);
       
-      if(server != null) {
-         add(listener); 
+      if(connector != null) {
+         listener.process();
+         listeners.add(listener); 
       }
       return listener.getAddress();   
    }
@@ -112,12 +116,12 @@ class SocketListenerManager extends HashSet<SocketListener> implements Closeable
     * @throws IOException thrown if there is an error closing
     */
    public void close() throws IOException {
-      for(Closeable listener : this) {
+      for(Closeable listener : listeners) {
          listener.close();
       }
       if(analyzer != null) {
          analyzer.stop();
       }
-      clear();
+      listeners.clear();
    }
 }

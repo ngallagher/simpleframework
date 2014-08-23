@@ -10,7 +10,7 @@ import org.simpleframework.http.Cookie;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.WebSocketCertificate.KeyStoreReader;
 import org.simpleframework.http.socket.service.Service;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 public class WebSocketChatRoom extends Thread implements Service {
    
@@ -74,7 +74,7 @@ public class WebSocketChatRoom extends Thread implements Service {
    }
    
    public static void main(String[] list) throws Exception {
-      Analyzer agent = new WebSocketAnalyzer();
+      TraceAnalyzer agent = new WebSocketAnalyzer();
       WebSocketChatRoom application = new WebSocketChatRoom();
       File file = new File("C:\\work\\development\\async_http\\proxy\\yieldbroker-proxy-site\\certificate\\www.yieldbroker.com.pfx");
       KeyStoreReader reader = new KeyStoreReader(WebSocketCertificate.KeyStoreType.PKCS12, file, "p", "p");

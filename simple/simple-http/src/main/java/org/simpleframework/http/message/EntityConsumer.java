@@ -27,7 +27,7 @@ import java.io.IOException;
 
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -39,7 +39,7 @@ import org.simpleframework.transport.trace.Trace;
  * 
  * @author Niall Gallagher
  */
-public class EntityConsumer implements Consumer {
+public class EntityConsumer implements ByteConsumer {
    
    /**
     * This is used to create a body consumer for the entity.
@@ -116,7 +116,7 @@ public class EntityConsumer implements Consumer {
     * 
     * @param cursor used to consumed the bytes for the entity
     */
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       while(cursor.isReady()) {
          if(header.isFinished()) {            
             if(body == null) {

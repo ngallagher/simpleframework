@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.common.thread.Daemon;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 import org.simpleframework.transport.trace.Trace;
 
-public class LogAnalyzer extends Daemon implements Analyzer {
+public class LogAnalyzer extends Daemon implements TraceAnalyzer {
    
    private static final Logger LOG = Logger.getLogger(LogAnalyzer.class);
    

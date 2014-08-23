@@ -33,7 +33,7 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.message.Entity;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -69,6 +69,11 @@ import org.simpleframework.transport.trace.Trace;
 class ResponseEntity extends ResponseMessage implements Response {   
    
    /**
+    * This is the observer that is used to monitor the response.
+    */
+   private BodyObserver observer;      
+   
+   /**
     * This is used to buffer the bytes that are sent to the client.
     */
    private ResponseBuffer buffer;   
@@ -79,11 +84,6 @@ class ResponseEntity extends ResponseMessage implements Response {
    private Conversation support;
    
    /**
-    * This is the observer that is used to monitor the response.
-    */
-   private Observer observer;   
-   
-   /**
     * This is the underlying channel for the connected pipeline.
     */
    private Channel channel;
@@ -91,7 +91,7 @@ class ResponseEntity extends ResponseMessage implements Response {
    /**
     * This is the sender object used to deliver to response data.
     */
-   private Sender sender;
+   private ByteWriter sender;
    
    /**
     * This is used to trace events that occur with the response
@@ -106,15 +106,15 @@ class ResponseEntity extends ResponseMessage implements Response {
     * to ensure the next request can be processed the provided monitor
     * is used to signal response events to the server kernel.
     * 
+    * @param observer this is the observer used to signal events     
     * @param request this is the request that was sent by the client
     * @param entity this is the entity that contains the channel
-    * @param observer this is the observer used to signal events
     */
-   public ResponseEntity(Request request, Entity entity, Observer observer) {
+   public ResponseEntity(BodyObserver observer, Request request, Entity entity) {
       this.support = new Conversation(request, this);
-      this.buffer = new ResponseBuffer(this, support, entity, observer);
+      this.buffer = new ResponseBuffer(observer, this, support, entity);
       this.channel = entity.getChannel();
-      this.sender = channel.getSender();
+      this.sender = channel.getWriter();
       this.trace = channel.getTrace();
       this.observer = observer;
    }
@@ -404,7 +404,7 @@ class ResponseEntity extends ResponseMessage implements Response {
          byte[] message = header.getBytes("UTF-8");
          
          trace.trace(WRITE_HEADER, header);
-         sender.send(message);
+         sender.write(message);
          observer.commit(sender);
       }
    }

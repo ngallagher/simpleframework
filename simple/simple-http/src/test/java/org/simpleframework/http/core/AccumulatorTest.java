@@ -12,7 +12,7 @@ public class AccumulatorTest extends TestCase {
       MockRequest request = new MockRequest();
       MockResponse response = new MockResponse();
       Conversation support = new Conversation(request, response);
-      ResponseBuffer buffer = new ResponseBuffer(response, support, channel, monitor);
+      ResponseBuffer buffer = new ResponseBuffer(monitor, response, support, channel);
       
       byte[] content = { 'T', 'E', 'S', 'T' }; 
       
@@ -35,7 +35,7 @@ public class AccumulatorTest extends TestCase {
       request = new MockRequest();
       response = new MockResponse();
       support = new Conversation(request, response);
-      buffer = new ResponseBuffer(response, support, channel, monitor);
+      buffer = new ResponseBuffer(monitor, response, support, channel);
       
       // Start a HTTP/1.0 conversation
       request.setMajor(1);
@@ -56,7 +56,7 @@ public class AccumulatorTest extends TestCase {
       request = new MockRequest();
       response = new MockResponse();
       support = new Conversation(request, response);
-      buffer = new ResponseBuffer(response, support, channel, monitor);
+      buffer = new ResponseBuffer(monitor, response, support, channel);
       
       // Start a HTTP/1.1 conversation
       request.setMajor(1);

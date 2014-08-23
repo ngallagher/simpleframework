@@ -22,7 +22,7 @@ import java.io.IOException;
 
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.buffer.BufferAllocator;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>PartSeriesConsumer</code> object is used to consume a list
@@ -137,7 +137,7 @@ class PartSeriesConsumer implements BodyConsumer {
     *
     * @param cursor this is the cursor to consume the list from
     */ 
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       while(cursor.isReady()) { 
          if(!consumer.isFinished()) {
             consumer.consume(cursor);

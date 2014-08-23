@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteWriter;
 
 /**
  * The <code>OutputBarrier</code> is used to ensure that control
@@ -40,17 +40,17 @@ class OutputBarrier {
    /**
     * This is used to check if there is an operation in progress.
     */
-   private final ReentrantLock lock;   
+   private final ReentrantLock lock;
+   
+   /**
+    * This is the underlying sender used to send the frames.
+    */
+   private final ByteWriter writer;    
    
    /**
     * This is the TCP channel the frames are delivered over.
     */
    private final Channel channel;
-   
-   /**
-    * This is the underlying sender used to send the frames.
-    */
-   private final Sender sender; 
    
    /**
     * This is the length of time to wait before failing to lock.
@@ -69,7 +69,7 @@ class OutputBarrier {
    public OutputBarrier(Request request, long duration) {
       this.lock = new ReentrantLock();      
       this.channel = request.getChannel();
-      this.sender = channel.getSender();
+      this.writer = channel.getWriter();
       this.duration = duration;
    }
    
@@ -87,8 +87,8 @@ class OutputBarrier {
             throw new IOException("Transport lock could not be acquired");
          }
          try {
-            sender.send(frame);
-            sender.flush();  // less throughput, better latency          
+            writer.write(frame);
+            writer.flush();  // less throughput, better latency          
          } finally {
             lock.unlock();                           
          }

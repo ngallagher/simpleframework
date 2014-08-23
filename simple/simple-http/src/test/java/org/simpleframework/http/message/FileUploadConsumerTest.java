@@ -6,7 +6,7 @@ import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.buffer.ArrayAllocator;
 import org.simpleframework.http.core.DribbleCursor;
 import org.simpleframework.http.core.StreamCursor;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 public class FileUploadConsumerTest extends TestCase {
    
@@ -45,7 +45,7 @@ public class FileUploadConsumerTest extends TestCase {
       byte[] boundary = "mxvercagiykxaqsdvrfabfhfpaseejrg".getBytes("UTF-8");
       Allocator allocator = new ArrayAllocator();
       FileUploadConsumer consumer = new FileUploadConsumer(allocator, boundary, data.length);      
-      Cursor cursor = new StreamCursor(data);
+      ByteCursor cursor = new StreamCursor(data);
       
       while(!consumer.isFinished()) {
          consumer.consume(cursor);
@@ -59,7 +59,7 @@ public class FileUploadConsumerTest extends TestCase {
       byte[] boundary = "mxvercagiykxaqsdvrfabfhfpaseejrg".getBytes("UTF-8");
       Allocator allocator = new ArrayAllocator();
       FileUploadConsumer consumer = new FileUploadConsumer(allocator, boundary, data.length);      
-      Cursor cursor = new StreamCursor(data);
+      ByteCursor cursor = new StreamCursor(data);
       DribbleCursor dribble = new DribbleCursor(cursor, 1);
       
       while(!consumer.isFinished()) {
@@ -74,7 +74,7 @@ public class FileUploadConsumerTest extends TestCase {
       byte[] boundary = "mxvercagiykxaqsdvrfabfhfpaseejrg".getBytes("UTF-8");
       Allocator allocator = new ArrayAllocator();
       FileUploadConsumer consumer = new FileUploadConsumer(allocator, boundary, data.length);      
-      Cursor cursor = new StreamCursor(data);
+      ByteCursor cursor = new StreamCursor(data);
       DribbleCursor dribble = new DribbleCursor(cursor, 3);
       
       while(!consumer.isFinished()) {

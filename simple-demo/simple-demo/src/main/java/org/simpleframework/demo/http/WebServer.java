@@ -8,21 +8,21 @@ import javax.net.ssl.SSLContext;
 
 import org.simpleframework.demo.ssl.Certificate;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerServer;
-import org.simpleframework.transport.Server;
+import org.simpleframework.http.core.ContainerSocketConnector;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 public class WebServer {
 
    private final Certificate certificate;
    private final Connection connection;
    private final SocketAddress address;  
-   private final Server server;
+   private final SocketConnector server;
 
-   public WebServer(Container container, Certificate certificate, Analyzer analyzer, int port) throws IOException {
-      this.server = new ContainerServer(container, 2);
+   public WebServer(Container container, Certificate certificate, TraceAnalyzer analyzer, int port) throws IOException {
+      this.server = new ContainerSocketConnector(container, 2);
       this.connection = new SocketConnection(server, analyzer);
       this.address = new InetSocketAddress(port);
       this.certificate = certificate;

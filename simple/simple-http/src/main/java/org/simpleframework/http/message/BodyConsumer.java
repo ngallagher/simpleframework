@@ -26,7 +26,7 @@ package org.simpleframework.http.message;
  *
  * @author Niall Gallagher
  */
-public interface BodyConsumer extends Consumer {
+public interface BodyConsumer extends ByteConsumer {
    
    /**
     * This is used to acquire the body that has been consumed. This

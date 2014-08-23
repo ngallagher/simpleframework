@@ -15,7 +15,7 @@ public class TransportCursorTest extends TestCase {
       byte[] data = SOURCE.getBytes("ISO-8859-1");
       InputStream source = new ByteArrayInputStream(data);
       Transport transport = new StreamTransport(source, System.out);
-      Cursor cursor = new TransportCursor(transport);
+      ByteCursor cursor = new TransportCursor(transport);
       byte[] buffer = new byte[1024];
       
       assertEquals(cursor.ready(), data.length);

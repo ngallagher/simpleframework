@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.buffer.ArrayAllocator;
 import org.simpleframework.common.buffer.Buffer;
-import org.simpleframework.http.message.FixedConsumer;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.http.message.FixedLengthConsumer;
+import org.simpleframework.transport.ByteCursor;
 
 public class FixedConsumerTest extends TestCase implements Allocator {
    
@@ -54,8 +54,8 @@ public class FixedConsumerTest extends TestCase implements Allocator {
       buffer = new ArrayAllocator().allocate();
       
       String requestBody = buf.toString();
-      FixedConsumer consumer = new FixedConsumer(this, limitSize);
-      Cursor cursor = new DribbleCursor(new StreamCursor(requestBody), dribble);
+      FixedLengthConsumer consumer = new FixedLengthConsumer(this, limitSize);
+      ByteCursor cursor = new DribbleCursor(new StreamCursor(requestBody), dribble);
       byte[] requestBytes = requestBody.getBytes("UTF-8");
       
       while(!consumer.isFinished()) {

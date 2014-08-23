@@ -37,7 +37,7 @@ import org.simpleframework.http.socket.FrameType;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -76,7 +76,12 @@ class FrameProcessor {
    /**
     * This is used to determine if a close notification was sent.
     */
-   private final AtomicBoolean closed;
+   private final AtomicBoolean closed;   
+   
+   /**
+    * This is the cursor used to maintain a read seek position.
+    */
+   private final ByteCursor cursor;   
    
    /**
     * This is the session associated with the WebSocket connection.
@@ -92,11 +97,6 @@ class FrameProcessor {
     * This is the reason message used for a normal closure.
     */
    private final Reason normal;
-   
-   /**
-    * This is the cursor used to maintain a read seek position.
-    */
-   private final Cursor cursor;
    
    /**
     * This is used to trace the events that occur on the channel.

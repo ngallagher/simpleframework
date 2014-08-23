@@ -31,7 +31,7 @@ import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Sender;
+import org.simpleframework.transport.ByteWriter;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
 
@@ -60,7 +60,12 @@ class FrameConnection implements FrameChannel {
    /**
     * This encoder is used to encode data as RFC 6455 frames.
     */
-   private final FrameEncoder encoder;
+   private final FrameEncoder encoder;   
+   
+   /**
+    * This is the sender used to send frames over the channel. 
+    */
+   private final ByteWriter writer;      
    
    /**
     * This is the session object that has a synchronized channel.
@@ -76,12 +81,7 @@ class FrameConnection implements FrameChannel {
     * The reason that is sent if at any time the channel is closed.
     */
    private final Reason reason;
-   
-   /**
-    * This is the sender used to send frames over the channel. 
-    */
-   private final Sender sender;
-   
+
    /**
     * This is used to trace all events that occur on the channel.
     */
@@ -103,7 +103,7 @@ class FrameConnection implements FrameChannel {
       this.operation = new FrameCollector(encoder, session, request, reactor);
       this.reason = new Reason(NORMAL_CLOSURE);
       this.channel = request.getChannel();
-      this.sender = channel.getSender();
+      this.writer = channel.getWriter();
       this.trace = channel.getTrace();
    }    
    
@@ -199,7 +199,7 @@ class FrameConnection implements FrameChannel {
     */
    public void close(Reason reason) throws IOException {
       encoder.encode(reason);  
-      sender.close();
+      writer.close();
    }  
    
    /**
@@ -209,6 +209,6 @@ class FrameConnection implements FrameChannel {
     */
    public void close() throws IOException {
       encoder.encode(reason);  
-      sender.close();
+      writer.close();
    }
 }

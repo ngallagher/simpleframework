@@ -21,7 +21,7 @@ package org.simpleframework.http.message;
 import java.io.IOException;
 
 import org.simpleframework.common.buffer.Allocator;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>PartConsumer</code> object is used to consume a part 
@@ -31,7 +31,7 @@ import org.simpleframework.transport.Cursor;
  *  
  * @author Niall Gallagher
  */ 
-class PartConsumer implements Consumer {
+class PartConsumer implements ByteConsumer {
  
    /**
     * This is used to consume the header message of the part.
@@ -56,7 +56,7 @@ class PartConsumer implements Consumer {
    /**
     * This is the current consumer used to read from the cursor.
     */ 
-   private Consumer current;
+   private ByteConsumer current;
    
    /**
     * This is the terminal token that ends the part payload.
@@ -102,7 +102,7 @@ class PartConsumer implements Consumer {
     *
     * @param cursor this is the cursor to consume the body from
     */    
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       while(cursor.isReady()) {        
          if(header.isFinished()) {
             if(body == null) {

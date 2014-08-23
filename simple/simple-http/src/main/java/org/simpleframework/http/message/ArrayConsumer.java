@@ -20,7 +20,7 @@ package org.simpleframework.http.message;
 
 import java.io.IOException;
 
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>ArrayConsumer</code> object is a consumer that consumes 
@@ -34,7 +34,7 @@ import org.simpleframework.transport.Cursor;
  *
  * @author Niall Gallagher
  */ 
-public abstract class ArrayConsumer implements Consumer {
+public abstract class ArrayConsumer implements ByteConsumer {
 
    /**
     * This is the array that is used to contain the read bytes.
@@ -96,13 +96,13 @@ public abstract class ArrayConsumer implements Consumer {
     * This method is used to consume bytes from the provided cursor.
     * Each read performed is done in a specific chunk size to ensure
     * that a sufficiently large or small amount of data is read from
-    * the <code>Cursor</code> object. After each read the byte array
-    * is scanned for the terminal token. When the terminal token is
-    * found the bytes are processed by the implementation.
+    * the <code>ByteCursor</code> object. After each read the byte 
+    * array is scanned for the terminal token. When the terminal 
+    * token is found the bytes are processed by the implementation.
     *
     * @param cursor this is the cursor to consume the bytes from
     */ 
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       if(!done) {
          int ready = cursor.ready();
          

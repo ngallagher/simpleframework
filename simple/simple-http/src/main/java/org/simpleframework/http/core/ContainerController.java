@@ -60,7 +60,7 @@ class ContainerController implements Controller {
    /**
     * This is the container used to service the requests.
     */
-   private final Container handler;
+   private final Container container;
    
    /**
     * This is the reactor used to schedule the collectors.
@@ -73,17 +73,17 @@ class ContainerController implements Controller {
     * requests using two thread pools. The first is used to collect
     * the requests, the second is used to service those requests.
     * 
-    * @param handler this is the container used to service requests
+    * @param container this is the container used to service requests
     * @param allocator this is used to allocate any buffers needed
     * @param count this is the number of threads per thread pool
     * @param select this is the number of controller threads to use
     */
-   public ContainerController(Container handler, Allocator allocator, int count, int select) throws IOException {
+   public ContainerController(Container container, Allocator allocator, int count, int select) throws IOException {
       this.executor = new ConcurrentExecutor(RequestDispatcher.class, count); 
       this.collect = new ConcurrentExecutor(RequestReader.class, count);
       this.reactor = new ExecutorReactor(collect, select);     
       this.allocator = allocator;
-      this.handler = handler;
+      this.container = container;
    }
 
    /**
@@ -133,7 +133,7 @@ class ContainerController implements Controller {
     * @param collector this is the collector used to collect data
     */   
    public void ready(Collector collector) throws IOException {
-      executor.execute(new RequestDispatcher(handler, this, collector));
+      executor.execute(new RequestDispatcher(container, this, collector));
    }   
    
    /**

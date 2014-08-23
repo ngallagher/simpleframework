@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import org.simpleframework.common.buffer.ArrayAllocator;
 import org.simpleframework.http.message.ChunkedConsumer;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 public class ChunkedProducerTest extends TestCase {
 
@@ -19,20 +19,20 @@ public class ChunkedProducerTest extends TestCase {
       MockSender sender = new MockSender((chunkSize * count) + 1024);
       MockObserver monitor = new MockObserver();
       ChunkedConsumer validator = new ChunkedConsumer(new ArrayAllocator());
-      ChunkedProducer producer = new ChunkedProducer(sender, monitor);
+      ChunkedEncoder producer = new ChunkedEncoder(monitor, sender);
       byte[] chunk = new byte[chunkSize];
       
       for(int i = 0; i < chunk.length; i++) {
          chunk[i] = (byte)String.valueOf(i).charAt(0);
       }
       for(int i = 0; i < count; i++) {
-         producer.produce(chunk, 0, chunkSize);
+         producer.encode(chunk, 0, chunkSize);
       }
       producer.close();
       
       System.err.println(sender.getBuffer().encode("UTF-8"));
       
-      Cursor cursor = sender.getCursor();
+      ByteCursor cursor = sender.getCursor();
       
       while(!validator.isFinished()) {
          validator.consume(cursor);

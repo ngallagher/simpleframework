@@ -31,18 +31,18 @@ import java.nio.channels.SocketChannel;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
-import org.simpleframework.transport.Server;
+import org.simpleframework.transport.SocketConnector;
 import org.simpleframework.transport.Socket;
 import org.simpleframework.transport.SocketWrapper;
 import org.simpleframework.transport.reactor.Operation;
 import org.simpleframework.transport.trace.Trace;
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 /**
  * The <code>SocketAcceptor</code> object is used to accept incoming 
  * TCP connections from a specified socket address. This is used by 
  * the <code>Connection</code> object as a background process to 
- * accept the connections and hand them to a <code>Server</code>. 
+ * accept the connections and hand them to a socket connector.
  * <p>
  * This is capable of processing SSL connections created by the
  * internal server socket. All SSL connections are forced to finish
@@ -51,7 +51,7 @@ import org.simpleframework.transport.trace.Analyzer;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.transport.connect.Connection
+ * @see org.simpleframework.transport.connect.SocketConnection
  */
 class SocketAcceptor implements Operation {
 
@@ -59,6 +59,11 @@ class SocketAcceptor implements Operation {
     * This is the server socket channel used to accept connections.
     */
    private final ServerSocketChannel listener;
+   
+   /** 
+    * The handler that manages the incoming TCP connections.
+    */
+   private final SocketConnector connector; 
 
    /**
     * This is the server socket to bind the socket address to.
@@ -69,41 +74,55 @@ class SocketAcceptor implements Operation {
     * If provided the SSL context is used to create SSL engines.
     */
    private final SSLContext context;
-   
-   /** 
-    * The handler that manages the incoming HTTP connections.
-    */
-   private final Server server;   
-   
+
    /**
     * This is the tracing analyzer used to trace accepted sockets.
     */
-   private final Analyzer analyzer;
+   private final TraceAnalyzer analyzer;
+   
+   /**
+    * This is the local address to bind the listen socket to.
+    */
+   private final SocketAddress address;
    
    /**
     * This is used to collect trace events with the acceptor.
     */
    private final Trace trace;
+   
+   /**
+    * Constructor for the <code>SocketAcceptor</code> object. This 
+    * accepts new TCP connections from the specified server socket. 
+    * Each of the connections that is accepted is configured for 
+    * performance for the application.
+    *
+    * @param address this is the address to accept connections from
+    * @param server this is used to initiate the HTTP processing
+    * @param analyzer this is the tracing analyzer to be used
+    */
+   public SocketAcceptor(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer) throws IOException {
+      this(address, server, analyzer, null);
+   }
 
    /**
     * Constructor for the <code>SocketAcceptor</code> object. This 
     * accepts new TCP connections from the specified server socket. 
     * Each of the connections that is accepted is configured for 
-    * performance for HTTP applications.
+    * performance for the applications.
     *
     * @param address this is the address to accept connections from
-    * @param context this is the SSL context used for secure HTTPS 
     * @param server this is used to initiate the HTTP processing
     * @param analyzer this is the tracing analyzer to be used
+    * @param context this is the SSL context used for secure HTTPS 
     */
-   public SocketAcceptor(SocketAddress address, SSLContext context, Server server, Analyzer analyzer) throws IOException {
+   public SocketAcceptor(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer, SSLContext context) throws IOException {
       this.listener = ServerSocketChannel.open();
       this.trace = analyzer.attach(listener);
       this.socket = listener.socket();
       this.context = context;
       this.analyzer = analyzer;
-      this.server = server;
-      this.bind(address);
+      this.connector = server;
+      this.address = address;
    }
 
    /**
@@ -141,7 +160,21 @@ class SocketAcceptor implements Operation {
     */
    public SelectableChannel getChannel() {
       return listener;
-   }
+   }   
+
+   /**
+    * This is used to configure the server socket for non-blocking
+    * mode. It will also bind the server socket to the socket port
+    * specified in the <code>SocketAddress</code> object. Once done
+    * the acceptor is ready to accept newly arriving connections.
+    * 
+    * @param address this is the server socket address to bind to
+    */
+   public void bind() throws IOException {
+      listener.configureBlocking(false);
+      socket.setReuseAddress(true);
+      socket.bind(address, 100);
+   }   
 
    /**
     * This is used to accept a new TCP connections. When the socket
@@ -185,20 +218,6 @@ class SocketAcceptor implements Operation {
       } catch(Throwable cause) {
          trace.trace(ERROR, cause);
       }
-   }
-
-   /**
-    * This is used to configure the server socket for non-blocking
-    * mode. It will also bind the server socket to the socket port
-    * specified in the <code>SocketAddress</code> object. Once done
-    * the acceptor is ready to accept newly arriving connections.
-    * 
-    * @param address this is the server socket address to bind to
-    */
-   private void bind(SocketAddress address) throws IOException {
-      listener.configureBlocking(false);
-      socket.setReuseAddress(true);
-      socket.bind(address, 100);
    }
 
    /**
@@ -275,7 +294,7 @@ class SocketAcceptor implements Operation {
       
       try {
          trace.trace(ACCEPT);
-         server.process(socket);
+         connector.connect(socket);
       } catch(Exception cause) {
          trace.trace(ERROR, cause);
          channel.close();

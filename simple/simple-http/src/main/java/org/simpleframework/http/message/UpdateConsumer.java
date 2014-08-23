@@ -20,7 +20,7 @@ package org.simpleframework.http.message;
 
 import java.io.IOException;
 
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>UpdateConsumer</code> object is used to create a consumer
@@ -82,12 +82,12 @@ public abstract class UpdateConsumer implements BodyConsumer {
     * This method is used to consume bytes from the provided cursor.
     * Consuming of bytes from the cursor should be done in such a
     * way that it does not block. So typically only the number of
-    * ready bytes in the <code>Cursor</code> object should be read.
-    * If there are no ready bytes then this method should return.
+    * ready bytes in the <code>ByteCursor</code> object should be 
+    * read. If there are no ready bytes then this will return.
     *
     * @param cursor used to consume the bytes from the HTTP pipeline
     */    
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       int ready = cursor.ready();      
       
       while(ready > 0) {
@@ -118,7 +118,7 @@ public abstract class UpdateConsumer implements BodyConsumer {
     * 
     * @param cursor this is the cursor used by this consumer
     */
-   protected void commit(Cursor cursor) throws IOException {
+   protected void commit(ByteCursor cursor) throws IOException {
       if(!finished) {
          throw new IOException("Consumer not finished");
       }

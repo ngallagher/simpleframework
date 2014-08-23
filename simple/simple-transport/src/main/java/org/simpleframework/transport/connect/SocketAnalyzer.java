@@ -20,7 +20,7 @@ package org.simpleframework.transport.connect;
 
 import java.nio.channels.SelectableChannel;
 
-import org.simpleframework.transport.trace.Analyzer;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 import org.simpleframework.transport.trace.Trace;
 
 /**
@@ -32,12 +32,12 @@ import org.simpleframework.transport.trace.Trace;
  * 
  * @author Niall Gallagher
  */
-class SocketAnalyzer implements Analyzer {
+class SocketAnalyzer implements TraceAnalyzer {
    
    /**
     * This is the analyzer that is used to create the trace objects.
     */
-   private final Analyzer analyzer;
+   private final TraceAnalyzer analyzer;
    
    /**
     * Constructor for the <code>SocketAnalyzer</code> object. This will
@@ -47,7 +47,7 @@ class SocketAnalyzer implements Analyzer {
     * 
     * @param analyzer the analyzer that is to be wrapped by this
     */
-   public SocketAnalyzer(Analyzer analyzer) {
+   public SocketAnalyzer(TraceAnalyzer analyzer) {
       this.analyzer = analyzer;
    }
  

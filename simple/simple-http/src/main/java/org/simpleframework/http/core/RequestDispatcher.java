@@ -42,7 +42,12 @@ import org.simpleframework.transport.trace.Trace;
  * 
  * @see org.simpleframework.http.core.Container
  */
-class RequestDispatcher implements Runnable {
+class RequestDispatcher implements Runnable {   
+   
+   /**
+    * This is the observer object used to signal completion events.
+    */
+   private final ResponseObserver observer;    
    
    /**
     * This is the container that is used to handle the transactions.
@@ -58,11 +63,6 @@ class RequestDispatcher implements Runnable {
     * This is the request object which contains the request entity.
     */
    private final Request request;
-   
-   /**
-    * This is the observer object used to signal completion events.
-    */
-   private final Observer observer; 
    
    /**
     * This is the channel associated with the request to dispatch.
@@ -84,9 +84,9 @@ class RequestDispatcher implements Runnable {
     * @param entity this contains the current request entity
     */
    public RequestDispatcher(Container container, Controller controller, Entity entity) {
-      this.observer = new FlushObserver(controller, entity);
-      this.request = new RequestEntity(entity, observer);
-      this.response = new ResponseEntity(request, entity, observer);
+      this.observer = new ResponseObserver(controller, entity);
+      this.request = new RequestEntity(observer, entity);
+      this.response = new ResponseEntity(observer, request, entity);
       this.channel = entity.getChannel();
       this.trace = channel.getTrace();
       this.container = container;

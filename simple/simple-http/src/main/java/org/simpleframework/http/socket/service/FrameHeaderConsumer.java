@@ -21,7 +21,7 @@ package org.simpleframework.http.socket.service;
 import java.io.IOException;
 
 import org.simpleframework.http.socket.FrameType;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 /**
  * The <code>FrameHeaderConsumer</code> is used to consume frames from
@@ -149,7 +149,7 @@ class FrameHeaderConsumer implements FrameHeader {
     * 
     * @param cursor the cursor to consume the frame data from
     */
-   public void consume(Cursor cursor) throws IOException {
+   public void consume(ByteCursor cursor) throws IOException {
       if (cursor.isReady()) {
          if (type == null) {
             int count = cursor.read(octet);

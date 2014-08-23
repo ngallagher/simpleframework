@@ -96,7 +96,7 @@ class ConsumerFactory {
          return new ChunkedConsumer(allocator);
       }
       if(isFixed(segment)) {
-         return new FixedConsumer(allocator, length);
+         return new FixedLengthConsumer(allocator, length);
       }
       return new EmptyConsumer();
    }

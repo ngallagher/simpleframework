@@ -29,7 +29,7 @@ import javax.net.ssl.SSLContext;
  * from a server socket. In order to achieve this it spawns a task
  * to listen for incoming connect requests. When a TCP connection
  * request arrives it hands off the <code>SocketChannel</code> to
- * the <code>Server</code> which processes the request.
+ * the <code>SocketConnector</code> which processes the request.
  * <p>
  * This handles connections from a <code>ServerSocketChannel</code> 
  * object so that features such as SSL can be used by a server that 
@@ -38,7 +38,7 @@ import javax.net.ssl.SSLContext;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.transport.Server
+ * @see org.simpleframework.transport.SocketConnector
  */
 public interface Connection extends Closeable {
    

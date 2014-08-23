@@ -2,7 +2,7 @@ package org.simpleframework.http.core;
 
 import java.io.IOException;
 
-import org.simpleframework.http.core.FixedProducer;
+import org.simpleframework.http.core.FixedLengthEncoder;
 
 import junit.framework.TestCase;
 
@@ -18,14 +18,14 @@ public class FixedProducerTest extends TestCase {
    public void testContent(int chunkSize, int count) throws IOException {
       MockSender sender = new MockSender((chunkSize * count) + chunkSize);
       MockObserver monitor = new MockObserver();
-      FixedProducer producer = new FixedProducer(sender, monitor, chunkSize * count);
+      FixedLengthEncoder producer = new FixedLengthEncoder(monitor, sender, chunkSize * count);
       byte[] chunk = new byte[chunkSize];
       
       for(int i = 0; i < chunk.length; i++) {
          chunk[i] = (byte)String.valueOf(i).charAt(0);
       }
       for(int i = 0; i < count; i++) {
-         producer.produce(chunk, 0, chunkSize);
+         producer.encode(chunk, 0, chunkSize);
       }
       producer.close();
       
@@ -37,10 +37,10 @@ public class FixedProducerTest extends TestCase {
       
       sender = new MockSender((chunkSize * count) + chunkSize);
       monitor = new MockObserver();
-      producer = new FixedProducer(sender, monitor, chunkSize * count);
+      producer = new FixedLengthEncoder(monitor, sender, chunkSize * count);
       
       for(int i = 0; i < count; i++) {
-         producer.produce(chunk, 0, chunkSize);
+         producer.encode(chunk, 0, chunkSize);
       }
       producer.close();
       

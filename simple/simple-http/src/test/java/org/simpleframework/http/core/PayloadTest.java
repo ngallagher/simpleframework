@@ -8,7 +8,7 @@ import org.simpleframework.common.buffer.ArrayAllocator;
 import org.simpleframework.http.Part;
 import org.simpleframework.http.message.Header;
 import org.simpleframework.transport.Channel;
-import org.simpleframework.transport.Cursor;
+import org.simpleframework.transport.ByteCursor;
 
 public class PayloadTest extends TestCase {
    
@@ -52,7 +52,7 @@ public class PayloadTest extends TestCase {
    }
    
    public void testPayload(int dribble) throws Exception {
-      Cursor cursor = new DribbleCursor(new StreamCursor(PAYLOAD), 10);
+      ByteCursor cursor = new DribbleCursor(new StreamCursor(PAYLOAD), 10);
       Channel channel = new MockChannel(cursor);
       MockController selector = new MockController();
       Collector body = new RequestCollector(new ArrayAllocator(), channel);
