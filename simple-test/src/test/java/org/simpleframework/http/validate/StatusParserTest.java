@@ -2,8 +2,8 @@ package org.simpleframework.http.validate;
 
 import junit.framework.TestCase;
 
-import org.simpleframework.util.buffer.ArrayBuffer;
-import org.simpleframework.util.buffer.Buffer;
+import org.simpleframework.common.buffer.ArrayBuffer;
+import org.simpleframework.common.buffer.Buffer;
 
 public class StatusParserTest extends TestCase {
    

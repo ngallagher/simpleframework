@@ -1,12 +1,12 @@
 package org.simpleframework.http.validate.test;
 
-import org.simpleframework.http.RequestWrapper;
-import org.simpleframework.http.ResponseWrapper;
+import org.simpleframework.common.KeyMap;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.Request;
+import org.simpleframework.http.RequestWrapper;
 import org.simpleframework.http.Response;
+import org.simpleframework.http.ResponseWrapper;
 import org.simpleframework.http.StatusLine;
-import org.simpleframework.util.KeyMap;
-import org.simpleframework.util.buffer.Buffer;
 
 public class FilterAnalyser implements Analyser {
    

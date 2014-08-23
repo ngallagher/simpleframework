@@ -9,11 +9,11 @@ import javax.mail.internet.MimeMultipart;
 
 import junit.framework.TestCase;
 
+import org.simpleframework.common.buffer.Allocator;
+import org.simpleframework.common.buffer.ArrayAllocator;
 import org.simpleframework.http.Part;
 import org.simpleframework.http.core.DribbleCursor;
 import org.simpleframework.http.core.StreamCursor;
-import org.simpleframework.util.buffer.Allocator;
-import org.simpleframework.util.buffer.ArrayAllocator;
 
 public class MultipartTest extends TestCase {
    

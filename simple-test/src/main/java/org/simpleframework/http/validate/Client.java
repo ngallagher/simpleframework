@@ -9,9 +9,9 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.simpleframework.util.buffer.Allocator;
-import org.simpleframework.util.buffer.Buffer;
-import org.simpleframework.util.buffer.FileAllocator;
+import org.simpleframework.common.buffer.Allocator;
+import org.simpleframework.common.buffer.Buffer;
+import org.simpleframework.common.buffer.FileAllocator;
 
 public class Client {
    

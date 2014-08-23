@@ -3,7 +3,7 @@ package org.simpleframework.http.validate;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.simpleframework.util.buffer.Buffer;
+import org.simpleframework.common.buffer.Buffer;
 
 
 class HeaderParser {    

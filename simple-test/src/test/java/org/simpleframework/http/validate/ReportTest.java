@@ -5,8 +5,8 @@ import java.io.PushbackInputStream;
 
 import junit.framework.TestCase;
 
-import org.simpleframework.util.buffer.ArrayBuffer;
-import org.simpleframework.util.buffer.Buffer;
+import org.simpleframework.common.buffer.ArrayBuffer;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.xml.core.Persister;
 
 public class ReportTest extends TestCase {

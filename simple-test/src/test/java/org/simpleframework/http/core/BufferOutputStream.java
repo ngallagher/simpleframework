@@ -3,7 +3,7 @@ package org.simpleframework.http.core;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.simpleframework.util.buffer.Buffer;
+import org.simpleframework.common.buffer.Buffer;
 
 public class BufferOutputStream extends OutputStream {
 

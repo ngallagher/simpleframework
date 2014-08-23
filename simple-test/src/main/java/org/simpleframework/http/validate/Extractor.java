@@ -6,9 +6,9 @@ import java.io.PushbackInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.simpleframework.common.buffer.ArrayBuffer;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.StatusLine;
-import org.simpleframework.util.buffer.ArrayBuffer;
-import org.simpleframework.util.buffer.Buffer;
 
 public class Extractor {
    

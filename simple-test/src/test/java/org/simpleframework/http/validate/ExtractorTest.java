@@ -1,14 +1,13 @@
 package org.simpleframework.http.validate;
-import org.simpleframework.http.validate.Extractor;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.simpleframework.common.buffer.ArrayBuffer;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.StatusLine;
-import org.simpleframework.util.buffer.ArrayBuffer;
-import org.simpleframework.util.buffer.Buffer;
 
 public class ExtractorTest extends TestCase {
    

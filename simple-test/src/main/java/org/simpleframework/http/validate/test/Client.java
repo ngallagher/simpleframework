@@ -10,10 +10,10 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.simpleframework.common.KeyMap;
+import org.simpleframework.common.buffer.ArrayBuffer;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.StatusLine;
-import org.simpleframework.util.KeyMap;
-import org.simpleframework.util.buffer.ArrayBuffer;
-import org.simpleframework.util.buffer.Buffer;
 
 class Client implements Runnable {
    

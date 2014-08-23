@@ -3,7 +3,7 @@ package org.simpleframework.http.validate;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import org.simpleframework.util.buffer.Buffer;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

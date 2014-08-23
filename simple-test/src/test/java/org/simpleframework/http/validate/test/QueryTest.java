@@ -2,12 +2,12 @@ package org.simpleframework.http.validate.test;
 
 import java.io.InputStream;
 
+import org.simpleframework.common.KeyMap;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.Query;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.StatusLine;
-import org.simpleframework.util.KeyMap;
-import org.simpleframework.util.buffer.Buffer;
 
 public class QueryTest extends RoundTripTest {
    

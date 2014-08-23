@@ -8,9 +8,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.log4j.Logger;
+import org.simpleframework.common.thread.Daemon;
 import org.simpleframework.transport.trace.Analyzer;
 import org.simpleframework.transport.trace.Trace;
-import org.simpleframework.util.thread.Daemon;
 
 public class LogAnalyzer extends Daemon implements Analyzer {
    

@@ -3,9 +3,9 @@ package org.simpleframework.http.validate;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.Status;
 import org.simpleframework.http.StatusLine;
-import org.simpleframework.util.buffer.Buffer;
 
 class StatusParser implements StatusLine {
 

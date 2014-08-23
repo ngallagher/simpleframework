@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.simpleframework.http.Cookie;
+import org.simpleframework.common.buffer.Buffer;
 import org.simpleframework.http.StatusLine;
-import org.simpleframework.util.buffer.Buffer;
 
 public class Result {
    

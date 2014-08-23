@@ -21,9 +21,19 @@
     </dependency>
     <dependency>
       <groupId>org.simpleframework</groupId>
-      <artifactId>simple</artifactId>
+      <artifactId>simple-http</artifactId>
       <version>6.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.simpleframework</groupId>
+      <artifactId>simple-common</artifactId>
+      <version>6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.simpleframework</groupId>
+      <artifactId>simple-transport</artifactId>
+      <version>6.0</version>
+    </dependency> 
     <dependency>
       <groupId>org.simpleframework</groupId>
       <artifactId>simple-demo</artifactId>
