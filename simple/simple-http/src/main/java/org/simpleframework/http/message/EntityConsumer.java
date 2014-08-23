@@ -39,7 +39,12 @@ import org.simpleframework.transport.trace.Trace;
  * 
  * @author Niall Gallagher
  */
-public class EntityConsumer implements ByteConsumer {
+public class EntityConsumer implements ByteConsumer {   
+   
+   /**
+    * This is used to determine if there a continue is expected.
+    */
+   protected ContinueDispatcher dispatcher;   
    
    /**
     * This is used to create a body consumer for the entity.
@@ -57,11 +62,6 @@ public class EntityConsumer implements ByteConsumer {
    protected BodyConsumer body;
    
    /**
-    * This is used to determine if there a continue is expected.
-    */
-   protected Expectation expect;
-   
-   /**
     * This is used to trace the progress of the request consumption.
     */
    protected Trace trace;
@@ -77,7 +77,7 @@ public class EntityConsumer implements ByteConsumer {
     */
    public EntityConsumer(Allocator allocator, Channel channel) {
       this.header = new RequestConsumer();
-      this.expect = new Expectation(channel);
+      this.dispatcher = new ContinueDispatcher(channel);
       this.factory = new ConsumerFactory(allocator, header);
       this.trace = channel.getTrace();
    }
@@ -142,7 +142,7 @@ public class EntityConsumer implements ByteConsumer {
             CharSequence sequence = header.getHeader();
             
             trace.trace(HEADER_FINISHED, sequence);
-            expect.execute(header);            
+            dispatcher.execute(header);            
             body = factory.getInstance();
          } 
       }
