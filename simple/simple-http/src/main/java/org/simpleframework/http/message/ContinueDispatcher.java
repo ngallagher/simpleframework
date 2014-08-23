@@ -1,5 +1,5 @@
 /*
- * Expectation.java February 2007
+ * ContinueDispatcher.java February 2007
  *
  * Copyright (C) 2007, Niall Gallagher <niallg@users.sf.net>
  *
@@ -18,7 +18,7 @@
 
 package org.simpleframework.http.message;
 
-import static org.simpleframework.http.core.ContainerEvent.EXPECT_CONTINUE;
+import static org.simpleframework.http.core.ContainerEvent.DISPATCH_CONTINUE;
 
 import java.io.IOException;
 
@@ -79,7 +79,7 @@ class ContinueDispatcher {
     */
    public void execute(Header header) throws IOException {
       if(header.isExpectContinue()) {
-         trace.trace(EXPECT_CONTINUE);
+         trace.trace(DISPATCH_CONTINUE);
          writer.write(STATUS);
          writer.write(MESSAGE);
          writer.flush();

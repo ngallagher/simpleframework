@@ -64,7 +64,7 @@ public enum ContainerEvent {
    /**
     * This event indicates that the server sent a HTTP continue reply.
     */
-   EXPECT_CONTINUE,
+   DISPATCH_CONTINUE,
    
    /**
     * This event indicates that the request is ready for processing.
