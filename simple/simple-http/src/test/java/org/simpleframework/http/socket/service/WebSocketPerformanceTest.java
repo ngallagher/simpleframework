@@ -21,7 +21,7 @@ import org.simpleframework.common.thread.Daemon;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerTransportConnector;
+import org.simpleframework.http.core.ContainerTransportProcessor;
 import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.core.ThreadDumper;
 import org.simpleframework.http.message.ReplyConsumer;
@@ -33,9 +33,9 @@ import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.WebSocketAnalyzer;
-import org.simpleframework.transport.TransportConnector;
-import org.simpleframework.transport.TransportSocketConnector;
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.TransportProcessor;
+import org.simpleframework.transport.TransportSocketProcessor;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 import org.simpleframework.transport.trace.TraceAnalyzer;
@@ -147,16 +147,16 @@ public class WebSocketPerformanceTest {
       private final SocketAddress address;
       private final Connection connection;
       private final Allocator allocator;
-      private final TransportConnector processor;
+      private final TransportProcessor processor;
       private final Router negotiator;
-      private final SocketConnector server;
+      private final SocketProcessor server;
       
       public MessageGeneratorContainer(MessageGeneratorService service, TraceAnalyzer agent, int port) throws Exception {
          this.negotiator = new SingletonRouter(service);
          this.container = new RouterContainer(this, negotiator, 10, 100000);
          this.allocator = new ArrayAllocator();
-         this.processor = new ContainerTransportConnector(container, allocator, 10);
-         this.server = new TransportSocketConnector(processor, 10, 8192*10);
+         this.processor = new ContainerTransportProcessor(container, allocator, 10);
+         this.server = new TransportSocketProcessor(processor, 10, 8192*10);
          this.connection = new SocketConnection(server, agent);
          this.address = new InetSocketAddress(port);
       }

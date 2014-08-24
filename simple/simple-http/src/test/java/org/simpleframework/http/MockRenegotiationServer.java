@@ -34,12 +34,12 @@ import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Client.AnonymousTrustManager;
 import org.simpleframework.http.core.Container;
-import org.simpleframework.http.core.ContainerTransportConnector;
+import org.simpleframework.http.core.ContainerTransportProcessor;
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.CertificateChallenge;
-import org.simpleframework.transport.TransportConnector;
-import org.simpleframework.transport.TransportSocketConnector;
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.TransportProcessor;
+import org.simpleframework.transport.TransportSocketProcessor;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.Socket;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.connect.Connection;
@@ -71,9 +71,9 @@ public class MockRenegotiationServer implements Container {
 
    public MockRenegotiationServer(SSLContext context, boolean certRequired, int port) throws IOException {
       Allocator allocator = new FileAllocator();
-      ContainerTransportConnector processor = new ContainerTransportConnector(this, allocator, 4);
+      ContainerTransportProcessor processor = new ContainerTransportProcessor(this, allocator, 4);
       TransportGrabber grabber = new TransportGrabber(processor);
-      TransportSocketConnector processorServer = new TransportSocketConnector(grabber);
+      TransportSocketProcessor processorServer = new TransportSocketProcessor(grabber);
       
       this.server = new ConfigurableCertificateServer(processorServer, certRequired);  
       this.agent = new ConsoleAgent();
@@ -259,17 +259,17 @@ public class MockRenegotiationServer implements Container {
       }
    }
 
-   public static class TransportGrabber implements TransportConnector {
+   public static class TransportGrabber implements TransportProcessor {
       
-      private TransportConnector processor;
+      private TransportProcessor processor;
       
-      public TransportGrabber(TransportConnector processor) {
+      public TransportGrabber(TransportProcessor processor) {
          this.processor = processor;
       }
 
-      public void connect(Transport transport) throws IOException {
+      public void process(Transport transport) throws IOException {
          transport.getAttributes().put(Transport.class, transport);
-         processor.connect(transport);
+         processor.process(transport);
          
       }
 
@@ -279,16 +279,16 @@ public class MockRenegotiationServer implements Container {
       
    }
    
-   public static class ConfigurableCertificateServer implements SocketConnector {
+   public static class ConfigurableCertificateServer implements SocketProcessor {
       
-      private SocketConnector server;
+      private SocketProcessor server;
       private boolean certRequired;
 
-      public ConfigurableCertificateServer(SocketConnector server) {
+      public ConfigurableCertificateServer(SocketProcessor server) {
          this(server, false);
       }
       
-      public ConfigurableCertificateServer(SocketConnector server, boolean certRequired) {
+      public ConfigurableCertificateServer(SocketProcessor server, boolean certRequired) {
          this.certRequired = certRequired;
          this.server = server;
       }
@@ -297,13 +297,13 @@ public class MockRenegotiationServer implements Container {
          this.certRequired = certRequired;
       }
 
-      public void connect(Socket socket) throws IOException {
+      public void process(Socket socket) throws IOException {
          SSLEngine engine = socket.getEngine();
          socket.getAttributes().put(SSLEngine.class, engine);
          if(certRequired) {
             socket.getEngine().setNeedClientAuth(true);
          }
-         server.connect(socket);
+         server.process(socket);
       }
 
       public void stop() throws IOException {

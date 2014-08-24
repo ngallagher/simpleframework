@@ -3,23 +3,23 @@ package org.simpleframework.http.core;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.Socket;
 
-class TicketProcessor implements SocketConnector {
+class TicketProcessor implements SocketProcessor {
    
-   private SocketConnector delegate;
+   private SocketProcessor delegate;
 
-   public TicketProcessor(SocketConnector delegate) {
+   public TicketProcessor(SocketProcessor delegate) {
       this.delegate = delegate;
    }
 
-   public void connect(Socket pipe) throws IOException {
+   public void process(Socket pipe) throws IOException {
       SocketChannel channel = pipe.getChannel();
       int port = channel.socket().getPort();
 
       pipe.getAttributes().put(Ticket.KEY,new Ticket(port));
-      delegate.connect(pipe);
+      delegate.process(pipe);
    }
 
    public void stop() throws IOException {

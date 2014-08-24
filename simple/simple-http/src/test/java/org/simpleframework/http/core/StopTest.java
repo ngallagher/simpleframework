@@ -80,7 +80,7 @@ public class StopTest extends TestCase {
             }
          }
       };
-      ContainerSocketConnector server = new ContainerSocketConnector(container);
+      ContainerSocketProcessor server = new ContainerSocketProcessor(container);
       Connection connection = new SocketConnection(server);
       InetSocketAddress address = (InetSocketAddress)connection.connect(null); // ephemeral port
       

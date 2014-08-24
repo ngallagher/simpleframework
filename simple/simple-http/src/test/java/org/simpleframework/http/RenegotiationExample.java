@@ -24,9 +24,9 @@ import javax.net.ssl.X509TrustManager;
 
 import org.simpleframework.http.core.Client.AnonymousTrustManager;
 import org.simpleframework.transport.ByteCursor;
-import org.simpleframework.transport.TransportConnector;
-import org.simpleframework.transport.TransportSocketConnector;
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.TransportProcessor;
+import org.simpleframework.transport.TransportSocketProcessor;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.Socket;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.TransportCursor;
@@ -60,8 +60,8 @@ public class RenegotiationExample {
       SecureSocketContext context = new SecureSocketContext(reader, SecureProtocol.TLS);
       SSLContext sslContext = context.getContext();
       TraceAnalyzer agent = new MockAgent();
-      TransportProcessor processor = new TransportProcessor();
-      TransportSocketConnector server = new TransportSocketConnector(processor);
+      TransportProcessor processor = new MockTransportProcessor();
+      TransportSocketProcessor server = new TransportSocketProcessor(processor);
       ConfigurableCertificateServer certServer = new ConfigurableCertificateServer(server);
       SocketConnection con = new SocketConnection(certServer, agent);
       SocketAddress serverAddress = new InetSocketAddress(listenPort);
@@ -86,12 +86,12 @@ public class RenegotiationExample {
       return socket;
    }
    
-   public static class ConfigurableCertificateServer implements SocketConnector {
+   public static class ConfigurableCertificateServer implements SocketProcessor {
       
-      private SocketConnector server;
+      private SocketProcessor server;
       private boolean certRequired;
       
-      public ConfigurableCertificateServer(SocketConnector server) {
+      public ConfigurableCertificateServer(SocketProcessor server) {
          this.server = server;
       }
       
@@ -99,11 +99,11 @@ public class RenegotiationExample {
          this.certRequired = certRequired;
       }
 
-      public void connect(Socket socket) throws IOException {
+      public void process(Socket socket) throws IOException {
          if(certRequired) {
             socket.getEngine().setNeedClientAuth(true);
          }
-         server.connect(socket);
+         server.process(socket);
       }
 
       public void stop() throws IOException {
@@ -193,9 +193,9 @@ public class RenegotiationExample {
    
    
    
-   public static class TransportProcessor implements TransportConnector {
+   public static class MockTransportProcessor implements TransportProcessor {
 
-      public void connect(Transport transport) throws IOException {
+      public void process(Transport transport) throws IOException {
          System.err.println("New transport");        
          TransportPoller poller = new TransportPoller(transport);
          poller.start(); 

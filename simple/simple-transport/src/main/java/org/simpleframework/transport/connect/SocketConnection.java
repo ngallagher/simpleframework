@@ -23,7 +23,7 @@ import java.net.SocketAddress;
 
 import javax.net.ssl.SSLContext;
 
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.trace.TraceAnalyzer;
 
 /**
@@ -31,7 +31,7 @@ import org.simpleframework.transport.trace.TraceAnalyzer;
  * from a server socket. In order to achieve this it spawns a task
  * to listen for incoming connect requests. When a TCP connection
  * request arrives it hands off the <code>SocketChannel</code> to
- * the <code>SocketConnector</code> which processes the request.
+ * the <code>SocketProcessor</code> which processes the request.
  * <p>
  * This handles connections from a <code>ServerSocketChannel</code> 
  * object so that features such as SSL can be used by a server that 
@@ -40,7 +40,7 @@ import org.simpleframework.transport.trace.TraceAnalyzer;
  * 
  * @author Niall Gallagher
  * 
- * @see org.simpleframework.transport.SocketConnector
+ * @see org.simpleframework.transport.SocketProcessor
  */
 public class SocketConnection implements Connection {
    
@@ -52,7 +52,7 @@ public class SocketConnection implements Connection {
    /** 
     * The processor is used to process connected HTTP pipelines.
     */
-   private SocketConnector connector;
+   private SocketProcessor processor;
    
    /**
     * This is used to determine if the connection has been closed.
@@ -66,10 +66,10 @@ public class SocketConnection implements Connection {
     * to the specified connector. This in turn will deliver request
     * and response objects to the internal container.
     * 
-    * @param connector this is the connector that receives requests
+    * @param processor this is the connector that receives requests
     */    
-   public SocketConnection(SocketConnector connector) throws IOException {
-      this(connector, null);
+   public SocketConnection(SocketProcessor processor) throws IOException {
+      this(processor, null);
    }
 
    /** 
@@ -79,12 +79,12 @@ public class SocketConnection implements Connection {
     * to the specified processor. This in turn will deliver request
     * and response objects to the internal container.
     * 
-    * @param connector this is the connector that receives requests
+    * @param processor this is the connector that receives requests
     * @param analyzer this is used to create a trace for the socket
     */    
-   public SocketConnection(SocketConnector connector, TraceAnalyzer analyzer) throws IOException {
-      this.manager = new SocketListenerManager(connector, analyzer);
-      this.connector = connector;
+   public SocketConnection(SocketProcessor processor, TraceAnalyzer analyzer) throws IOException {
+      this.manager = new SocketListenerManager(processor, analyzer);
+      this.processor = processor;
    }
    
    /**
@@ -134,7 +134,7 @@ public class SocketConnection implements Connection {
    public void close() throws IOException {
       if(!closed) {
          manager.close();
-         connector.stop(); 
+         processor.stop(); 
       }
       closed = true;
    }

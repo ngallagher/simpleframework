@@ -35,7 +35,7 @@ import java.io.IOException;
 public class TransportCursor implements ByteCursor {
    
    /**
-    * This is the reader for the bytes read by this cursor object.
+    * This is the stream for the bytes read by this cursor object.
     */
    private ByteReader reader;
    

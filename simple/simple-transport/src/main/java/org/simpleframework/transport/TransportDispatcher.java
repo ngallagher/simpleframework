@@ -25,9 +25,9 @@ import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>TransportDispatcher</code> operation is used transfer a 
- * transport to the connector so it can be processed. This is used so 
- * that when a transport is given to the connector it can be dispatched
- * in another thread to the connector. This is needed so that the
+ * transport to the processor so it can be processed. This is used so 
+ * that when a transport is given to the processor it can be dispatched
+ * in another thread to the processor. This is needed so that the
  * connection thread is occupied only briefly.
  * 
  * @author Niall Gallagher
@@ -35,27 +35,27 @@ import org.simpleframework.transport.trace.Trace;
 class TransportDispatcher implements Operation {
    
    /**
-    * This is the connector used to transfer the transport to. 
+    * This is the processor used to transfer the transport to. 
     */
-   private final TransportConnector connector;
+   private final TransportProcessor processor;
    
    /**
-    * This is the transport to be passed to the connector.
+    * This is the transport to be passed to the processor.
     */
    private final Transport transport;
 
    /**
     * Constructor for the <code>TransportDispatcher</code> object. This 
-    * is used to transfer a transport to a connector. Transferring the
+    * is used to transfer a transport to a processor. Transferring the
     * transport using an operation ensures that the thread that is
     * used to process the transport is not occupied for long.
     * 
     * @param transport this is the transport this exchange uses
-    * @param connector this is the negotiation to dispatch to
+    * @param processor this is the negotiation to dispatch to
     */
-   public TransportDispatcher(TransportConnector connector, Transport transport) {
+   public TransportDispatcher(TransportProcessor processor, Transport transport) {
       this.transport = transport;
-      this.connector = connector;      
+      this.processor = processor;      
    }
    
    /**
@@ -84,14 +84,14 @@ class TransportDispatcher implements Operation {
    }   
    
    /**
-    * This is used to transfer the transport to the connector. This
+    * This is used to transfer the transport to the processor. This
     * will typically be executed asynchronously so that it does not
     * delay the thread that passes the <code>Transport</code> to the
-    * transport connector, ensuring quicker processing.
+    * transport processor, ensuring quicker processing.
     */
    public void run() {
       try {
-         connector.connect(transport);
+         processor.process(transport);
       }catch(Exception e) {
          cancel();
       }

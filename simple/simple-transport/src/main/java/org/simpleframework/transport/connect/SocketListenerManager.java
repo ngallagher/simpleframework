@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.net.ssl.SSLContext;
 
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.trace.TraceAnalyzer;
 
 /**
@@ -48,9 +48,9 @@ class SocketListenerManager implements Closeable {
    private final Set<SocketListener> listeners;
    
    /**
-    * This is the server that listeners will dispatch sockets to.
+    * This is the processor that listeners will dispatch sockets to.
     */
-   private final SocketConnector connector;   
+   private final SocketProcessor processor;   
    
    /**
     * This is the analyzer used to create a trace for the sockets.
@@ -63,13 +63,13 @@ class SocketListenerManager implements Closeable {
     * be created to listen to specified sockets for incoming TCP
     * connections, which will be converted to socket objects.
     * 
-    * @param connector this is the connector to hand sockets to
+    * @param processor this is the processor to hand sockets to
     * @param analyzer this is the agent used to trace socket events
     */
-   public SocketListenerManager(SocketConnector connector, TraceAnalyzer analyzer) {
+   public SocketListenerManager(SocketProcessor processor, TraceAnalyzer analyzer) {
       this.listeners = new CopyOnWriteArraySet<SocketListener>();
       this.analyzer = new SocketAnalyzer(analyzer);
-      this.connector = connector;
+      this.processor = processor;
    }
    
    /**
@@ -98,9 +98,9 @@ class SocketListenerManager implements Closeable {
     * @return this returns the actual local address that is used
     */ 
    public SocketAddress listen(SocketAddress address, SSLContext context) throws IOException {
-      SocketListener listener = new SocketListener(address, connector, analyzer, context);
+      SocketListener listener = new SocketListener(address, processor, analyzer, context);
       
-      if(connector != null) {
+      if(processor != null) {
          listener.process();
          listeners.add(listener); 
       }

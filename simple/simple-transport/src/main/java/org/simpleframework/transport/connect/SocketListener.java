@@ -26,7 +26,7 @@ import java.net.SocketAddress;
 
 import javax.net.ssl.SSLContext;
 
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.reactor.SynchronousReactor;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.TraceAnalyzer;
@@ -59,11 +59,11 @@ class SocketListener implements Closeable {
     * acceptor when there is a new connection waiting to be accepted.
     * 
     * @param address this is the address to listen for new sockets
-    * @param server this is the server that pipelines are handed to
+    * @param processor this is the processor that sockets are handed to
     * @param analyzer this is used to create a trace to monitor events
     */
-   public SocketListener(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer) throws IOException {
-      this(address, server, analyzer, null);
+   public SocketListener(SocketAddress address, SocketProcessor processor, TraceAnalyzer analyzer) throws IOException {
+      this(address, processor, analyzer, null);
    }
    
    /**
@@ -73,12 +73,12 @@ class SocketListener implements Closeable {
     * acceptor when there is a new connection waiting to be accepted.
     * 
     * @param address this is the address to listen for new sockets
-    * @param server this is the server that pipelines are handed to
+    * @param processor this is the processor that sockets are handed to
     * @param analyzer this is used to create a trace to monitor events
     * @param context this is the SSL context used for secure HTTPS     
     */
-   public SocketListener(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer, SSLContext context) throws IOException {
-      this.acceptor = new SocketAcceptor(address, server, analyzer, context);
+   public SocketListener(SocketAddress address, SocketProcessor processor, TraceAnalyzer analyzer, SSLContext context) throws IOException {
+      this.acceptor = new SocketAcceptor(address, processor, analyzer, context);
       this.reactor = new SynchronousReactor();
    }
    

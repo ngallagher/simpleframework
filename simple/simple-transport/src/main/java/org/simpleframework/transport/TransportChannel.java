@@ -37,7 +37,7 @@ import org.simpleframework.transport.trace.Trace;
  *
  * @author Niall Gallagher
  *
- * @see org.simpleframework.transport.TransportConnector
+ * @see org.simpleframework.transport.TransportProcessor
  */ 
 public class TransportChannel implements Channel {
    

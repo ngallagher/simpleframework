@@ -27,11 +27,11 @@ import org.simpleframework.transport.reactor.Reactor;
 
 /**
  * The <code>OperationFactory</code> is used to create operations
- * for the transport connector. Depending on the configuration of the
+ * for the transport processor. Depending on the configuration of the
  * pipeline object this will create different operations. Typically
  * this will create an SSL handshake operation if the pipeline has 
  * an <code>SSLEngine</code> instance. This allows the transport
- * connector to complete the handshake before handing the transport
+ * processor to complete the handshake before handing the transport
  * to the transporter for processing.
  *  
  * @author Niall Gallagher
@@ -39,9 +39,9 @@ import org.simpleframework.transport.reactor.Reactor;
 class OperationFactory {
    
    /**
-    * This is the connector used to process the created transport.
+    * This is the processor used to process the created transport.
     */
-   private final TransportConnector connector;
+   private final TransportProcessor processor;
    
    /**
     * This is the reactor used to register for I/O notifications.
@@ -65,47 +65,47 @@ class OperationFactory {
    
    /**
     * Constructor for the <code>OperationFactory</code> object. This
-    * uses the connector provided to hand off the created transport
+    * uses the processor provided to hand off the created transport
     * when it has been created. All operations created typically
     * execute in an asynchronous thread.
     * 
-    * @param connector the connector used to dispatch the transport
+    * @param processor the processor used to dispatch the transport
     * @param reactor this is the reactor used for I/O notifications 
     * @param buffer this is the initial size of the buffer to use   
     */
-   public OperationFactory(TransportConnector connector, Reactor reactor, int buffer) {
-      this(connector, reactor, buffer, 20480);
+   public OperationFactory(TransportProcessor processor, Reactor reactor, int buffer) {
+      this(processor, reactor, buffer, 20480);
    }
    
    /**
     * Constructor for the <code>OperationFactory</code> object. This
-    * uses the connector provided to hand off the created transport
+    * uses the processor provided to hand off the created transport
     * when it has been created. All operations created typically
     * execute in an asynchronous thread.
     * 
-    * @param connector the connector used to dispatch the transport
+    * @param processor the processor used to dispatch the transport
     * @param reactor this is the reactor used for I/O notifications 
     * @param buffer this is the initial size of the buffer to use       
     * @param threshold maximum size of the output buffer to use
     */
-   public OperationFactory(TransportConnector connector, Reactor reactor, int buffer, int threshold) {
-      this(connector, reactor, buffer, threshold, false);
+   public OperationFactory(TransportProcessor processor, Reactor reactor, int buffer, int threshold) {
+      this(processor, reactor, buffer, threshold, false);
    }
    
    /**
     * Constructor for the <code>OperationFactory</code> object. This
-    * uses the connector provided to hand off the created transport
+    * uses the processor provided to hand off the created transport
     * when it has been created. All operations created typically
     * execute in an asynchronous thread.
     * 
-    * @param connector the connector used to dispatch the transport
+    * @param processor the processor used to dispatch the transport
     * @param reactor this is the reactor used for I/O notifications 
     * @param buffer this is the initial size of the buffer to use       
     * @param threshold maximum size of the output buffer to use
     * @param client determines if the SSL handshake is for a client
     */
-   public OperationFactory(TransportConnector connector, Reactor reactor, int buffer, int threshold, boolean client) {
-      this.connector = connector;
+   public OperationFactory(TransportProcessor processor, Reactor reactor, int buffer, int threshold, boolean client) {
+      this.processor = processor;
       this.threshold = threshold;
       this.reactor = reactor;
       this.buffer = buffer;
@@ -143,8 +143,8 @@ class OperationFactory {
       Transport transport = new SocketTransport(socket, reactor, buffer, threshold);
    
       if(engine != null) {
-         return new Handshake(connector, transport, reactor, client);
+         return new Handshake(processor, transport, reactor, client);
       } 
-      return new TransportDispatcher(connector, transport);
+      return new TransportDispatcher(processor, transport);
    }
 }

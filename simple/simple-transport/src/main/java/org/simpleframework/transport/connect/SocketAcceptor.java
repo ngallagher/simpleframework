@@ -31,7 +31,7 @@ import java.nio.channels.SocketChannel;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
-import org.simpleframework.transport.SocketConnector;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.Socket;
 import org.simpleframework.transport.SocketWrapper;
 import org.simpleframework.transport.reactor.Operation;
@@ -63,7 +63,7 @@ class SocketAcceptor implements Operation {
    /** 
     * The handler that manages the incoming TCP connections.
     */
-   private final SocketConnector connector; 
+   private final SocketProcessor processor; 
 
    /**
     * This is the server socket to bind the socket address to.
@@ -97,11 +97,11 @@ class SocketAcceptor implements Operation {
     * performance for the application.
     *
     * @param address this is the address to accept connections from
-    * @param server this is used to initiate the HTTP processing
+    * @param processor this is used to initiate the HTTP processing
     * @param analyzer this is the tracing analyzer to be used
     */
-   public SocketAcceptor(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer) throws IOException {
-      this(address, server, analyzer, null);
+   public SocketAcceptor(SocketAddress address, SocketProcessor processor, TraceAnalyzer analyzer) throws IOException {
+      this(address, processor, analyzer, null);
    }
 
    /**
@@ -111,17 +111,17 @@ class SocketAcceptor implements Operation {
     * performance for the applications.
     *
     * @param address this is the address to accept connections from
-    * @param server this is used to initiate the HTTP processing
+    * @param processor this is used to initiate the HTTP processing
     * @param analyzer this is the tracing analyzer to be used
     * @param context this is the SSL context used for secure HTTPS 
     */
-   public SocketAcceptor(SocketAddress address, SocketConnector server, TraceAnalyzer analyzer, SSLContext context) throws IOException {
+   public SocketAcceptor(SocketAddress address, SocketProcessor processor, TraceAnalyzer analyzer, SSLContext context) throws IOException {
       this.listener = ServerSocketChannel.open();
       this.trace = analyzer.attach(listener);
       this.socket = listener.socket();
       this.context = context;
       this.analyzer = analyzer;
-      this.connector = server;
+      this.processor = processor;
       this.address = address;
    }
 
@@ -294,7 +294,7 @@ class SocketAcceptor implements Operation {
       
       try {
          trace.trace(ACCEPT);
-         connector.connect(socket);
+         processor.process(socket);
       } catch(Exception cause) {
          trace.trace(ERROR, cause);
          channel.close();
