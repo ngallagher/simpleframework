@@ -16,7 +16,7 @@ public class ContentTypeResolver {
       this.expressions = expressions;
    }
 
-   public String resolveType(String path) {
+   public synchronized String resolveType(String path) {
       if (patterns.isEmpty()) {
          Set<String> keys = expressions.keySet();
 
@@ -30,7 +30,7 @@ public class ContentTypeResolver {
       return resolvePattern(path);
    }
 
-   private String resolvePattern(String path) {
+   private synchronized String resolvePattern(String path) {
       Set<Pattern> keys = patterns.keySet();
 
       for (Pattern pattern : keys) {

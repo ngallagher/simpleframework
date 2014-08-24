@@ -20,9 +20,21 @@ public class WebServer {
    private final Connection connection;
    private final SocketAddress address;  
    private final SocketProcessor server;
+   
+   public WebServer(Container container, TraceAnalyzer analyzer, int port) throws IOException {
+      this(container, null, analyzer, port, 10);
+   }
+   
+   public WebServer(Container container,TraceAnalyzer analyzer, int port, int threads) throws IOException {
+      this(container, null, analyzer, port, threads);
+   }
 
    public WebServer(Container container, Certificate certificate, TraceAnalyzer analyzer, int port) throws IOException {
-      this.server = new ContainerSocketProcessor(container, 2);
+      this(container, certificate, analyzer, port, 10);
+   }
+   
+   public WebServer(Container container, Certificate certificate, TraceAnalyzer analyzer, int port, int threads) throws IOException {
+      this.server = new ContainerSocketProcessor(container, threads);
       this.connection = new SocketConnection(server, analyzer);
       this.address = new InetSocketAddress(port);
       this.certificate = certificate;
