@@ -31,11 +31,11 @@ import org.simpleframework.transport.trace.Trace;
  * also contain a bag of attributes used to describe the connection.
  * <p>
  * Reading and writing to a channel is performed using two special
- * interfaces. The first is the <code>Cursor</code> object which is
- * used to read data from the channel in a non-blocking manner. This
- * can also be used to reset data if it has read too much. To write
- * the <code>Sender</code> can be used, this provides a blocking
- * interface much like a conventional output stream.
+ * interfaces. The first is the <code>ByteCursor</code> object which 
+ * is used to read data from the channel in a non-blocking manner. 
+ * This can also be used to reset data if it has read too much. To 
+ * write the <code>ByteWriter</code> can be used, this provides a 
+ * blocking interface much like a conventional output stream.
  *
  * @author Niall Gallagher
  */ 
@@ -84,7 +84,7 @@ public interface Channel {
    Trace getTrace();
    
    /**
-    * This provides the <code>Cursor</code> for this channel. The
+    * This provides a <code>ByteCursor</code> for this channel. The
     * cursor provides a seekable view of the input buffer and will
     * allow the server kernel to peek into the input buffer without
     * having to take the data from the input. This allows overflow
@@ -95,8 +95,8 @@ public interface Channel {
    ByteCursor getCursor();
   
    /**
-    * This provides the <code>Sender</code> for the channel. This is
-    * used to provide a blocking output mechanism for the channel.
+    * This provides a <code>ByteWriter</code> for the channel. This 
+    * is used to provide a blocking output mechanism for the channel.
     * Enabling blocking reads ensures that output buffering can be
     * limited to an extent, which ensures that memory remains low at
     * high load periods. Writes to the sender may result in the data
