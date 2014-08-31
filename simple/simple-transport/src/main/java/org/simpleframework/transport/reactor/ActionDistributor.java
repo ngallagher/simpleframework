@@ -704,15 +704,16 @@ class ActionDistributor extends Daemon implements OperationDistributor {
          if(cancel) {
             int remaining = interest & ~ready; 
    
-            if(remaining == 0) {  
+            if(remaining == 0) {               
                executing.put(channel, set); 
             } else {       
                key.interestOps(remaining);       
             }
             set.remove(ready);   
          }
+      } else {
+         selecting.remove(channel);
       }
-      selecting.remove(channel);     
    }
    
    /**
