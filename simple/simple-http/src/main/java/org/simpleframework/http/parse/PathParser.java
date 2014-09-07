@@ -400,7 +400,6 @@ public class PathParser extends Parser implements Path{
     * references that the path will be evaluated as empty. This can
     * evaluate any path configuration, this includes any references
     * like <code>../</code> or <code>/..</code> within the path.
-    * This will also remove empty segments like <code>//</code>.
     */
    private void normalize(){
       int size = count + off;
@@ -409,12 +408,7 @@ public class PathParser extends Parser implements Path{
       for(off = count = 0; pos < size; pos++) {
          buf[count++] = buf[pos];
 
-         if(buf[pos] == '/') {
-            if(count -1 > 0){               
-               if(buf[count -2] == '/') /* [/]/./path/ */
-                  count--; /* /[/]./path/ */
-            }
-         } else if(buf[pos] == '.') { /* //[.]/path/ */
+         if(buf[pos] == '.') { /* //[.]/path/ */
             if(count -1 > 0) { /* /[/]./path/ */
                if(buf[count - 2] !='/') /* /[/]./path./ */
                   continue; /* /path.[/] */

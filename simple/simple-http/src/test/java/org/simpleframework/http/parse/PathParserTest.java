@@ -85,7 +85,7 @@ public class PathParserTest extends TestCase {
 
    public void testString() {
       path.parse("/some/path/../path/./to//a/file.txt"); 
-      assertEquals("/some/path/to/a/file.txt", path.toString());
+      assertEquals("/some/path/to//a/file.txt", path.toString());
    }
    
    public void testAIOB(){
