@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 
 import junit.framework.TestCase;
 
+import org.simpleframework.common.encode.Base64Encoder;
+
 public class WebSocketKeyTest extends TestCase {
    
    /*
@@ -26,9 +28,8 @@ public class WebSocketKeyTest extends TestCase {
       MessageDigest digest = MessageDigest.getInstance("SHA-1");
       byte[] data = result.getBytes("ISO-8859-1");
       digest.update(data);
-      byte[] digested = digest.digest();
-      sun.misc.BASE64Encoder encoder = new sun.misc.BASE64Encoder();
-      String value = encoder.encode(digested);
+      byte[] digested = digest.digest();    
+      String value = new String(Base64Encoder.encode(digested));
       
       assertEquals(value, "s3pPLMBiTxaQ9kYGzzhZRbK+xOo=");
    }

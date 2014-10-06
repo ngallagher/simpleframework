@@ -23,10 +23,10 @@ public class AddressParserTest extends TestCase {
 
    public void testPath() {
       link.parse("/this/./is//some/relative/./hidden/../URI.txt"); 
-      assertEquals("/this/is/some/relative/URI.txt", link.getPath().toString());      
+      assertEquals("/this/is//some/relative/URI.txt", link.getPath().toString());      
 
       link.parse("/this//is/a/simple/path.html?query");
-      assertEquals("/this/is/a/simple/path.html", link.getPath().toString());
+      assertEquals("/this//is/a/simple/path.html", link.getPath().toString());
    }
 
    public void testQuery() {
@@ -83,5 +83,10 @@ public class AddressParserTest extends TestCase {
       link.parse("https://secure.com/index.html");
       assertEquals("https", link.getScheme());
       assertEquals("secure.com", link.getDomain());
+      
+      link.setDomain("www.google.com:45");
+      assertEquals("www.google.com", link.getDomain());
+      assertEquals("https://www.google.com:45/index.html", link.toString());
+      assertEquals(45, link.getPort());
    }
 }        

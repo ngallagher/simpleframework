@@ -306,7 +306,31 @@ public class AddressParser extends Parser implements Address {
     * uniform resource identifier, if it is not null
     */
    public void setDomain(String value){
-      domain.value = value;
+      path.toString();      
+      query.toString();
+      scheme.toString();
+      domain.clear();
+      parseDomain(value); 
+   }
+   
+   /**
+    * This will set the domain to whatever value is in the
+    * string parameter. If the string is null then this URI
+    * objects <code>toString</code> method will not contain
+    * the domain. The result of the <code>toString</code>
+    * method will be <code>/path/path?query</code>. If the
+    * path is non-null this URI will contain the path.
+    *
+    * @param value this will be the new domain of this
+    * uniform resource identifier, if it is not null
+    */
+   private void parseDomain(String value){
+      count = value.length();
+      ensureCapacity(count);
+      value.getChars(0, count, buf, 0);
+      normal = null;
+      off = 0;
+      hostPort();
    }
 
    /**
@@ -569,11 +593,21 @@ public class AddressParser extends Parser implements Address {
     * RFC 2396.
     */
    private void netPath(){
+      hostPort();
+      relativeURI();
+   }
+   
+   /**
+    * This is used to extract the host and port combination.
+    * Typically a URI will not explicitly specify a port, however
+    * if there is a semicolon at the end of the domain it should
+    * be interpreted as the port part of the URI.
+    */
+   private void hostPort() {
       domain();
       if(skip(":")){
          port();
       }
-      relativeURI();
    }
 
    /**
