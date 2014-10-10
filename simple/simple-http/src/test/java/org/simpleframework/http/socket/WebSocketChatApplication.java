@@ -20,7 +20,7 @@ import org.simpleframework.http.core.Container;
 import org.simpleframework.http.core.ContainerTransportProcessor;
 import org.simpleframework.http.socket.service.Router;
 import org.simpleframework.http.socket.service.RouterContainer;
-import org.simpleframework.http.socket.service.SingletonRouter;
+import org.simpleframework.http.socket.service.DirectRouter;
 import org.simpleframework.transport.TransportProcessor;
 import org.simpleframework.transport.TransportSocketProcessor;
 import org.simpleframework.transport.SocketProcessor;
@@ -41,7 +41,7 @@ public class WebSocketChatApplication implements Container, TransportProcessor {
    private final SocketProcessor server;
    
    public WebSocketChatApplication(WebSocketChatRoom service, WebSocketCertificate certificate, TraceAnalyzer agent, int port) throws Exception {
-      this.negotiator = new SingletonRouter(service);
+      this.negotiator = new DirectRouter(service);
       this.container = new RouterContainer(this, negotiator, 10);
       this.allocator = new ArrayAllocator();
       this.processor = new ContainerTransportProcessor(container, allocator, 1);

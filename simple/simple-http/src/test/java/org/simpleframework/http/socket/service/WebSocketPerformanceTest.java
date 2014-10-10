@@ -152,7 +152,7 @@ public class WebSocketPerformanceTest {
       private final SocketProcessor server;
       
       public MessageGeneratorContainer(MessageGeneratorService service, TraceAnalyzer agent, int port) throws Exception {
-         this.negotiator = new SingletonRouter(service);
+         this.negotiator = new DirectRouter(service);
          this.container = new RouterContainer(this, negotiator, 10, 100000);
          this.allocator = new ArrayAllocator();
          this.processor = new ContainerTransportProcessor(container, allocator, 10);

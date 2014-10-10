@@ -1,5 +1,5 @@
 /*
- * SingletonRouter.java February 2014
+ * ProtocolRouter.java February 2014
  *
  * Copyright (C) 2014, Niall Gallagher <niallg@users.sf.net>
  *
@@ -23,55 +23,47 @@ import static org.simpleframework.http.Protocol.SEC_WEBSOCKET_VERSION;
 import static org.simpleframework.http.Protocol.UPGRADE;
 import static org.simpleframework.http.Protocol.WEBSOCKET;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 
 /**
- * The <code>SingletonRouter</code> object is used to create a router
- * that uses a single service. Typically this is used by simpler
- * servers that wish to expose a single sub-protocol to clients.
+ * The <code>ProtocolRouter</code> is used when there are multiple 
+ * services that can be used. Each service is selected based on the
+ * protocol sent in the initiating request. If a match cannot be
+ * made based on the request then a default service us chosen.
  * 
  * @author Niall Gallagher
- *
+ * 
  * @see org.simpleframework.http.socket.service.RouterContainer
  */
-public class SingletonRouter implements Router {
+public class ProtocolRouter implements Router {
 
    /**
-    * The service used by this router instance.
+    * This is the set of services that can be selected.
     */
-   private final Service service;
+   private final Map<String, Service> registry;
    
    /**
-    * The protocol used or null if none was specified.
+    * This is the default service chosen if there is no match.
     */
-   private final String protocol;
-
-   /**
-    * Constructor for the <code>SingletonRouter</code> object. This 
-    * is used to create an object that will select a single service.
-    * Creating an instance with this constructor means that the 
-    * protocol header will not be set.
-    * 
-    * @param service this is the service used by this instance
-    * @param protocol the protocol used by this router or null
-    */
-   public SingletonRouter(Service service) {
-      this(service, null);
-   }
+   private final Service primary;
    
    /**
-    * Constructor for the <code>SingletonRouter</code> object. This 
-    * is used to create an object that will select a single service.
-    * If the protocol specified is null then the response to the 
-    * session initiation will contain null for the protocol header.
+    * Constructor for the <code>ProtocolRouter</code> object. This is
+    * used to create a router using a selection of services that can
+    * be selected using the <code>Sec-WebSocket-Protocol</code> header
+    * sent in the initiating request by the client.
     * 
-    * @param service this is the service used by this instance
-    * @param protocol the protocol used by this router or null
+    * @param registry this is the registry of available services
+    * @param primary this is the default service to use
     */
-   public SingletonRouter(Service service, String protocol) {
-      this.protocol = protocol;
-      this.service = service;
+   public ProtocolRouter(Map<String, Service> registry, Service primary) throws IOException {
+      this.registry = registry;
+      this.primary = primary;
    }
    
    /**
@@ -91,15 +83,21 @@ public class SingletonRouter implements Router {
       
       if(token != null) {
          if(token.equalsIgnoreCase(WEBSOCKET)) {
+            List<String> protocols = request.getValues(SEC_WEBSOCKET_PROTOCOL);      
             String version = request.getValue(SEC_WEBSOCKET_VERSION);
             
             if(version != null) {
                response.setValue(SEC_WEBSOCKET_VERSION, version);
             }
-            if(protocol != null) {
-               response.setValue(SEC_WEBSOCKET_PROTOCOL, protocol);               
+            for(String protocol : protocols) {
+               Service service = registry.get(protocol);
+               
+               if(service != null) {
+                  response.setValue(SEC_WEBSOCKET_PROTOCOL, protocol);
+                  return service;
+               }
             }
-            return service;
+            return primary;
          }
       }
       return null;

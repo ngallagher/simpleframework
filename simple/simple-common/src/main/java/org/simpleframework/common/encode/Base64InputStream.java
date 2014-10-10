@@ -56,7 +56,9 @@ public class Base64InputStream extends InputStream {
 
    /**
     * Constructor for the <code>Base64InputStream</code> object.
-    * @param source
+    * This takes an encoded string and reads it as binary data.
+    * 
+    * @param source this string containing the encoded data
     */
    public Base64InputStream(String source) {
       this.encoded = source.toCharArray();
