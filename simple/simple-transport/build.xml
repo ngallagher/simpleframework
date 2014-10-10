@@ -79,7 +79,7 @@
    </target>
 
    <target name="build" depends="-compile" description="Compile and build project archive">
-     <jar jarfile="${jar.path}/simple-http.jar" basedir="${main.build.path}"/>
+     <jar jarfile="${jar.path}/simple-transport.jar" basedir="${main.build.path}"/>
       <delete dir="${build.path}"/>
    </target>
 
@@ -192,33 +192,33 @@
 
    <target name="package" depends="test" description="Build and test project for a new release">
       <mkdir dir="${package.path}/${build.path}"/>
-      <mkdir dir="${package.path}/${build.path}/simple-http-${core.version}"/>
-      <copy todir="${package.path}/${build.path}/simple-http-${core.version}/${source.path}">
+      <mkdir dir="${package.path}/${build.path}/simple-transport-${core.version}"/>
+      <copy todir="${package.path}/${build.path}/simple-transport-${core.version}/${source.path}">
          <fileset dir="${main.source.path}"> 
             <exclude name="**/*.class"/>
          </fileset>
       </copy>
-      <copy todir="${package.path}/${build.path}/simple-http-${core.version}/${doc.path}">
+      <copy todir="${package.path}/${build.path}/simple-transport-${core.version}/${doc.path}">
          <fileset file="${doc.path}"/>
       </copy>
-      <copy todir="${package.path}/${build.path}/simple-http-${core.version}/${test.path}">
+      <copy todir="${package.path}/${build.path}/simple-transport-${core.version}/${test.path}">
          <fileset dir="${skel.core.path}/${test.path}"/>
       </copy>
-      <copy todir="${package.path}/${build.path}/simple-http-${core.version}/${test.path}/${source.path}">
+      <copy todir="${package.path}/${build.path}/simple-transport-${core.version}/${test.path}/${source.path}">
          <fileset dir="${test.source.path}"/>
       </copy>
-      <copy todir="${package.path}/${build.path}/simple-http-${core.version}">
+      <copy todir="${package.path}/${build.path}/simple-transport-${core.version}">
          <fileset file="${skel.core.path}/build.xml"/>
          <filterset>
             <filter token="version" value="${core.version}"/>
          </filterset>
       </copy>
       <mkdir dir="${package.path}/${core.version}"/>
-      <ant antfile="build.xml" dir="${package.path}/${build.path}/simple-http-${core.version}" target="all" inheritall="false"/>
-      <ant antfile="build.xml" dir="${package.path}/${build.path}/simple-http-${core.version}/${test.path}" target="test" inheritall="false"/>
-      <zip destfile="${package.path}/${core.version}/simple-http-${core.version}.zip" basedir="${package.path}/${build.path}"/>
-      <tar tarfile="${package.path}/${core.version}/simple-http-${core.version}.tar" basedir="${package.path}/${build.path}"/>
-      <gzip zipfile="${package.path}/${core.version}/simple-http-${core.version}.tar.gz" src="${package.path}/${core.version}/simple-http-${core.version}.tar"/>
+      <ant antfile="build.xml" dir="${package.path}/${build.path}/simple-transport-${core.version}" target="all" inheritall="false"/>
+      <ant antfile="build.xml" dir="${package.path}/${build.path}/simple-transport-${core.version}/${test.path}" target="test" inheritall="false"/>
+      <zip destfile="${package.path}/${core.version}/simple-transport-${core.version}.zip" basedir="${package.path}/${build.path}"/>
+      <tar tarfile="${package.path}/${core.version}/simple-transport-${core.version}.tar" basedir="${package.path}/${build.path}"/>
+      <gzip zipfile="${package.path}/${core.version}/simple-transport-${core.version}.tar.gz" src="${package.path}/${core.version}/simple-transport-${core.version}.tar"/>
       <tstamp>
          <format property="build.time" pattern="d MMMM yyyy" locale="en"/>
       </tstamp>
@@ -228,7 +228,7 @@
             <filter token="timestamp" value="${build.time}"/>
          </filterset>
       </copy>
-      <delete file="${package.path}/${core.version}/simple-http-${core.version}.tar"/>
+      <delete file="${package.path}/${core.version}/simple-transport-${core.version}.tar"/>
       <delete dir="${package.path}/${build.path}"/>
       <delete dir="${build.path}"/>
       <antcall target="javadoc"/>
@@ -260,9 +260,9 @@
       <mkdir dir="${target.path}/maven/${core.version}"/>
       <copy todir="${target.path}/maven/${core.version}">
          <fileset dir="${target.path}">
-            <include name="simple-http-${core.version}.jar"/>
-            <include name="simple-http-${core.version}-sources.jar"/>
-            <include name="simple-http-${core.version}-javadoc.jar"/>
+            <include name="simple-transport-${core.version}.jar"/>
+            <include name="simple-transport-${core.version}-sources.jar"/>
+            <include name="simple-transport-${core.version}-javadoc.jar"/>
          </fileset>
          <fileset dir="${root.path}">
             <include name="pom.xml"/>
@@ -287,47 +287,47 @@
             <filtersfile file="${root.path}/build.properties"/>
          </filterset>        
       </copy> 
-      <move file="${target.path}/maven/${core.version}/pom.xml" tofile="${target.path}/maven/${core.version}/simple-http-${core.version}.pom"/>
+      <move file="${target.path}/maven/${core.version}/pom.xml" tofile="${target.path}/maven/${core.version}/simple-transport-${core.version}.pom"/>
       <exec executable="gpg">
          <arg value="-ab"/>
          <arg value="--passphrase"/>
          <arg value="${password}"/>
-         <arg value="${target.path}/maven/${core.version}/simple-http-${core.version}.jar"/>
+         <arg value="${target.path}/maven/${core.version}/simple-transport-${core.version}.jar"/>
       </exec>
       <exec executable="gpg">
          <arg value="-ab"/>
          <arg value="--passphrase"/>
          <arg value="${password}"/>
-         <arg value="${target.path}/maven/${core.version}/simple-http-${core.version}-sources.jar"/>
+         <arg value="${target.path}/maven/${core.version}/simple-transport-${core.version}-sources.jar"/>
       </exec>
       <exec executable="gpg">
          <arg value="-ab"/>
          <arg value="--passphrase"/>
          <arg value="${password}"/>
-         <arg value="${target.path}/maven/${core.version}/simple-http-${core.version}-javadoc.jar"/>
+         <arg value="${target.path}/maven/${core.version}/simple-transport-${core.version}-javadoc.jar"/>
       </exec>
       <exec executable="gpg">
          <arg value="-ab"/>
          <arg value="--passphrase"/>
          <arg value="${password}"/>
-         <arg value="${target.path}/maven/${core.version}/simple-http-${core.version}.pom"/>
+         <arg value="${target.path}/maven/${core.version}/simple-transport-${core.version}.pom"/>
       </exec>
-      <!--checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.jar" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.jar" algorithm="MD5" fileext=".md5"/>      
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.jar.asc" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.jar.asc" algorithm="MD5" fileext=".md5"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-sources.jar" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-sources.jar" algorithm="MD5" fileext=".md5"/> 
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-sources.jar.asc" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-sources.jar.asc" algorithm="MD5" fileext=".md5"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-javadoc.jar" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-javadoc.jar" algorithm="MD5" fileext=".md5"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-javadoc.jar.asc" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}-javadoc.jar.asc" algorithm="MD5" fileext=".md5"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.pom" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.pom" algorithm="MD5" fileext=".md5"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.pom.asc" algorithm="SHA1" fileext=".sha1"/>
-      <checksum file="${target.path}/maven/${core.version}/simple-http-${core.version}.pom.asc" algorithm="MD5" fileext=".md5"/>
+      <!--checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.jar" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.jar" algorithm="MD5" fileext=".md5"/>      
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.jar.asc" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.jar.asc" algorithm="MD5" fileext=".md5"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-sources.jar" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-sources.jar" algorithm="MD5" fileext=".md5"/> 
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-sources.jar.asc" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-sources.jar.asc" algorithm="MD5" fileext=".md5"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-javadoc.jar" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-javadoc.jar" algorithm="MD5" fileext=".md5"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-javadoc.jar.asc" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}-javadoc.jar.asc" algorithm="MD5" fileext=".md5"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.pom" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.pom" algorithm="MD5" fileext=".md5"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.pom.asc" algorithm="SHA1" fileext=".sha1"/>
+      <checksum file="${target.path}/maven/${core.version}/simple-transport-${core.version}.pom.asc" algorithm="MD5" fileext=".md5"/>
       <checksum file="${target.path}/maven/maven-metadata.xml" algorithm="SHA1" fileext=".sha1"/>
       <checksum file="${target.path}/maven/maven-metadata.xml" algorithm="MD5" fileext=".md5"/-->    
       <zip destfile="${root.path}/maven-${core.version}.zip" basedir="${target.path}/maven"/>      

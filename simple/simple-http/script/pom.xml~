@@ -8,7 +8,7 @@
   <groupId>org.simpleframework</groupId>
   <artifactId>simple</artifactId>
   <packaging>jar</packaging>
-  <version>6.0</version>
+  <version>@core.version@</version>
   <name>Simple XML</name>
   <url>http://www.simpleframework.org</url>
   <description>Simple is a high performance asynchronous HTTP framework for Java</description>
@@ -20,9 +20,9 @@
     </license>
   </licenses>
   <scm>
-    <url>http://simpleweb.svn.sourceforge.net/viewvc/simpleweb.tags/simple-6.0</url>
-    <developerConnection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-6.0</developerConnection>
-    <connection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-6.0</connection>
+    <url>http://simpleweb.svn.sourceforge.net/viewvc/simpleweb.tags/simple-@core.version@</url>
+    <developerConnection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-@core.version@</developerConnection>
+    <connection>scm:svn:https://simpleweb.svn.sourceforge.net/svnroot/simpleweb.tags/simple-@core.version@</connection>
   </scm>
   <developers>
     <developer>
