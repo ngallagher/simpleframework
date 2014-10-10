@@ -85,6 +85,8 @@ public class PathRouter implements Router {
          if(token.equalsIgnoreCase(WEBSOCKET)) {
             List<String> protocols = request.getValues(SEC_WEBSOCKET_PROTOCOL);           
             String version = request.getValue(SEC_WEBSOCKET_VERSION);
+            Path path = request.getPath();
+            String normal = path.getPath();
             
             if(version != null) {
                response.setValue(SEC_WEBSOCKET_VERSION, version);
@@ -96,8 +98,6 @@ public class PathRouter implements Router {
                   response.setValue(SEC_WEBSOCKET_PROTOCOL, protocol);                  
                }
             }
-            Path path = request.getPath();
-            String normal = path.getPath();
             Service service = registry.get(normal);
                
             if(service != null) {
