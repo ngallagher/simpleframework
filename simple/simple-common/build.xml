@@ -238,7 +238,8 @@
       <copy todir="${root.path}" overwrite="true">
          <fileset dir="${script.path}">
             <include name="pom.xml"/>
-         </fileset>
+    </fileset>
+
          <filterset>
             <filtersfile file="${root.path}/build.properties"/>
          </filterset>
