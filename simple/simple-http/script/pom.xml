@@ -9,7 +9,7 @@
   <artifactId>@build.name@</artifactId>
   <packaging>jar</packaging>
   <version>@build.version@</version>
-  <name>@simple.description@</name>
+  <name>@build.description@</name>
   <url>http://www.simpleframework.org</url>
   <description>Simple is a high performance asynchronous HTTP framework for Java</description>
   <licenses>
