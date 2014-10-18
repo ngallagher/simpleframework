@@ -13,7 +13,7 @@ import org.simpleframework.http.socket.Session;
 import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.service.Service;
 
-public class ChatRoom extends Thread implements Service {
+public class ChatRoom implements Service {
    
    private static final Logger LOG = Logger.getLogger(ChatRoom.class);
    

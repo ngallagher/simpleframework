@@ -20,11 +20,11 @@
     </constructor-arg>
   </bean>
 
-  <bean id="FileManager" class="org.simpleframework.demo.http.resource.FileManager">
+  <bean id="FileManager" class="org.simpleframework.demo.io.FileManager">
     <constructor-arg value="data/${context.path}" />
   </bean>
 
-  <bean id="FileResolver" class="org.simpleframework.demo.http.resource.FileResolver">
+  <bean id="FileResolver" class="org.simpleframework.demo.io.FileResolver">
     <constructor-arg ref="FileManager" />
     <constructor-arg value="index.html" />
     <constructor-arg value="index.html" />
@@ -81,17 +81,19 @@
     <constructor-arg ref="ResourceEngine" />
     <constructor-arg ref="FailureResource" />
   </bean>
+  
+  <bean id="TraceAnalyzer" class="org.simpleframework.demo.trace.LogAnalyzer" init-method="start"/>
 
   <bean id="WebContainer" class="org.simpleframework.demo.http.WebContainer">
     <constructor-arg ref="ResourceContainer" />
     <constructor-arg value="Graph/1.0" />
   </bean>
 
-  <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.SingletonRouter">
+  <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.DirectRouter">
     <constructor-arg ref="GraphPlotter" />
   </bean>
 
-  <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer" init-method="start">
+  <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer">
     <constructor-arg ref="WebContainer" />
     <constructor-arg ref="WebSocketRouter" />
     <constructor-arg value="2" />
@@ -99,6 +101,7 @@
 
   <bean id="WebServer" class="org.simpleframework.demo.http.WebServer" init-method="start">
     <constructor-arg ref="WebSocketContainer" />
+    <constructor-arg ref="TraceAnalyzer"/>
     <constructor-arg value="${server.listenPort}" />
   </bean>
 

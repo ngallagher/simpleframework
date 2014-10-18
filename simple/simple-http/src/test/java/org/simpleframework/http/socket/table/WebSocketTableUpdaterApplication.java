@@ -32,9 +32,7 @@ import org.simpleframework.transport.trace.TraceAnalyzer;
 
 public class WebSocketTableUpdaterApplication implements Container, TransportProcessor {   
 
-   //private final String ROOT_PATH = "/Users/niallg/Work/development/simpleframework/simple/src/test/java/org/simpleframework/http/socket/";
-   private final String ROOT_PATH = "C:\\Work\\development\\simpleframework\\simple\\src\\test\\java\\org\\simpleframework\\http\\socket\\table\\";
-   //private final String ROOT_PATH = "C:\\Work\\development\\async_http\\simple\\src\\test\\java\\org\\simpleframework\\http\\socket\\table\\";   
+   private final String ROOT_PATH = "C:\\Work\\development\\github\\simpleframework\\simple\\simple-http\\src\\test\\java\\org\\simpleframework\\http\\socket\\table";
    
    private final Router negotiator;
    private final RouterContainer container;
