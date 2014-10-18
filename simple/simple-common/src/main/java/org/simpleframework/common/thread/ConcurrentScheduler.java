@@ -42,9 +42,21 @@ public class ConcurrentScheduler implements Scheduler {
     * to be executed this should be increased for accuracy.
     * 
     * @param type this is the type of the worker threads
+    */
+   public ConcurrentScheduler(Class<? extends Runnable> type) {
+      this(type, 10);
+   }
+   
+   /**
+    * Constructor for the <code>ConcurrentScheduler</code> object. 
+    * This will create a scheduler with a fixed number of threads to 
+    * use before execution. Depending on the types of task that are
+    * to be executed this should be increased for accuracy.
+    * 
+    * @param type this is the type of the worker threads
     * @param size this is the number of threads for the scheduler
     */
-   public ConcurrentScheduler(Class type, int size) {
+   public ConcurrentScheduler(Class<? extends Runnable> type, int size) {
       this.queue = new SchedulerQueue(type, size);
    }
 
