@@ -53,7 +53,7 @@ class SchedulerQueue {
     * @param type this is the type of task to execute
     * @param size this is the number of threads for the scheduler
     */   
-   public SchedulerQueue(Class<? extends Runnable> type, int size) {
+   public SchedulerQueue(Class type, int size) {
       this.factory = new DaemonFactory(type);
       this.executor = new ScheduledThreadPoolExecutor(size, factory);
    }

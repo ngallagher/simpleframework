@@ -43,7 +43,7 @@ public class ConcurrentExecutor implements Executor {
     * 
     * @param type this is the type of runnable that this accepts
     */
-   public ConcurrentExecutor(Class<? extends Runnable> type) {
+   public ConcurrentExecutor(Class type) {
       this(type, 10);
    }
    
@@ -56,7 +56,7 @@ public class ConcurrentExecutor implements Executor {
     * @param type this is the type of runnable that this accepts
     * @param size this is the number of threads to use in the pool
     */   
-   public ConcurrentExecutor(Class<? extends Runnable> type, int size) {
+   public ConcurrentExecutor(Class type, int size) {
       this(type, size, size);
    }
    
@@ -70,7 +70,7 @@ public class ConcurrentExecutor implements Executor {
     * @param rest this is the number of threads to use in the pool    
     * @param active this is the maximum size the pool can grow to 
     */   
-   public ConcurrentExecutor(Class<? extends Runnable> type, int rest, int active) {     
+   public ConcurrentExecutor(Class type, int rest, int active) {     
       this.queue = new ExecutorQueue(type, rest, active);
    }   
    

@@ -43,7 +43,7 @@ public class ConcurrentScheduler implements Scheduler {
     * 
     * @param type this is the type of the worker threads
     */
-   public ConcurrentScheduler(Class<? extends Runnable> type) {
+   public ConcurrentScheduler(Class type) {
       this(type, 10);
    }
    
@@ -56,7 +56,7 @@ public class ConcurrentScheduler implements Scheduler {
     * @param type this is the type of the worker threads
     * @param size this is the number of threads for the scheduler
     */
-   public ConcurrentScheduler(Class<? extends Runnable> type, int size) {
+   public ConcurrentScheduler(Class type, int size) {
       this.queue = new SchedulerQueue(type, size);
    }
 
