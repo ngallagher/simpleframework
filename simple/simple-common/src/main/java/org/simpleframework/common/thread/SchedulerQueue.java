@@ -1,5 +1,5 @@
 /*
- * ScheduledTaskQueue.java February 2007
+ * SchedulerQueue.java February 2007
  *
  * Copyright (C) 2007, Niall Gallagher <niallg@users.sf.net>
  *
@@ -25,14 +25,14 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The <code>ScheduledTaskQueue</code> object is used to schedule tasks 
+ * The <code>SchedulerQueue</code> object is used to schedule tasks 
  * for execution. This queues the task for the requested period of 
  * time before it is executed. It ensures that the delay is adhered 
  * to such that tasks can be timed for execution in an accurate way.
  * 
  * @author Niall Gallagher
  */
-class ScheduledTaskQueue {
+class SchedulerQueue {
    
    /**
     * This is the actual scheduler used to schedule the tasks.
@@ -45,7 +45,7 @@ class ScheduledTaskQueue {
    private final ThreadFactory factory;
    
    /**
-    * Constructor for the <code>ScheduledTaskQueue</code> object. This 
+    * Constructor for the <code>SchedulerQueue</code> object. This 
     * will create a scheduler with a fixed number of threads to use
     * before execution. Depending on the types of task that are
     * to be executed this should be increased for accuracy.
@@ -53,7 +53,7 @@ class ScheduledTaskQueue {
     * @param type this is the type of task to execute
     * @param size this is the number of threads for the scheduler
     */   
-   public ScheduledTaskQueue(Class type, int size) {
+   public SchedulerQueue(Class type, int size) {
       this.factory = new DaemonFactory(type);
       this.executor = new ScheduledThreadPoolExecutor(size, factory);
    }

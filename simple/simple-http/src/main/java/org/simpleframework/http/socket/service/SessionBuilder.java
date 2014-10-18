@@ -20,7 +20,7 @@ package org.simpleframework.http.socket.service;
 
 import java.io.IOException;
 
-import org.simpleframework.common.thread.ScheduledExecutor;
+import org.simpleframework.common.thread.Scheduler;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.socket.Session;
@@ -38,9 +38,9 @@ import org.simpleframework.transport.reactor.Reactor;
 class SessionBuilder {
    
    /**
-    * This is the checker that is used to ping WebSocket sessions.
+    * This is the scheduler that is used to ping WebSocket sessions.
     */
-   private final ScheduledExecutor executor;
+   private final Scheduler scheduler;
    
    /**
     * This is the reactor used to register for I/O notifications.
@@ -61,8 +61,8 @@ class SessionBuilder {
     * @param reactor this is used to check for I/O notifications
     * @param ping this is the frequency to send out ping frames
     */
-   public SessionBuilder(ScheduledExecutor executor, Reactor reactor, long ping) {
-      this.executor = executor;
+   public SessionBuilder(Scheduler scheduler, Reactor reactor, long ping) {
+      this.scheduler = scheduler;
       this.reactor = reactor;
       this.ping = ping;
    }
@@ -80,7 +80,7 @@ class SessionBuilder {
    public Session create(Request request, Response response) throws Exception {
       FrameConnection connection = new FrameConnection(request, response, reactor);
       ResponseBuilder builder = new ResponseBuilder(request, response);
-      StatusChecker checker = new StatusChecker(executor, connection, request, ping);
+      StatusChecker checker = new StatusChecker(connection, request, scheduler, ping);
 
       try {
          builder.commit();

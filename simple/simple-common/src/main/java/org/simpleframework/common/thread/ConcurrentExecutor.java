@@ -33,7 +33,7 @@ public class ConcurrentExecutor implements Executor {
    /**
     * This is the queue used to enqueue the tasks for execution.
     */
-   private final ConcurrentTaskQueue queue;
+   private final ExecutorQueue queue;
    
    /**
     * Constructor for the <code>ConcurrentExecutor</code> object. This 
@@ -71,7 +71,7 @@ public class ConcurrentExecutor implements Executor {
     * @param active this is the maximum size the pool can grow to 
     */   
    public ConcurrentExecutor(Class<? extends Runnable> type, int rest, int active) {     
-      this.queue = new ConcurrentTaskQueue(type, rest, active);
+      this.queue = new ExecutorQueue(type, rest, active);
    }   
    
    /**

@@ -1,5 +1,5 @@
 /*
- * ConcurrentTaskQueue.java February 2007
+ * ExecutorQueue.java February 2007
  *
  * Copyright (C) 2007, Niall Gallagher <niallg@users.sf.net>
  *
@@ -27,17 +27,17 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The <code>ConcurrentTaskQueue</code> object is used to queue tasks 
- * in a thread pool. This creates a thread pool with no limit to the
+ * The <code>ExecutorQueue</code> object is used to queue tasks in 
+ * a thread pool. This creates a thread pool with no limit to the 
  * number of tasks that can be enqueued, which ensures that any 
- * system requesting a task to be executed will not block when handing
- * it over, it also means the user must use caution.
+ * system requesting a task to be executed will not block when 
+ * handing it over, it also means the user must use caution.
  * 
  * @author Niall Gallagher
  * 
  * @see org.simpleframework.common.thread.ConcurrentExecutor
  */
-class ConcurrentTaskQueue {
+class ExecutorQueue {
    
    /**
     * This is the task queue that contains tasks due to execute.
@@ -55,8 +55,8 @@ class ConcurrentTaskQueue {
    private final ThreadFactory factory;
    
    /**
-    * Constructor for the <code>ConcurrentTaskQueue</code> object. This 
-    * is used to create a pool of threads that can be used to execute
+    * Constructor for the <code>ExecutorQueue</code> object. This is
+    * used to create a pool of threads that can be used to execute
     * arbitrary <code>Runnable</code> tasks. If the threads are
     * busy this will simply enqueue the tasks and return.
     * 
@@ -64,13 +64,13 @@ class ConcurrentTaskQueue {
     * @param rest this is the number of threads to use in the pool    
     * @param active this is the maximum size the pool can grow to 
     */    
-   public ConcurrentTaskQueue(Class type, int rest, int active) {
+   public ExecutorQueue(Class type, int rest, int active) {
       this(type, rest, active, 120, TimeUnit.SECONDS);
    }
   
    /**
-    * Constructor for the <code>ConcurrentTaskQueue</code> object. This 
-    * is used to create a pool of threads that can be used to execute
+    * Constructor for the <code>ExecutorQueue</code> object. This is
+    * used to create a pool of threads that can be used to execute
     * arbitrary <code>Runnable</code> tasks. If the threads are
     * busy this will simply enqueue the tasks and return.
     *
@@ -80,7 +80,7 @@ class ConcurrentTaskQueue {
     * @param duration the duration active threads remain idle for
     * @param unit this is the time unit used for the duration 
     */    
-   public ConcurrentTaskQueue(Class type, int rest, int active, long duration, TimeUnit unit) {
+   public ExecutorQueue(Class type, int rest, int active, long duration, TimeUnit unit) {
       this.queue = new LinkedBlockingQueue<Runnable>();
       this.factory = new DaemonFactory(type);
       this.executor = new ThreadPoolExecutor(rest, active, duration, unit, queue, factory);

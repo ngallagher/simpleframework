@@ -3,7 +3,7 @@ package org.simpleframework.common.thread;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.simpleframework.common.thread.ScheduledExecutor;
+import org.simpleframework.common.thread.ConcurrentScheduler;
 
 import junit.framework.TestCase;
 
@@ -12,7 +12,7 @@ public class SchedulerTest extends TestCase {
    private static final int ITERATIONS = 10000;
    
    public void testScheduler() throws Exception {
-      ScheduledExecutor queue = new ScheduledExecutor(Runnable.class, 10);
+      ConcurrentScheduler queue = new ConcurrentScheduler(Runnable.class, 10);
       LinkedBlockingQueue<Timer> list = new LinkedBlockingQueue<Timer>();
       
       for(int i = 0; i < ITERATIONS; i++) {

@@ -28,7 +28,7 @@ import static org.simpleframework.http.socket.service.ServiceEvent.WRITE_PING;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.simpleframework.common.thread.ScheduledExecutor;
+import org.simpleframework.common.thread.Scheduler;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.socket.DataFrame;
 import org.simpleframework.http.socket.Frame;
@@ -56,14 +56,14 @@ class StatusChecker implements Runnable{
    private final StatusResultListener listener;
    
    /**
-    * This is the shared scheduler used to execute this checker.
-    */
-   private final ScheduledExecutor scheduler;   
-   
-   /**
     * This is the WebSocket this this pinger will be monitoring.
     */
-   private final FrameConnection connection;      
+   private final FrameConnection connection; 
+   
+   /**
+    * This is the shared scheduler used to execute this checker.
+    */
+   private final Scheduler scheduler;      
    
    /**
     * This is a count of the number of unacknowledged ping frames.
@@ -106,12 +106,12 @@ class StatusChecker implements Runnable{
     * a specified interval. If a session does not respond within 
     * three times the duration of the ping the connection is reset.
     * 
-    * @param scheduler this is the scheduler used to execute this
     * @param connection this is the WebSocket to send the frames
     * @param request this is the associated request
+    * @param scheduler this is the scheduler used to execute this     
     * @param frequency this is the frequency with which to ping
     */
-   public StatusChecker(ScheduledExecutor scheduler, FrameConnection connection, Request request, long frequency) {
+   public StatusChecker(FrameConnection connection, Request request, Scheduler scheduler, long frequency) {
       this.listener = new StatusResultListener(this);
       this.error = new Reason(INTERNAL_SERVER_ERROR);
       this.normal = new Reason(NORMAL_CLOSURE);      

@@ -20,7 +20,8 @@ package org.simpleframework.http.socket.service;
 
 import java.io.IOException;
 
-import org.simpleframework.common.thread.ScheduledExecutor;
+import org.simpleframework.common.thread.ConcurrentScheduler;
+import org.simpleframework.common.thread.Scheduler;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.transport.reactor.ExecutorReactor;
@@ -40,17 +41,17 @@ class ServiceDispatcher {
    /**
     * This is the session dispatcher used to dispatch the session.
     */
-   private final SessionDispatcher dispatcher;   
-   
-   /**
-    * This is used asynchronously read frames from the TCP channel.
-    */
-   private final ScheduledExecutor executor;   
+   private final SessionDispatcher dispatcher;    
    
    /**
     * This is used to build the sessions from the handshake request.
     */
-   private final SessionBuilder builder;
+   private final SessionBuilder builder;   
+   
+   /**
+    * This is used asynchronously read frames from the TCP channel.
+    */
+   private final Scheduler scheduler;     
    
    /**
     * This is used to notify of read events on the TCP channel.
@@ -79,9 +80,9 @@ class ServiceDispatcher {
     * @param ping this is the frequency used to send ping frames
     */
    public ServiceDispatcher(Router router, int threads, long ping) throws IOException {
-      this.executor = new ScheduledExecutor(FrameCollector.class, threads);      
-      this.reactor = new ExecutorReactor(executor);
-      this.builder = new SessionBuilder(executor, reactor, ping);
+      this.scheduler = new ConcurrentScheduler(FrameCollector.class, threads);      
+      this.reactor = new ExecutorReactor(scheduler);
+      this.builder = new SessionBuilder(scheduler, reactor, ping);
       this.dispatcher = new SessionDispatcher(builder, router);      
    }
 

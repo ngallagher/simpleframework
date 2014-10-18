@@ -1,5 +1,5 @@
 /*
- * ScheduledExecutor.java February 2007
+ * ConcurrentScheduler.java February 2007
  *
  * Copyright (C) 2007, Niall Gallagher <niallg@users.sf.net>
  *
@@ -18,35 +18,34 @@
 
 package org.simpleframework.common.thread;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The <code>ScheduledExecutor</code> object is used to schedule tasks 
+ * The <code>ConcurrentScheduler</code> object is used to schedule tasks 
  * for execution. This queues the task for the requested period of 
  * time before it is executed. It ensures that the delay is adhered
  * to such that tasks can be timed for execution in an accurate way.
  * 
  * @author Niall Gallagher
  */
-public class ScheduledExecutor implements Executor {
+public class ConcurrentScheduler implements Scheduler {
    
    /**
     * This is the scheduler queue used to enque tasks to execute.
     */
-   private final ScheduledTaskQueue engine;
+   private final SchedulerQueue queue;
    
    /**
-    * Constructor for the <code>ScheduledExecutor</code> object. This 
-    * will create a scheduler with a fixed number of threads to use
-    * before execution. Depending on the types of task that are
+    * Constructor for the <code>ConcurrentScheduler</code> object. 
+    * This will create a scheduler with a fixed number of threads to 
+    * use before execution. Depending on the types of task that are
     * to be executed this should be increased for accuracy.
     * 
     * @param type this is the type of the worker threads
     * @param size this is the number of threads for the scheduler
     */
-   public ScheduledExecutor(Class type, int size) {
-      this.engine = new ScheduledTaskQueue(type, size);
+   public ConcurrentScheduler(Class type, int size) {
+      this.queue = new SchedulerQueue(type, size);
    }
 
    /**
@@ -57,7 +56,7 @@ public class ScheduledExecutor implements Executor {
     * @param task this is the task to schedule for execution
     */
    public void execute(Runnable task) {
-      engine.execute(task);           
+      queue.execute(task);           
    }
    
    /**
@@ -84,16 +83,28 @@ public class ScheduledExecutor implements Executor {
     * @param unit this is the duration time unit to wait for
     */   
    public void execute(Runnable task, long delay, TimeUnit unit) {
-      engine.execute(task, delay, unit);
+      queue.execute(task, delay, unit);
    }
 
    /**
-    * This is used to stop the executor by interrupting all running
+    * This is used to stop the scheduler by interrupting all running
     * tasks and shutting down the threads within the pool. This will
     * return immediately once it has been stopped, and not further
     * tasks will be accepted by this pool for execution.
     */   
    public void stop() {
-      engine.stop();           
+      stop(60000);          
+   }
+   
+   /**
+    * This is used to stop the scheduler by interrupting all running
+    * tasks and shutting down the threads within the pool. This will
+    * return once it has been stopped, and no further tasks will be 
+    * accepted by this pool for execution.
+    *
+    * @param wait the number of milliseconds to wait for it to stop 
+    */   
+   public void stop(long wait) {
+      queue.stop(wait);
    }
 }
