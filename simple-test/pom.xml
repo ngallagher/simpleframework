@@ -3,7 +3,7 @@
   <groupId>org.simpleframework</groupId>
   <artifactId>simple-test</artifactId>
   <packaging>jar</packaging>
-  <version>6.0</version>
+  <version>6.0.1</version>
   <name>Simple</name>
   <url>http://www.simpleframework.org</url>
   <description>Simple is a high performance asynchronous HTTP server for Java</description>
@@ -32,17 +32,17 @@
     <dependency>
       <groupId>org.simpleframework</groupId>
       <artifactId>simple-http</artifactId>
-      <version>6.0</version>
+      <version>6.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.simpleframework</groupId>
       <artifactId>simple-common</artifactId>
-      <version>6.0</version>
+      <version>6.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.simpleframework</groupId>
       <artifactId>simple-transport</artifactId>
-      <version>6.0</version>
+      <version>6.0.1</version>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
