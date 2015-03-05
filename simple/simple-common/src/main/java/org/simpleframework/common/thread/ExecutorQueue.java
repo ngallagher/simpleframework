@@ -50,11 +50,6 @@ class ExecutorQueue {
    private final ThreadPoolExecutor executor;
    
    /**
-    * This is used to create the pool worker threads.
-    */
-   private final ThreadFactory factory;
-   
-   /**
     * Constructor for the <code>ExecutorQueue</code> object. This is
     * used to create a pool of threads that can be used to execute
     * arbitrary <code>Runnable</code> tasks. If the threads are
@@ -63,9 +58,10 @@ class ExecutorQueue {
     * @param type this is the type of runnable that this accepts
     * @param rest this is the number of threads to use in the pool    
     * @param active this is the maximum size the pool can grow to 
+    * @param factory an optional thread factory for threads
     */    
-   public ExecutorQueue(Class type, int rest, int active) {
-      this(type, rest, active, 120, TimeUnit.SECONDS);
+   public ExecutorQueue(Class type, int rest, int active, ThreadFactory factory) {
+      this(type, rest, active, factory, 120, TimeUnit.SECONDS);
    }
   
    /**
@@ -77,13 +73,13 @@ class ExecutorQueue {
     * @param type this is the type of runnable that this accepts
     * @param rest this is the number of threads to use in the pool    
     * @param active this is the maximum size the pool can grow to
+    * @param factory an optional thread factory for threads
     * @param duration the duration active threads remain idle for
     * @param unit this is the time unit used for the duration 
     */    
-   public ExecutorQueue(Class type, int rest, int active, long duration, TimeUnit unit) {
+   public ExecutorQueue(Class type, int rest, int active, ThreadFactory factory, long duration, TimeUnit unit) {
       this.queue = new LinkedBlockingQueue<Runnable>();
-      this.factory = new DaemonFactory(type);
-      this.executor = new ThreadPoolExecutor(rest, active, duration, unit, queue, factory);
+      this.executor = new ThreadPoolExecutor(rest, active, duration, unit, queue, new DaemonFactory(type, factory));
    }
    
    /**

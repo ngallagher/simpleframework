@@ -52,7 +52,7 @@ public class StopTest extends TestCase {
    }
   
    public static Client createClient(InetSocketAddress address, String tag) throws Exception {
-      ConcurrentExecutor executor = new ConcurrentExecutor(Runnable.class, 20);
+      ConcurrentExecutor executor = new ConcurrentExecutor(Runnable.class, 20, null);
       int port = address.getPort();
       Client client = new Client(executor, port, tag);
 

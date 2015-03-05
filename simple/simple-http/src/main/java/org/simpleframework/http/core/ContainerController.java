@@ -21,6 +21,7 @@ package org.simpleframework.http.core;
 import static java.nio.channels.SelectionKey.OP_READ;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadFactory;
 
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.thread.ConcurrentExecutor;
@@ -77,10 +78,11 @@ class ContainerController implements Controller {
     * @param allocator this is used to allocate any buffers needed
     * @param count this is the number of threads per thread pool
     * @param select this is the number of controller threads to use
+    * @param factory an optional {@link ThreadFactory}
     */
-   public ContainerController(Container container, Allocator allocator, int count, int select) throws IOException {
-      this.executor = new ConcurrentExecutor(RequestDispatcher.class, count); 
-      this.collect = new ConcurrentExecutor(RequestReader.class, count);
+   public ContainerController(Container container, Allocator allocator, int count, int select, ThreadFactory factory) throws IOException {
+      this.executor = new ConcurrentExecutor(RequestDispatcher.class, count, factory);
+      this.collect = new ConcurrentExecutor(RequestReader.class, count, null);
       this.reactor = new ExecutorReactor(collect, select);     
       this.allocator = allocator;
       this.container = container;

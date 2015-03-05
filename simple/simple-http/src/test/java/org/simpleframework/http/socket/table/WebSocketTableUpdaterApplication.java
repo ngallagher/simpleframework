@@ -46,7 +46,7 @@ public class WebSocketTableUpdaterApplication implements Container, TransportPro
       this.negotiator = new DirectRouter(handler);
       this.container = new RouterContainer(this, negotiator, 10);
       this.allocator = new ArrayAllocator();
-      this.processor = new ContainerTransportProcessor(container, allocator, 1);
+      this.processor = new ContainerTransportProcessor(container, allocator, 1, null);
       this.server = new TransportSocketProcessor(this);
       this.connection = new SocketConnection(server, agent);
       this.address = new InetSocketAddress(port);

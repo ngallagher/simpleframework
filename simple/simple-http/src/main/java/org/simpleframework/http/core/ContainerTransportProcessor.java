@@ -19,11 +19,12 @@
 package org.simpleframework.http.core;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadFactory;
 
 import org.simpleframework.common.buffer.Allocator;
-import org.simpleframework.transport.TransportProcessor;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.TransportChannel;
+import org.simpleframework.transport.TransportProcessor;
 
 /**
  * The <code>ContainerProcessor</code> object is used to create 
@@ -51,9 +52,11 @@ public class ContainerTransportProcessor implements TransportProcessor {
     * @param container the container to dispatch requests to
     * @param allocator this is the allocator used to buffer data
     * @param count this is the number of threads to be used
+    * @param factory an optional {@link ThreadFactory} for request processing.
+    *                Can be <code>null</code>.
     */
-   public ContainerTransportProcessor(Container container, Allocator allocator, int count) throws IOException {
-     this(container, allocator, count, 1);
+   public ContainerTransportProcessor(Container container, Allocator allocator, int count, ThreadFactory factory) throws IOException {
+     this(container, allocator, count, 1, factory);
    }  
  
    /**
@@ -66,9 +69,11 @@ public class ContainerTransportProcessor implements TransportProcessor {
     * @param allocator this is the allocator used to buffer data
     * @param count this is the number of threads to be used
     * @param select this is the number of controller threads to use
+    * @param factory an optional {@link ThreadFactory} for request processing.
+    *                Can be <code>null</code>.
     */
-   public ContainerTransportProcessor(Container container, Allocator allocator, int count, int select) throws IOException {
-     this.controller = new ContainerController(container, allocator, count, select);
+   public ContainerTransportProcessor(Container container, Allocator allocator, int count, int select, ThreadFactory factory) throws IOException {
+     this.controller = new ContainerController(container, allocator, count, select, factory);
    }        
 
    /**

@@ -19,13 +19,14 @@
 package org.simpleframework.http.core;
 
 import java.io.IOException;
+import java.util.concurrent.ThreadFactory;
 
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.buffer.FileAllocator;
+import org.simpleframework.transport.Socket;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.TransportProcessor;
 import org.simpleframework.transport.TransportSocketProcessor;
-import org.simpleframework.transport.SocketProcessor;
-import org.simpleframework.transport.Socket;
 
 /**
  * The <code>ContainerSocketProcessor</code> object is a connector
@@ -62,7 +63,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param container this is the container used to service requests
     */
    public ContainerSocketProcessor(Container container) throws IOException {
-      this(container, 8);
+      this(container, 8, null);
    }
    
    /**
@@ -72,9 +73,11 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * 
     * @param container this is the container used to service requests
     * @param count this is the number of threads used for each pool
+    * @param factory an optional {@link ThreadFactory} for request processing.
+    *                Can be <code>null</code>.
     */
-   public ContainerSocketProcessor(Container container, int count) throws IOException {
-      this(container, count, 1);
+   public ContainerSocketProcessor(Container container, int count, ThreadFactory factory) throws IOException {
+      this(container, count, 1, factory);
    }
    
    /**
@@ -85,9 +88,11 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param container this is the container used to service requests
     * @param count this is the number of threads used for each pool
     * @param select this is the number of selector threads to use
+    * @param factory an optional {@link ThreadFactory} for request processing.
+    *                Can be <code>null</code>.
     */
-   public ContainerSocketProcessor(Container container, int count, int select) throws IOException {
-      this(container, new FileAllocator(), count, select);
+   public ContainerSocketProcessor(Container container, int count, int select, ThreadFactory factory) throws IOException {
+      this(container, new FileAllocator(), count, select, factory);
    }
    
    /**
@@ -99,7 +104,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param allocator this is the allocator used to create buffers
     */   
    public ContainerSocketProcessor(Container container, Allocator allocator) throws IOException {
-      this(container, allocator, 8);
+      this(container, allocator, 8, null);
    } 
    
    /**
@@ -110,9 +115,11 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param container this is the container used to service requests
     * @param allocator this is the allocator used to create buffers
     * @param count this is the number of threads used for each pool
+    * @param factory an optional {@link ThreadFactory} for request processing.
+    *                Can be <code>null</code>.
     */   
-   public ContainerSocketProcessor(Container container, Allocator allocator, int count) throws IOException {
-      this(container, allocator, count, 1);
+   public ContainerSocketProcessor(Container container, Allocator allocator, int count, ThreadFactory factory) throws IOException {
+      this(container, allocator, count, 1, factory);
    }   
    
    /**
@@ -124,9 +131,11 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param allocator this is the allocator used to create buffers
     * @param count this is the number of threads used for each pool
     * @param select this is the number of selector threads to use
+    * @param factory an optional {@link ThreadFactory} for request processing.
+    *                Can be <code>null</code>.
     */   
-   public ContainerSocketProcessor(Container container, Allocator allocator, int count, int select) throws IOException {
-     this.processor = new ContainerTransportProcessor(container, allocator, count, select);
+   public ContainerSocketProcessor(Container container, Allocator allocator, int count, int select, ThreadFactory factory) throws IOException {
+     this.processor = new ContainerTransportProcessor(container, allocator, count, select, factory);
      this.adapter = new TransportSocketProcessor(processor, count); 
    }  
 

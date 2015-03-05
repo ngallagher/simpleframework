@@ -135,7 +135,7 @@ public class ReactorProcessorTest extends TestCase implements Container {
    private LinkedBlockingQueue<StopWatch> finished = new LinkedBlockingQueue<StopWatch>();
    
    public void testMinimal() throws Exception {
-      Controller handler = new ContainerController(this, new ArrayAllocator(), 10, 2);
+      Controller handler = new ContainerController(this, new ArrayAllocator(), 10, 2, null);
             
       testRequest(handler, "/MINIMAL/%s", MINIMAL, "MINIMAL");
       testRequest(handler, "/SIMPLE/%s", SIMPLE, "SIMPLE");

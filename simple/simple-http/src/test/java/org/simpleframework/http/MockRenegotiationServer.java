@@ -71,7 +71,7 @@ public class MockRenegotiationServer implements Container {
 
    public MockRenegotiationServer(SSLContext context, boolean certRequired, int port) throws IOException {
       Allocator allocator = new FileAllocator();
-      ContainerTransportProcessor processor = new ContainerTransportProcessor(this, allocator, 4);
+      ContainerTransportProcessor processor = new ContainerTransportProcessor(this, allocator, 4, null);
       TransportGrabber grabber = new TransportGrabber(processor);
       TransportSocketProcessor processorServer = new TransportSocketProcessor(grabber);
       

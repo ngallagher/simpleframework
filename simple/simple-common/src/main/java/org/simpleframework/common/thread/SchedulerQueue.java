@@ -40,11 +40,6 @@ class SchedulerQueue {
    private final ScheduledThreadPoolExecutor executor;
    
    /**
-    * This is the factory used to create the worker threads.
-    */
-   private final ThreadFactory factory;
-   
-   /**
     * Constructor for the <code>SchedulerQueue</code> object. This 
     * will create a scheduler with a fixed number of threads to use
     * before execution. Depending on the types of task that are
@@ -52,10 +47,10 @@ class SchedulerQueue {
     * 
     * @param type this is the type of task to execute
     * @param size this is the number of threads for the scheduler
+    * @param factory an optional {@link ThreadFactory} 
     */   
-   public SchedulerQueue(Class type, int size) {
-      this.factory = new DaemonFactory(type);
-      this.executor = new ScheduledThreadPoolExecutor(size, factory);
+   public SchedulerQueue(Class type, int size, ThreadFactory factory) {
+      this.executor = new ScheduledThreadPoolExecutor(size, new DaemonFactory(type, factory));
    }
    
    /**

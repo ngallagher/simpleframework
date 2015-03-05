@@ -36,12 +36,18 @@ public class DaemonFactory implements ThreadFactory {
    private final Class type;   
    
    /**
+    * An optional {@link ThreadFactory}. If <code>null</code> the threads are
+    * created using {@link Thread} default constructor.
+    */
+	private final ThreadFactory threadFactory;
+
+   /**
     * Constructor for the <code>DaemonFactory</code> object. This 
     * will provide a thread factory that names the threads based 
     * on the type of <code>Runnable</code> the pool executes.
     */
    public DaemonFactory() {
-      this(null);
+      this(null, null);
    }   
    
    /**
@@ -51,9 +57,12 @@ public class DaemonFactory implements ThreadFactory {
     * of the threads is given a unique sequence number.
     * 
     * @param type this is the type of runnable this will execute
+    * @param factory an optional thread factory in which threads are to be 
+    *                created. The provided value might be <code>null</code>.
     */
-   public DaemonFactory(Class type) {
+   public DaemonFactory(Class type, ThreadFactory factory) {
       this.type = type;
+      this.threadFactory = factory;
    }
    
    /**
@@ -142,6 +151,11 @@ public class DaemonFactory implements ThreadFactory {
     * @return this returns a thread to execute the given task
     */
    private Thread createThread(Runnable task) {
+
+      if (threadFactory != null) {
+        return threadFactory.newThread(task);
+      }
+
       return new Thread(task);
    }
 }

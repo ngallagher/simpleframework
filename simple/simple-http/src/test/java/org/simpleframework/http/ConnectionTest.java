@@ -100,7 +100,7 @@ public class ConnectionTest extends TestCase {
       
       public PingServer(int port, String message) throws Exception {
          Allocator allocator = new FileAllocator();
-         TransportProcessor processor  = new ContainerTransportProcessor(this, allocator, 5);
+         TransportProcessor processor  = new ContainerTransportProcessor(this, allocator, 5, null);
          SocketProcessor server = new TransportSocketProcessor(processor);
          DebugServer debug = new DebugServer(server);
          
@@ -149,7 +149,7 @@ public class ConnectionTest extends TestCase {
       private final List<java.net.Socket> sockets;
       
       public Pinger(int port, boolean socket, int count) throws Exception {
-         this.executor = new ConcurrentExecutor(Pinger.class, count);
+         this.executor = new ConcurrentExecutor(Pinger.class, count, null);
          this.list = new Vector<String>(count);
          this.sockets = new Vector<java.net.Socket>(count);
          this.latch = new CountDownLatch(count);

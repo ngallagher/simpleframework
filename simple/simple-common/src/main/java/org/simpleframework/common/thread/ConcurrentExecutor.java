@@ -19,6 +19,7 @@
 package org.simpleframework.common.thread;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * The <code>ConcurrentExecutor</code> object is used to execute tasks
@@ -44,7 +45,7 @@ public class ConcurrentExecutor implements Executor {
     * @param type this is the type of runnable that this accepts
     */
    public ConcurrentExecutor(Class type) {
-      this(type, 10);
+      this(type, 10, null);
    }
    
    /**
@@ -55,9 +56,10 @@ public class ConcurrentExecutor implements Executor {
     * 
     * @param type this is the type of runnable that this accepts
     * @param size this is the number of threads to use in the pool
+    * @param factory an optional {@link ThreadFactory}
     */   
-   public ConcurrentExecutor(Class type, int size) {
-      this(type, size, size);
+   public ConcurrentExecutor(Class type, int size, ThreadFactory factory) {
+      this(type, size, size, factory);
    }
    
    /**
@@ -69,9 +71,10 @@ public class ConcurrentExecutor implements Executor {
     * @param type this is the type of runnable that this accepts
     * @param rest this is the number of threads to use in the pool    
     * @param active this is the maximum size the pool can grow to 
+    * @param factory an optional {@link ThreadFactory}
     */   
-   public ConcurrentExecutor(Class type, int rest, int active) {     
-      this.queue = new ExecutorQueue(type, rest, active);
+   public ConcurrentExecutor(Class type, int rest, int active, ThreadFactory factory) {
+      this.queue = new ExecutorQueue(type, rest, active, factory);
    }   
    
    /**

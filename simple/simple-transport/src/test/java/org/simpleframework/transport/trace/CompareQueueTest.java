@@ -20,9 +20,9 @@ public class CompareQueueTest extends TestCase {
    private static final int TEST_DURATION = 10000;
    private static final int THREAD_COUNT = 100;
    
-   private final Executor blockingReadExecutor = new ConcurrentExecutor(BlockingConsumer.class, THREAD_COUNT);
-   private final Executor concurrentReadExecutor = new ConcurrentExecutor(ConcurrentConsumer.class, THREAD_COUNT);
-   private final Executor writeExecutor = new ConcurrentExecutor(Producer.class, THREAD_COUNT);
+   private final Executor blockingReadExecutor = new ConcurrentExecutor(BlockingConsumer.class, THREAD_COUNT, null);
+   private final Executor concurrentReadExecutor = new ConcurrentExecutor(ConcurrentConsumer.class, THREAD_COUNT, null);
+   private final Executor writeExecutor = new ConcurrentExecutor(Producer.class, THREAD_COUNT, null);
    
    public void testLinkedBlockingQueue() throws Exception {
       BlockingQueue<Object> queue = new LinkedBlockingQueue<Object>();
