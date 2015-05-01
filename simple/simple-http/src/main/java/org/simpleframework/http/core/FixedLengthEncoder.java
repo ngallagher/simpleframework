@@ -40,12 +40,12 @@ class FixedLengthEncoder implements BodyEncoder{
    /**
     * This is the observer used to notify the initiator of events.
     */ 
-   private BodyObserver observer;
+   private final BodyObserver observer;
 
    /**
     * This is the underlying writer used to deliver the raw data.
     */ 
-   private ByteWriter writer;
+   private final ByteWriter writer;
 
    /**
     * This is the number of bytes that have been sent so far.
@@ -55,7 +55,7 @@ class FixedLengthEncoder implements BodyEncoder{
    /**
     * This is the number of bytes this producer is limited to.
     */ 
-   private long limit;
+   private final long limit;
    
    /**
     * Constructor for the <code>FixedLengthEncoder</code> object. This 

@@ -86,6 +86,7 @@ public interface Response extends ResponseHeader {
     * is chunked for HTTP/1.1 clients and closed for HTTP/1.0 clients.
     *
     * @return an output stream object with the specified semantics
+    * @throws IOException  if an I/O error occurs.
     */ 
    OutputStream getOutputStream() throws IOException; 
 
@@ -103,7 +104,9 @@ public interface Response extends ResponseHeader {
     * committing the response. This specified size is the minimum size
     * that the response buffer must be. 
     *
+    * @param size minimum size that the response buffer must be
     * @return an output stream object with the specified semantics
+    * @throws IOException  if an I/O error occurs.
     */ 
    OutputStream getOutputStream(int size) throws IOException;
 
@@ -126,6 +129,7 @@ public interface Response extends ResponseHeader {
     * <code>OutputStream</code> or <code>PrintStream</code> object.
     *
     * @return a print stream that provides convenience writing
+    * @throws IOException  if an I/O error occurs.
     */
    PrintStream getPrintStream() throws IOException;
 
@@ -150,6 +154,7 @@ public interface Response extends ResponseHeader {
     * @param size the minimum size that the response buffer must be
     *
     * @return a print stream that provides convenience writing
+    * @throws IOException  if an I/O error occurs.
     */
    PrintStream getPrintStream(int size) throws IOException;
    
@@ -162,6 +167,7 @@ public interface Response extends ResponseHeader {
     * is chunked for HTTP/1.1 clients and closed for HTTP/1.0 clients.
     * 
     * @return a writable byte channel used to write the message body
+    * @throws IOException  if an I/O error occurs.
     */ 
    WritableByteChannel getByteChannel() throws IOException;
 
@@ -182,6 +188,7 @@ public interface Response extends ResponseHeader {
     * @param size the minimum size that the response buffer must be
     * 
     * @return a writable byte channel used to write the message body
+    * @throws IOException  if an I/O error occurs.
     */ 
    WritableByteChannel getByteChannel(int size) throws IOException;
    

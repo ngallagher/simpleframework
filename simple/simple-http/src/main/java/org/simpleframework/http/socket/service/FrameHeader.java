@@ -34,7 +34,7 @@ interface FrameHeader {
    
    /**
     * This is used to determine the type of frame. Interpretation of
-    * this type is outlined in RFC 6455 and can be loosely categorised
+    * this type is outlined in RFC 6455 and can be loosely categorized
     * as control frames and either data or binary frames.     
     * 
     * @return this returns the type of frame that this represents
@@ -43,7 +43,7 @@ interface FrameHeader {
    
    /**
     * This provides the client mask send with the request. The mask is 
-    * a 32 bit value that is used as an XOR bitmask of the client
+    * a 32 bit value that is used as an XOR bit-mask of the client
     * payload. Masking applies only in the client to server direction. 
     * 
     * @return this returns the 32 bit mask used for this frame
@@ -62,7 +62,7 @@ interface FrameHeader {
    /**
     * This is used to determine if the frame is masked. All client 
     * frames should be masked according to RFC 6455. If masked the 
-    * payload will have its contents bitmasked with a 32 bit value.
+    * payload will have its contents bit-masked with a 32 bit value.
     * 
     * @return this returns true if the payload has been masked
     */

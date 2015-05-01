@@ -445,7 +445,7 @@ public class RequestWrapper implements Request {
     * 3.6. Also multipart data is available as <code>Part</code> objects
     * however the raw content of the multipart body is still available.
     *
-    * @exception Exception signifies that there is an I/O problem
+    * @exception IOException signifies that there is an I/O problem
     *
     * @return returns the input stream containing the message body 
     */ 
@@ -514,6 +514,7 @@ public class RequestWrapper implements Request {
     * 
     * @return this returns a string representation of this request
     */
+   @Override
    public String toString() {
       return request.toString();
    }

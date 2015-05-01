@@ -413,7 +413,7 @@ public class ContentTypeParser extends Parser implements ContentType {
     * character. This represents a parameter name (see RFC 2616 for token). The 
     * parameter name is not buffered it is simply read from the buffer. This will
     * not cause an <code>IndexOutOfBoundsException</code> as each offset
-    * is checked before it is acccessed.
+    * is checked before it is accessed.
     */
    private void name(){
       while(off < count){
@@ -536,7 +536,7 @@ public class ContentTypeParser extends Parser implements ContentType {
          
          if(value != null) {
             text.append("=");
-            text.append(value);;
+            text.append(value);
          }
       }
       return text.toString();
@@ -550,6 +550,7 @@ public class ContentTypeParser extends Parser implements ContentType {
     * 
     * @return this returns the string representation of the type
     */
+   @Override
    public String toString() {
       return encode();
    }

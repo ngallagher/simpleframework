@@ -838,10 +838,10 @@ public class AddressParser extends Parser implements Address {
 
    /**
     * This converts an encountered escaped sequence, that is all
-    * embedded hexidecimal characters into a native UCS character
+    * embedded hexadecimal characters into a native UCS character
     * value. This does not take any characters from the stream it
     * just prepares the buffer with the correct byte. The escaped
-    * sequence within the URI will be interpreded as UTF-8.
+    * sequence within the URI will be interpreted as UTF-8.
     * <p>
     * This will leave the next character to read from the buffer
     * as the character encoded from the URI. If there is a fully
@@ -889,7 +889,7 @@ public class AddressParser extends Parser implements Address {
     * The WWW Consortium provides a reference implementation of a
     * UTF-8 decoding for Java, in this the low order octets in the
     * UCS-4 sequence are used for the character. So, in the
-    * absence of a defined behaviour, the W3C behaviour is assumed.
+    * absence of a defined behavior, the W3C behavior is assumed.
     *
     * @param peek this is the first escaped character from the URI
     *
@@ -981,11 +981,11 @@ public class AddressParser extends Parser implements Address {
    }
 
    /**
-    * Defines behaviour for UCS-2 versus UCS-4 conversion from four
+    * Defines behavior for UCS-2 versus UCS-4 conversion from four
     * octets. The UTF-8 encoding scheme enables UCS-4 characters to
     * be encoded and decodeded. However, Java supports the 16-bit
     * UCS-2 character set, and so the 32-bit UCS-4 character set is
-    * not compatable. This basically decides what to do with UCS-4.
+    * not compatible. This basically decides what to do with UCS-4.
     *
     * @param data up to four octets to be converted to UCS-2 format
     *
@@ -997,16 +997,16 @@ public class AddressParser extends Parser implements Address {
 
    /**
     * This will return the escape expression specified from the URI
-    * as an integer value of the hexidecimal sequence. This does
+    * as an integer value of the hexadecimal sequence. This does
     * not make any changes to the buffer it simply checks to see if
     * the characters at the position specified are an escaped set
     * characters of the form <code>"%" HEX HEX</code>, if so, then
-    * it will convert that hexidecimal string  in to an integer
-    * value, or -1 if the expression is not hexidecimal.
+    * it will convert that hexadecimal string  in to an integer
+    * value, or -1 if the expression is not hexadecimal.
     *
     * @param pos this is the position the expression starts from
     *
-    * @return the integer value of the hexidecimal expression
+    * @return the integer value of the hexadecimal expression
     */
    private int peek(int pos) {
       if(buf[pos] == '%'){
@@ -1022,7 +1022,7 @@ public class AddressParser extends Parser implements Address {
    }
 
    /**
-    * This will convert the two hexidecimal characters to a real
+    * This will convert the two hexadecimal characters to a real
     * integer value, which is returned. This requires characters
     * within the range of 'A' to 'F' and 'a' to 'f', and also
     * the digits '0' to '9'. The characters encoded using the
@@ -1032,7 +1032,7 @@ public class AddressParser extends Parser implements Address {
     * @param high this is the high four bits within the integer
     * @param low this is the low four bits within the integer
     *
-    * @return this returns the indeger value of the conversion
+    * @return this returns the integer value of the conversion
     */
    private int convert(char high, char low) {
       int hex = 0x00;
@@ -1062,15 +1062,15 @@ public class AddressParser extends Parser implements Address {
    }
 
    /**
-    * This is used to determine wheather a char is a hexidecimal
-    * <code>char</code> or not. A hexidecimal character is consdered
+    * This is used to determine whether a char is a hexadecimal
+    * <code>char</code> or not. A hexadecimal character is considered
     * to be a character within the range of <code>0 - 9</code> and
     * between <code>a - f</code> and <code>A - F</code>. This will
     * return <code>true</code> if the character is in this range.
     *
     * @param ch this is the character which is to be determined here
     *
-    * @return true if the character given has a hexidecimal value
+    * @return true if the character given has a hexadecimal value
     */
    private boolean hex(char ch) {
       if(ch >= '0' && ch <= '9') {
@@ -1085,7 +1085,7 @@ public class AddressParser extends Parser implements Address {
 
    /**
     * This is a character set defined by RFC 2396 it is used to
-    * determine the valididity of certain <code>chars</code>
+    * determine the validity of certain <code>chars</code>
     * within a Uniform Resource Identifier. RFC 2396 defines
     * an unreserved char as <code>alphanum | mark</code>.
     *
@@ -1098,9 +1098,9 @@ public class AddressParser extends Parser implements Address {
    }
 
    /**
-    * This is used to determine wheather or not a given unicode
+    * This is used to determine whether or not a given unicode
     * character is an alphabetic character or a digit character.
-    * That is withing the range <code>0 - 9</code> and between
+    * That is within the range <code>0 - 9</code> and between
     * <code>a - z</code> it uses <code>iso-8859-1</code> to
     * compare the character.
     *
@@ -1113,7 +1113,7 @@ public class AddressParser extends Parser implements Address {
    }
 
    /**
-    * This is used to determine wheather or not a given unicode
+    * This is used to determine whether or not a given unicode
     * character is an alphabetic character. This uses encoding
     * <code>iso-8859-1</code> to compare the characters.
     *
@@ -1128,7 +1128,7 @@ public class AddressParser extends Parser implements Address {
 
    /**
     * This is a character set defined by RFC 2396 it checks
-    * the valididity of cetain chars within a uniform resource
+    * the validity of certain chars within a uniform resource
     * identifier. The RFC 2396 defines a mark char as <code>"-",
     * "_", ".", "!", "~", "*", "'", "(", ")"</code>.
     *
@@ -1149,7 +1149,7 @@ public class AddressParser extends Parser implements Address {
 
    /**
     * This is a character set defined by RFC 2396 it is used to check
-    * the valididity of cetain chars within a generic uniform resource
+    * the validity of certain chars within a generic uniform resource
     * identifier. The RFC 2396 defines a pchar char as unreserved or
     * escaped or one of the following characters <code>":", "@", "=",
     * "&amp;", "+", "$", ","</code> this will not check to see if the
@@ -1173,7 +1173,7 @@ public class AddressParser extends Parser implements Address {
 
    /**
     * This is a character set defined by RFC 2396, it checks the
-    * valididity of certain chars in a uniform resource identifier.
+    * validity of certain chars in a uniform resource identifier.
     * The RFC 2396 defines a reserved char as <code>";", "/", "?",
     * ":", "@", "&amp;", "=", "+", "$", ","</code>.
     *
@@ -1198,7 +1198,7 @@ public class AddressParser extends Parser implements Address {
     * object. This will only convert the parts of the URI that exist, so
     * the URI may not contain the domain or the query part and it will
     * not contain the path parameters. If the URI contains all these
-    * parts then it will return somthing like
+    * parts then it will return something like
     * <pre>
     * scheme://host:port/path/path?querypart
     * </pre>
@@ -1327,13 +1327,14 @@ public class AddressParser extends Parser implements Address {
 
       /**
        * This method will convert the <code>Token</code> into it's
-       * <code>String</code> equivelant. This will firstly check
+       * <code>String</code> equivalent. This will firstly check
        * to see if there is a value, for the string representation,
        * if there is the value is returned, otherwise the region
        * is converted into a <code>String</code> and returned.
        *
        * @return this returns a value representing the token
        */
+      @Override
       public String toString() {
          if(value != null) {
             return value;

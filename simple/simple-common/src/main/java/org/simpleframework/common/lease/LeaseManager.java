@@ -29,13 +29,15 @@ import java.util.concurrent.TimeUnit;
  * lease without any knowledge of the resource it represents.
  *
  * @author Niall Gallagher
+ * 
+ * @param <T> Key type
  */
 public class LeaseManager<T> implements LeaseProvider<T> {
    
    /**
     * This is the controller used to handle lease operations.
     */
-   private ContractController<T> handler;
+   private final ContractController<T> handler;
    
    /**
     * Constructor for the <code>LeaseManager</code> object. This

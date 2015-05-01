@@ -287,7 +287,7 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
     * be trimmed so there is no need to modify the value, also if 
     * the header name specified refers to a comma separated list of
     * values the value returned is the first value in that list.  
-    * This returns null if theres no HTTP message header.
+    * This returns null if there is no HTTP message header.
     *
     * @param name the HTTP message header to get the value from
     *
@@ -333,6 +333,7 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
     * In such a scenario the array is expanded the chunk size.
     *
     * @param size this is the minimum size to expand the array to 
+    * @throws IOException  if an I/O error occurs.
     */ 
    @Override
    protected void resize(int size) throws IOException {
@@ -347,6 +348,8 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
     * has been fully read from the consumed bytes. Processing will
     * extract all headers from the HTTP header message and further
     * parse those values if required.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    @Override
    protected void process() throws IOException {
@@ -466,7 +469,7 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
    /**
     * This is used to parse the content disposition header header so 
     * that the MIME type is available to the segment. This provides 
-    * an instance of the  <code>Disposition<code> object to represent
+    * an instance of the  <code>Disposition</code> object to represent
     * the content disposition, this exposes the upload type.
     * 
     * @param value this is the content type value to parse

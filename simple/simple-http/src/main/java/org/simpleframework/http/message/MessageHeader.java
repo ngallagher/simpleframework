@@ -452,7 +452,7 @@ public class MessageHeader implements Message {
       /**
        * Contains the header values that belong to the entry name. 
        */
-      private List<String> value;
+      private final List<String> value;
 
       /**
        * Constructor for the <code>Entry</code> object. The entry is

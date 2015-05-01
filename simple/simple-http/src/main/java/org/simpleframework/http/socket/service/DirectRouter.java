@@ -54,7 +54,6 @@ public class DirectRouter implements Router {
     * protocol header will not be set.
     * 
     * @param service this is the service used by this instance
-    * @param protocol the protocol used by this router or null
     */
    public DirectRouter(Service service) {
       this(service, null);

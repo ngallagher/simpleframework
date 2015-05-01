@@ -40,27 +40,27 @@ class ChunkedEncoder implements BodyEncoder {
    /**
     * This is the size line which is used to generate the size.
     */         
-   private byte[] size = { '0', '0', '0', '0', '0', '0', '0', '0', '\r', '\n' };
+   private final byte[] size = { '0', '0', '0', '0', '0', '0', '0', '0', '\r', '\n' };
 
    /**
     * This is the hexadecimal alphabet used to translate the size.
     */ 
-   private byte[] index = { '0', '1', '2', '3', '4', '5','6', '7', '8', '9', 'a', 'b', 'c', 'd','e', 'f' };
+   private final byte[] index = { '0', '1', '2', '3', '4', '5','6', '7', '8', '9', 'a', 'b', 'c', 'd','e', 'f' };
 
    /**
     * This is the zero length chunk sent when this is completed.
     */ 
-   private byte[] zero = { '0', '\r', '\n', '\r', '\n' };
+   private final byte[] zero = { '0', '\r', '\n', '\r', '\n' };
 
    /**
     * This is the observer used to notify the selector of events.
     */ 
-   private BodyObserver observer;
+   private final BodyObserver observer;
 
    /**
     * This is the underlying writer used to deliver the encoded data.
     */ 
-   private ByteWriter writer;
+   private final ByteWriter writer;
    
    /**
     * Constructor for the <code>ChunkedEncoder</code> object. This 
@@ -142,6 +142,7 @@ class ChunkedEncoder implements BodyEncoder {
     * @param buffer this is the buffer of bytes to send to the client
     * @param off this is the offset within the buffer to send from
     * @param len this is the number of bytes that are to be sent
+    * @throws IOException  if there is an I/O error.
     */          
    public void encode(ByteBuffer buffer, int off, int len) throws IOException {
       int pos = 7;

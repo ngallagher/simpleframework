@@ -23,7 +23,7 @@ package org.simpleframework.common.parse;
  * for parsing uncomplicated expressions. This object is used to parse 
  * a <code>String</code>. This provides a few methods that can be used 
  * to store and track the reading of data from a buffer. There are two 
- * abstract methods provided to allow this to be subclassed to create 
+ * abstract methods provided to allow this to be sub-classed to create 
  * a <code>Parser</code> for a given <code>String</code>.
  *
  * @author Niall Gallagher
@@ -60,7 +60,7 @@ public abstract class Parser {
     * This is used to parse the <code>String</code> given to it. This 
     * will ensure that the <code>char</code> buffer has enough space 
     * to contain the characters from the <code>String</code>. This 
-    * will firstly ensure that the buffer is resized if nessecary. The 
+    * will firstly ensure that the buffer is resized if necessary. The 
     * second step in this <code>parse</code> method is to initialize 
     * the <code>Parser</code> object so that multiple parse invocations 
     * can be made. The <code>init</code> method will reset this to an 
@@ -150,7 +150,7 @@ public abstract class Parser {
     * <code>char</code> buf. It checks the length of the <code>String</code> 
     * first to ensure that it will not go out of bounds. A comparison 
     * is then made with the buffers contents and the <code>String</code>
-    * if the reigon in the buffer matched the <code>String</code> then the
+    * if the region in the buffer matched the <code>String</code> then the
     * offset within the buffer is increased by the <code>String</code>'s
     * length so that it has effectively skipped it.   
     *
@@ -189,7 +189,7 @@ public abstract class Parser {
    /** 
     * This is the method that should be implemented to read 
     * the buf. This method should attempt to extract tokens 
-    * from the buffer so that thes tokens may some how be 
+    * from the buffer so that the tokens may some how be 
     * used to determine the semantics. This method is invoked 
     * after the <code>init</code> method is invoked.    
     */

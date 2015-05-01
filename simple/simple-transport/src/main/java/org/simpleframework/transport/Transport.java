@@ -42,6 +42,7 @@ public interface Transport extends Socket {
     * makes specific use of an SSL engine to secure the connection.
     * 
     * @return this returns the associated SSL certificate if any
+    * @throws IOException  if an I/O error occurs.
     */
    Certificate getCertificate() throws IOException;
    
@@ -56,6 +57,7 @@ public interface Transport extends Socket {
     * @param buffer this is the buffer to append the bytes to
     *
     * @return this returns the number of bytes that have been read  
+    * @throws IOException  if an I/O error occurs.
     */ 
    int read(ByteBuffer buffer) throws IOException;
    
@@ -66,6 +68,7 @@ public interface Transport extends Socket {
     * implementation may choose to buffer the bytes for performance.
     *
     * @param buffer this is the buffer of bytes to send to the client
+    * @throws IOException  if an I/O error occurs.
     */      
    void write(ByteBuffer buffer) throws IOException;
    
@@ -74,6 +77,8 @@ public interface Transport extends Socket {
     * the client. This method will block not block but will simply
     * flush any data to the underlying transport. Internally the
     * data will be queued for delivery to the connected entity.    
+    * 
+    * @throws IOException  if an I/O error occurs.
     */       
    void flush() throws IOException;
    
@@ -82,6 +87,8 @@ public interface Transport extends Socket {
     * If a close is performed on the transport then no more bytes 
     * can be read from or written to the transport and the client 
     * will receive a connection close on their side.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */      
    void close() throws IOException;
 }

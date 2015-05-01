@@ -45,7 +45,7 @@ class BufferBody implements Body {
    private final PartSeries series;
    
    /**
-    * This is usd to hold the bytes representing the HTTP body.
+    * This is used to hold the bytes representing the HTTP body.
     */
    private final Buffer buffer;
 

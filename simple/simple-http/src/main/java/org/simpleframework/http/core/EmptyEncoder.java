@@ -63,9 +63,9 @@ class EmptyEncoder implements BodyEncoder {
     * data that is provided to sent to the underlying transport.
     *
     * @param array this is the array of bytes to send to the client
+    * @throws IOException  if there is an I/O error.
     */  
    public void encode(byte[] array) throws IOException {
-      return;
    }
   
    /**
@@ -76,9 +76,9 @@ class EmptyEncoder implements BodyEncoder {
     * @param array this is the array of bytes to send to the client
     * @param off this is the offset within the array to send from
     * @param size this is the number of bytes that are to be sent    
+    * @throws IOException  if there is an I/O error.
     */     
    public void encode(byte[] array, int off, int size) throws IOException {
-      return;
    }
    
    /**
@@ -90,9 +90,9 @@ class EmptyEncoder implements BodyEncoder {
     * not write ready.
     *
     * @param buffer this is the buffer of bytes to send to the client
+    * @throws IOException  if there is an I/O error.
     */         
    public void encode(ByteBuffer buffer) throws IOException {
-      return;
    }
 
    /**
@@ -106,18 +106,19 @@ class EmptyEncoder implements BodyEncoder {
     * @param buffer this is the buffer of bytes to send to the client
     * @param off this is the offset within the buffer to send from
     * @param size this is the number of bytes that are to be sent
+    * @throws IOException  if there is an I/O error.
     */          
    public void encode(ByteBuffer buffer, int off, int size) throws IOException {
-      return;
    }
    
    /**
     * This method performs no operation. Because this producer is
     * not required to generate a response body this will ignore all
     * data that is provided to sent to the underlying transport.
+    * 
+    * @throws IOException  if there is an I/O error.
     */   
    public void flush() throws IOException {
-      return;
    }
  
    /**

@@ -83,6 +83,7 @@ public class FileUploadConsumer implements BodyConsumer {
     * read. If there are no ready bytes then this will return.
     *
     * @param cursor used to consume the bytes from the HTTP pipeline
+    * @throws IOException  if an I/O error occurs.
     */ 
    public void consume(ByteCursor cursor) throws IOException {
       ByteCounter counter = new ByteCounter(cursor);

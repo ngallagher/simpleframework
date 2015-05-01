@@ -27,11 +27,11 @@ import org.simpleframework.common.KeyMap;
  * uniform resource identifier syntax is represented in RFC 2616 
  * section 3.2.2 for the HTTP protocol, this allows similar URI's
  * for example ftp, http, https, tftp. The syntax is
- * <code><pre>
- *
+ * <p>
+ *<code>
  *    URI = [scheme "://"] host [ ":" port ] [ path [ "?" query ]]
- *
- * </pre></code>
+ *</code>
+ * </p>
  * This interface represents the host, port, path and query part
  * of the uniform resource identifier. The parameters are also 
  * represented by the URI. The parameters in a URI consist of name 
@@ -152,6 +152,7 @@ public interface Address {
     *
     * @return the URI address with the optional parts if available
     */
+   @Override
    String toString();
 }
 

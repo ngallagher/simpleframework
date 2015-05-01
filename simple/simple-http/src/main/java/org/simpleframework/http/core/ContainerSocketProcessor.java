@@ -60,6 +60,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * provided and dispatch those requests to the provided container.
     * 
     * @param container this is the container used to service requests
+    * @throws IOException  if an I/O error occurs.
     */
    public ContainerSocketProcessor(Container container) throws IOException {
       this(container, 8);
@@ -72,6 +73,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * 
     * @param container this is the container used to service requests
     * @param count this is the number of threads used for each pool
+    * @throws IOException  if an I/O error occurs.
     */
    public ContainerSocketProcessor(Container container, int count) throws IOException {
       this(container, count, 1);
@@ -85,6 +87,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param container this is the container used to service requests
     * @param count this is the number of threads used for each pool
     * @param select this is the number of selector threads to use
+    * @throws IOException  if an I/O error occurs.
     */
    public ContainerSocketProcessor(Container container, int count, int select) throws IOException {
       this(container, new FileAllocator(), count, select);
@@ -97,6 +100,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * 
     * @param container this is the container used to service requests
     * @param allocator this is the allocator used to create buffers
+    * @throws IOException  if an I/O error occurs.
     */   
    public ContainerSocketProcessor(Container container, Allocator allocator) throws IOException {
       this(container, allocator, 8);
@@ -110,6 +114,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param container this is the container used to service requests
     * @param allocator this is the allocator used to create buffers
     * @param count this is the number of threads used for each pool
+    * @throws IOException  if an I/O error occurs.
     */   
    public ContainerSocketProcessor(Container container, Allocator allocator, int count) throws IOException {
       this(container, allocator, count, 1);
@@ -124,6 +129,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param allocator this is the allocator used to create buffers
     * @param count this is the number of threads used for each pool
     * @param select this is the number of selector threads to use
+    * @throws IOException  if an I/O error occurs.
     */   
    public ContainerSocketProcessor(Container container, Allocator allocator, int count, int select) throws IOException {
      this.processor = new ContainerTransportProcessor(container, allocator, count, select);
@@ -138,6 +144,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * called from multiple threads and does not block. 
     *
     * @param socket this is the connected HTTP pipeline to process
+    * @throws IOException  if an I/O error occurs.
     */    
    public void process(Socket socket) throws IOException {
      adapter.process(socket);
@@ -148,6 +155,8 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * will not accept and process any further messages. If there are
     * resources to clean up they may be cleaned up asynchronously
     * so that this method can return without blocking.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */     
    public void stop() throws IOException {
       adapter.stop();

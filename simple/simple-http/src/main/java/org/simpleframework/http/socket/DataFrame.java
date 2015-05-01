@@ -91,7 +91,7 @@ public class DataFrame implements Frame {
     * some cases a control frame may require a zero length payload.
     * 
     * @param type this is the frame type used for this instance
-    * @param data this is the payload for this frame
+    * @param text this is the payload for this frame
     */
    public DataFrame(FrameType type, String text) {
       this(type, text, true);
@@ -103,7 +103,7 @@ public class DataFrame implements Frame {
     * some cases a control frame may require a zero length payload.
     * 
     * @param type this is the frame type used for this instance
-    * @param data this is the payload for this frame
+    * @param text this is the payload for this frame
     * @param last true if this is not a fragment in a sequence
     */
    public DataFrame(FrameType type, String text, boolean last) {

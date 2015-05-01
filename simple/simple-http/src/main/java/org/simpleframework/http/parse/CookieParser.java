@@ -165,6 +165,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
     *
     * @return true if the <code>String</code> was skipped
     */
+   @Override
    protected boolean skip(String text){      
       int size = text.length();
       int seek = off;
@@ -217,7 +218,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
     * can be reiterated. This allows the collection to be reused.
     * The <code>reset</code> method will invoke the super classes
     * <code>init</code> method. This will reinitialize this
-    * <code>Parser</code> so the cookie will be reparsed.
+    * <code>Parser</code> so the cookie will be re-parsed.
     */
    public void reset() {
       init();
@@ -552,8 +553,8 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
        * modify the underlying source text value so that it can be 
        * reset with the <code>reset</code> method and used again.
        */
+      @Override
       public void remove() {
-         return;
       }
    }
    
@@ -567,7 +568,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
    private class Token {
 
       /**
-       * The numer of characters that were consumed by this token.
+       * The number of characters that were consumed by this token.
        */
       public int len;
 
@@ -582,6 +583,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
        *
        * @return the <code>String</code> value of the region
        */
+      @Override
       public String toString(){
          return new String(buf,off,len);
       }

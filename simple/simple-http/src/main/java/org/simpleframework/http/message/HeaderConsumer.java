@@ -35,7 +35,7 @@ public abstract class HeaderConsumer extends SegmentConsumer implements Header {
    /**
     * Constructor for the <code>HeaderConsumer</code> object. This 
     * is used to create a consumer capable of reading a header from
-    * a provided cursor. All methods of the <code>Header</coder> 
+    * a provided cursor. All methods of the <code>Header</code> 
     * interface are implemented in this object.
     */
    protected HeaderConsumer() {
@@ -46,7 +46,7 @@ public abstract class HeaderConsumer extends SegmentConsumer implements Header {
     * This can be used to get the date of the first message header
     * that has the specified name. This is a convenience method that 
     * avoids having to deal with parsing the value of the requested
-    * HTTP message header. This returns -1 if theres no HTTP header
+    * HTTP message header. This returns -1 if there is no HTTP header
     * value for the specified name.
     *
     * @param name the HTTP message header to get the value from
@@ -61,7 +61,7 @@ public abstract class HeaderConsumer extends SegmentConsumer implements Header {
     * This can be used to get the integer of the first message header
     * that has the specified name. This is a convenience method that 
     * avoids having to deal with parsing the value of the requested
-    * HTTP message header. This returns -1 if theres no HTTP header
+    * HTTP message header. This returns -1 if there is no HTTP header
     * value for the specified name.
     *
     * @param name the HTTP message header to get the value from

@@ -71,32 +71,32 @@ class ResponseEntity extends ResponseMessage implements Response {
    /**
     * This is the observer that is used to monitor the response.
     */
-   private BodyObserver observer;      
+   private final BodyObserver observer;      
    
    /**
     * This is used to buffer the bytes that are sent to the client.
     */
-   private ResponseBuffer buffer;   
+   private final ResponseBuffer buffer;   
    
    /**
     * This is the conversation used to determine connection type.
     */
-   private Conversation support;
+   private final Conversation support;
    
    /**
     * This is the underlying channel for the connected pipeline.
     */
-   private Channel channel;
+   private final Channel channel;
    
    /**
     * This is the sender object used to deliver to response data.
     */
-   private ByteWriter sender;
+   private final ByteWriter sender;
    
    /**
     * This is used to trace events that occur with the response
     */
-   private Trace trace;
+   private final Trace trace;
    
    /**
     * Constructor for the <code>ResponseEntity</code> object. This is

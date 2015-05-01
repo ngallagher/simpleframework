@@ -86,6 +86,7 @@ public abstract class UpdateConsumer implements BodyConsumer {
     * read. If there are no ready bytes then this will return.
     *
     * @param cursor used to consume the bytes from the HTTP pipeline
+    * @throws IOException  if an I/O error occurs.
     */    
    public void consume(ByteCursor cursor) throws IOException {
       int ready = cursor.ready();      
@@ -117,6 +118,7 @@ public abstract class UpdateConsumer implements BodyConsumer {
     * default implementation of this will simply return quietly.
     * 
     * @param cursor this is the cursor used by this consumer
+    * @throws IOException  if an I/O error occurs.
     */
    protected void commit(ByteCursor cursor) throws IOException {
       if(!finished) {
@@ -136,6 +138,7 @@ public abstract class UpdateConsumer implements BodyConsumer {
     * @param count this is the number of bytes within the array
     *
     * @return this returns the number of bytes overflow that is read
+    * @throws IOException  if an I/O error occurs.
     */    
    protected abstract int update(byte[] array, int off, int count) throws IOException;
 }

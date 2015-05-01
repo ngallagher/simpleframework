@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class ConcurrentScheduler implements Scheduler {
    
    /**
-    * This is the scheduler queue used to enque tasks to execute.
+    * This is the scheduler queue used to enqueue tasks to execute.
     */
    private final SchedulerQueue queue;
    

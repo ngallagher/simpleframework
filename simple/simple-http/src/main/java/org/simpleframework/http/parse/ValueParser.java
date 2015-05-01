@@ -100,6 +100,7 @@ public class ValueParser extends ListParser<String> {
     * @param text this is the text buffer to acquire the value from
     * @param start the offset within the buffer to take characters
     * @param len this is the number of characters within the token
+    * @return the extracted token
     */
    @Override
    protected String create(char[] text, int start, int len){

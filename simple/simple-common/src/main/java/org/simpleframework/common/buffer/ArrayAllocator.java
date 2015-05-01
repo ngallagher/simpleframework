@@ -85,6 +85,7 @@ public class ArrayAllocator implements Allocator {
     * requested is larger than the limit an exception is thrown.
     *
     * @return this returns an allocated buffer with a default size
+    * @throws IOException  if an I/O error occurs.
     */      
    public Buffer allocate() throws IOException {
       return allocate(size);
@@ -99,6 +100,7 @@ public class ArrayAllocator implements Allocator {
     * @param size the initial capacity of the allocated buffer
     *
     * @return this returns an allocated buffer with a default size
+     * @throws IOException  if an I/O error occurs.
     */   
    public Buffer allocate(long size) throws IOException {
       int required = (int)size;

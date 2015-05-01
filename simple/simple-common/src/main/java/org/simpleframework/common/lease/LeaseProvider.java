@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
  * lease without any knowledge of the resource it represents.
  *
  * @author Niall Gallagher
+ * 
+ * @param <T> Key type
  */
 public interface LeaseProvider<T> {
    

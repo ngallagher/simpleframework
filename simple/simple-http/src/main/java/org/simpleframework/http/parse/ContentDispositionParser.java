@@ -153,7 +153,7 @@ public class ContentDispositionParser extends Parser implements ContentDispositi
     * The definition of a literal can be found in RFC 2616. 
     * <p>
     * The definition of a literal for RFC 2616 is anything between 2 
-    * quotes but excuding quotes that are prefixed with the backward 
+    * quotes but excluding quotes that are prefixed with the backward 
     * slash character.
     */   
    private void pack() {
@@ -236,7 +236,7 @@ public class ContentDispositionParser extends Parser implements ContentDispositi
     * character. This represents a parameter name (see RFC 2616 for token). The 
     * parameter name is not buffered it is simply read from the buffer. This will
     * not cause an <code>IndexOutOfBoundsException</code> as each offset
-    * is checked before it is acccessed.
+    * is checked before it is accessed.
     */   
    private void name(){
       while(off < count){

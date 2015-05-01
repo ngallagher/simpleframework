@@ -158,7 +158,7 @@ public class PrincipalParser extends Parser implements Principal {
     * The definition of a literal can be found in RFC 2616. 
     * <p>
     * The definition of a literal for RFC 2616 is anything between 2 
-    * quotes but excuding quotes that are prefixed with the backward 
+    * quotes but excluding quotes that are prefixed with the backward 
     * slash character.
     */
    private void pack() {

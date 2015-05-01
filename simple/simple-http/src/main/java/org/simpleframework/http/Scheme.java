@@ -117,7 +117,7 @@ public enum Scheme {
     * there is no matching scheme for the provided instance then this
     * will return null.
     *
-    * @param token this is the object to resolve a scheme for
+    * @param target this is the object to resolve a scheme for
     *
     * @return this returns the match or null if none matched
     */

@@ -101,6 +101,7 @@ public abstract class ArrayConsumer implements ByteConsumer {
     * token is found the bytes are processed by the implementation.
     *
     * @param cursor this is the cursor to consume the bytes from
+    * @throws IOException  if an I/O error occurs.
     */ 
    public void consume(ByteCursor cursor) throws IOException {
       if(!done) {
@@ -138,6 +139,7 @@ public abstract class ArrayConsumer implements ByteConsumer {
     * In such a scenario the array is expanded the chunk size.
     *
     * @param size this is the minimum size to expand the array to 
+    * @throws IOException  if an I/O error occurs.
     */ 
    protected void resize(int size) throws IOException {
       if(array.length < size) {
@@ -168,6 +170,8 @@ public abstract class ArrayConsumer implements ByteConsumer {
     * It is used to process the consumed data and is typically used to
     * parse the input such that it can be used by the subclass for
     * some useful purpose. This is called only once by the consumer.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */  
    protected abstract void process() throws IOException;
    
@@ -178,6 +182,8 @@ public abstract class ArrayConsumer implements ByteConsumer {
     * consumer to reset the bytes within the consumer object.
     *
     * @return this returns the number of excess bytes consumed
+    * 
+    * @throws IOException  if an I/O error occurs.
     */ 
    protected abstract int scan() throws IOException;
 

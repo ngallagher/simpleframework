@@ -51,7 +51,6 @@ public class EmptyConsumer implements BodyConsumer {
     * @param cursor this is the cursor which will not be read from
     */         
    public void consume(ByteCursor cursor) {
-      return;
    }
  
    /**

@@ -47,17 +47,17 @@ class ResponseEncoder {
    /**
     * This is used to create a encoder based on the HTTP headers.
     */         
-   private BodyEncoderFactory factory;
+   private final BodyEncoderFactory factory;
 
    /**
     * This is used to determine the type of transfer required.
     */ 
-   private Conversation support;
+   private final Conversation support;
    
    /**
     * This is the response message that is to be committed.
     */ 
-   private Response response;
+   private final Response response;
    
    /**
     * Once the header is committed this is used to produce data.
@@ -67,7 +67,7 @@ class ResponseEncoder {
    /**
     * This is the trace used to monitor events in the data transfer.
     */
-   private Trace trace;
+   private final Trace trace;
    
    /**
     * Constructor for the <code>ResponseEncoder</code> object, this is 
@@ -101,9 +101,11 @@ class ResponseEncoder {
    
    /**
     * This starts the transfer with no specific content length set.
-    * This is typically used when dynamic data is emitted ans will
+    * This is typically used when dynamic data is emitted and will
     * require chunked encoding for HTTP/1.1 and connection close
     * for HTTP/1.0. Once invoked the HTTP headers are committed.
+    * 
+    * @throws IOException  if there is an I/O error.
     */ 
    public void start() throws IOException {
       if(encoder != null) {
@@ -121,6 +123,7 @@ class ResponseEncoder {
     * a connection close if it does not have keep alive semantics.
     *
     * @param length this is the length of the response body
+    * @throws IOException  if there is an I/O error.
     */ 
    public void start(int length) throws IOException {
       if(encoder != null) {
@@ -138,6 +141,7 @@ class ResponseEncoder {
     * been created then this will throw an exception.
     *
     * @param array this is the array of bytes to send to the client    
+    * @throws IOException  if there is an I/O error.
     */ 
    public void write(byte[] array) throws IOException {
       write(array, 0, array.length);
@@ -152,6 +156,7 @@ class ResponseEncoder {
     * @param array this is the array of bytes to send to the client
     * @param off this is the offset within the array to send from
     * @param len this is the number of bytes that are to be sent    
+    * @throws IOException  if there is an I/O error.
     */ 
    public void write(byte[] array, int off, int len) throws IOException {
       if(encoder == null) {
@@ -168,6 +173,7 @@ class ResponseEncoder {
     * been created then this will throw an exception.
     *
     * @param buffer this is the buffer of bytes to send to the client    
+    * @throws IOException  if there is an I/O error.
     */ 
    public void write(ByteBuffer buffer) throws IOException {
       int mark = buffer.position();
@@ -188,6 +194,7 @@ class ResponseEncoder {
     * @param buffer this is the buffer of bytes to send to the client
     * @param off this is the offset within the buffer to send from
     * @param len this is the number of bytes that are to be sent    
+    * @throws IOException  if there is an I/O error.
     */ 
    public void write(ByteBuffer buffer, int off, int len) throws IOException {
       if(encoder == null) {
@@ -202,6 +209,8 @@ class ResponseEncoder {
     * the client. This method will block until such time as all of
     * the data has been sent to the client. If at any point there
     * is an error sending the content an exception is thrown.    
+    * 
+    * @throws IOException  if there is an I/O error.
     */   
    public void flush() throws IOException {
       if(encoder == null) {
@@ -216,6 +225,8 @@ class ResponseEncoder {
     * either close the underlying transport or it will notify the
     * monitor that the response has completed and the next request
     * can begin. This ensures the content is flushed to the client.
+    * 
+    * @throws IOException  if there is an I/O error.
     */      
    public void close() throws IOException {
       if(encoder == null) {
@@ -229,6 +240,8 @@ class ResponseEncoder {
     * response. This will check the existing HTTP headers, and if
     * there is insufficient data chunked encoding will be used for
     * HTTP/1.1 and connection close will be used for HTTP/1.0.
+    * 
+    * @throws IOException  if there is an I/O error.
     */ 
    private void configure() throws IOException {
       long length = support.getContentLength(); 
@@ -254,6 +267,8 @@ class ResponseEncoder {
     * HTTP/1.1 and connection close will be used for HTTP/1.0.
     *
     * @param count this is the number of bytes to be transferred
+    * 
+    * @throws IOException  if there is an I/O error.
     */ 
    private void configure(long count) throws IOException {
       long length = support.getContentLength();
@@ -277,6 +292,8 @@ class ResponseEncoder {
     *
     * @param count this is the number of bytes to be transferred
     * @param length this is the actual length value to be used
+    * 
+    * @throws IOException  if there is an I/O error.
     */ 
    private void configure(long count, long length) throws IOException {    
       boolean empty = support.isEmpty();
@@ -299,6 +316,8 @@ class ResponseEncoder {
     * in the event that content length may be used instead. This is
     * used so that an override can be made to the transfer encoding
     * such that content length can be used instead.   
+    * 
+    * @throws IOException  if there is an I/O error.
     */    
    private void clear() throws IOException {
       support.setIdentityEncoded();
@@ -310,6 +329,8 @@ class ResponseEncoder {
     * transport to the client. Once done the response is committed
     * and no more headers can be set, also the semantics of the
     * response have been committed and the encoder is created.
+    * 
+    * @throws IOException  if there is an I/O error.
     */ 
    private void commit() throws IOException {
       try {

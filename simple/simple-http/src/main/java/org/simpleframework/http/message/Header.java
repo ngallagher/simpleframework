@@ -207,6 +207,7 @@ public interface Header extends Segment {
     * 
     * @return this returns a string representation of this request
     */
+   @Override
    String toString();
 }
 

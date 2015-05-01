@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
  * measured in any <code>TimeUnit</code> for convenience.
  *
  * @author Niall Gallagher
+ * 
+ * @param T Key type
  */
 class Expiration<T> implements Contract<T> {
 
@@ -42,7 +44,7 @@ class Expiration<T> implements Contract<T> {
    /**
     * This is the key representing the resource being lease.
     */   
-   private T key;
+   private final T key;
    
    /**
     * Constructor for the <code>Expiration</code> object. This is used
@@ -91,7 +93,7 @@ class Expiration<T> implements Contract<T> {
     * previous expiry time is ignores, so only one clean is called.
     * 
     * @param delay this is the delay to be used for this contract
-    * @param unit this is the time unit measurment for the delay
+    * @param unit this is the time unit measurement for the delay
     */   
    public void setDelay(long delay, TimeUnit unit) {
       this.time = getTime() + unit.toNanos(delay);
@@ -157,6 +159,7 @@ class Expiration<T> implements Contract<T> {
     * 
     * @return a descriptive message describing the contract object
     */
+   @Override
    public String toString() {
       return String.format("contract %s", key);
    }

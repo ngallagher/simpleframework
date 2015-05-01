@@ -72,17 +72,17 @@ class RequestEntity extends RequestMessage implements Request {
    /**
     * This is the certificate associated with the connection.
     */
-   private Certificate certificate;
+   private final Certificate certificate;
    
    /**
     * This will create the form object using the query and body.
     */
-   private QueryBuilder builder; 
+   private final QueryBuilder builder; 
    
    /**
     * This channel represents the connected pipeline used.
     */
-   private Channel channel;
+   private final Channel channel;
    
    /**
     * The query contains all the parameters for the request.
@@ -92,7 +92,7 @@ class RequestEntity extends RequestMessage implements Request {
    /**
     * The body contains the message content sent by the client.
     */
-   private Body body;
+   private final Body body;
    
    /**
     * This is used to contain the values for this request.
@@ -102,7 +102,7 @@ class RequestEntity extends RequestMessage implements Request {
    /**
     * This is the time at which the request is ready to be used.
     */
-   private long time;
+   private final long time;
    
    /**
     * Constructor for the <code>RequestEntity</code> object. This is
@@ -350,6 +350,7 @@ class RequestEntity extends RequestMessage implements Request {
     * 
     * @return the query associated with the HTTP target URI
     */   
+   @Override
    public Query getQuery() {
       if(query == null) {
          query = builder.build();

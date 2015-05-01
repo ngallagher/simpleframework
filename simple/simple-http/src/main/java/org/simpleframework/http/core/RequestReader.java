@@ -31,7 +31,7 @@ import org.simpleframework.transport.trace.Trace;
  * that form the request entity. In order to execute a read operation 
  * the socket must be read ready. This is determined using the socket 
  * object, which is registered with a controller. If at any point the 
- * reading results in an error the operation is cancelled and the 
+ * reading results in an error the operation is canceled and the 
  * collector is closed, which shuts down the connection.
  * 
  * @author Niall Gallagher
@@ -118,7 +118,7 @@ class RequestReader implements Operation {
    /**
     * This is used to cancel the operation if it has timed out. If 
     * the retry is waiting too long to read content from the socket
-    * then the retry is cancelled and the underlying transport is 
+    * then the retry is canceled and the underlying transport is 
     * closed. This helps to clean up occupied resources.     
     */       
    public void cancel() {

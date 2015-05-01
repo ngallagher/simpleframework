@@ -42,7 +42,7 @@ import org.simpleframework.common.parse.Parser;
  * Sun Nov  6 08:49:37 1994       ; ANSI C's asctime() format
  * </pre>
  * <p>
- * This can also parse the date in ms as retrived from the <code>System</code>'s 
+ * This can also parse the date in ms as retrieved from the <code>System</code>'s 
  * <code>System.currentTimeMillis</code> method. This has a parse method for a 
  * <code>long</code> which will do the same as the <code>parse(String)</code>. 
  * Once the date has been parsed there are two methods that allow the date 
@@ -630,6 +630,7 @@ public class DateParser extends Parser {
     *
     * @return the date in RFC 1123 format
     */
+   @Override
    public String toString(){
       StringBuilder builder = new StringBuilder(30);
       

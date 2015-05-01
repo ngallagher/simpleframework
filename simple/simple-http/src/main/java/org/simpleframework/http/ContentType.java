@@ -138,5 +138,6 @@ public interface ContentType {
     * 
     * @return this returns the string representation of the type
     */
+   @Override
    String toString();
 }

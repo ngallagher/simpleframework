@@ -52,7 +52,7 @@ class BoundaryConsumer extends ArrayConsumer {
    /**
     * This is used to allocate a buffer for for the boundary. 
     */
-   private Allocator allocator;
+   private final Allocator allocator;
    
    /**
     * This is used to consume the contents of the consumed buffer.
@@ -62,7 +62,7 @@ class BoundaryConsumer extends ArrayConsumer {
    /**
     * This is the actual boundary value that is to be consumed.
     */ 
-   private byte[] boundary;
+   private final byte[] boundary;
    
    /**
     * This counts the number of characters read from the start.

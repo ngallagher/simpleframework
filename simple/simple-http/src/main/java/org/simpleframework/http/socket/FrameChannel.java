@@ -50,6 +50,7 @@ public interface FrameChannel {
     * can cause congestion.
     * 
     * @param data this is the data that is to be sent
+    * @throws IOException  if an I/O error occurs.
     */
    void send(byte[] data) throws IOException;
    
@@ -63,6 +64,7 @@ public interface FrameChannel {
     * can cause congestion.
     * 
     * @param text this is the text that is to be sent
+    * @throws IOException  if an I/O error occurs.
     */
    void send(String text) throws IOException;
    
@@ -76,6 +78,7 @@ public interface FrameChannel {
     * can cause congestion.
     * 
     * @param frame this is the frame that is to be sent
+    * @throws IOException  if an I/O error occurs.
     */
    void send(Frame frame) throws IOException;
    
@@ -87,6 +90,7 @@ public interface FrameChannel {
     * notified. Any number of listeners can be registered at any time.
     * 
     * @param listener this is the listener that is to be registered
+    * @throws IOException  if an I/O error occurs.
     */
    void register(FrameListener listener) throws IOException;
    
@@ -96,6 +100,7 @@ public interface FrameChannel {
     * any user frames or control messages from this specific instance.
     * 
     * @param listener this is the listener to be removed
+    * @throws IOException  if an I/O error occurs.
     */
    void remove(FrameListener listener) throws IOException;
    
@@ -105,6 +110,7 @@ public interface FrameChannel {
     * TCP connection is terminated.
     * 
     * @param reason the reason for closing the connection
+    * @throws IOException  if an I/O error occurs.
     */
    void close(Reason reason) throws IOException;   
    
@@ -112,6 +118,8 @@ public interface FrameChannel {
     * This is used to close the connection without a specific reason.
     * The close reason will be sent as a control frame before the
     * TCP connection is terminated.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    void close() throws IOException;
 }

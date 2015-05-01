@@ -104,6 +104,7 @@ public class FileAllocator implements Allocator {
     * file. This ensures there is no upper limit for appended data.
     * 
     * @return a buffer which will write to a temporary file
+    * @throws IOException  if an I/O error occurs.
     */
    public Buffer allocate() throws IOException {
       File file = manager.create();
@@ -125,6 +126,7 @@ public class FileAllocator implements Allocator {
     * @param size this is the size of the buffer to be created
     * 
     * @return a buffer which will write to a created temporary file
+    * @throws IOException  if an I/O error occurs.
     */
    public Buffer allocate(long size) throws IOException {
       int required = (int)size;

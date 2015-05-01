@@ -39,6 +39,7 @@ public interface ByteWriter {
     * implementation may choose to buffer the bytes for performance.
     *
     * @param array this is the array of bytes to send to the client
+    * @throws IOException  if an I/O error occurs.
     */             
    void write(byte[] array) throws IOException;
    
@@ -51,6 +52,7 @@ public interface ByteWriter {
     * @param array this is the array of bytes to send to the client
     * @param off this is the offset within the array to send from
     * @param len this is the number of bytes that are to be sent
+    * @throws IOException  if an I/O error occurs.
     */    
    void write(byte[] array, int off, int len) throws IOException;
    
@@ -61,6 +63,7 @@ public interface ByteWriter {
     * implementation may choose to buffer the bytes for performance.
     *
     * @param buffer this is the buffer of bytes to send to the client
+    * @throws IOException  if an I/O error occurs.
     */             
    void write(ByteBuffer buffer) throws IOException;
    
@@ -73,6 +76,7 @@ public interface ByteWriter {
     * @param buffer this is the buffer of bytes to send to the client
     * @param off this is the offset within the buffer to send from
     * @param len this is the number of bytes that are to be sent
+    * @throws IOException  if an I/O error occurs.
     */    
    void write(ByteBuffer buffer, int off, int len) throws IOException;
    
@@ -81,6 +85,8 @@ public interface ByteWriter {
     * the client. This method will block until such time as all of
     * the data has been sent to the client. If at any point there
     * is an error sending the content an exception is thrown.    
+    * 
+    * @throws IOException  if an I/O error occurs.
     */    
    void flush() throws IOException;
    
@@ -89,6 +95,8 @@ public interface ByteWriter {
     * If a close is performed on the sender then no more bytes can
     * be read from or written to the transport and the client will
     * received a connection close on their side.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */      
    void close() throws IOException;
 }

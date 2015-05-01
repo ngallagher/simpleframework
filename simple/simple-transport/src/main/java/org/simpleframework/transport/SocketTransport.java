@@ -89,6 +89,7 @@ public class SocketTransport implements Transport {
     *
     * @param socket this is used to read and write the data
     * @param reactor this is used to perform asynchronous writes
+    * @throws IOException  if an I/O error occurs.
     */
    public SocketTransport(Socket socket, Reactor reactor) throws IOException {
       this(socket, reactor, 4096);
@@ -104,6 +105,7 @@ public class SocketTransport implements Transport {
     * @param socket this is used to read and write the data
     * @param reactor this is used to perform asynchronous writes
     * @param buffer this is the size of the output buffer to use 
+    * @throws IOException  if an I/O error occurs.
     */
    public SocketTransport(Socket socket, Reactor reactor, int buffer) throws IOException {
       this(socket, reactor, buffer, 20480);
@@ -120,6 +122,7 @@ public class SocketTransport implements Transport {
     * @param reactor this is used to perform asynchronous writes
     * @param buffer this is the size of the output buffer to use      
     * @param threshold this is the maximum size of the output buffer
+    * @throws IOException  if an I/O error occurs.
     */
    public SocketTransport(Socket socket, Reactor reactor, int buffer, int threshold) throws IOException {
      this.writer = new SocketBufferWriter(socket, reactor, buffer, threshold);     
@@ -203,6 +206,7 @@ public class SocketTransport implements Transport {
     * @param data this is the buffer to append the bytes to
     *
     * @return this returns the number of bytes that were read 
+    * @throws IOException  if an I/O error occurs.
     */ 
    public int read(ByteBuffer data) throws IOException {
       if(closed) {
@@ -225,6 +229,7 @@ public class SocketTransport implements Transport {
     * network. Smaller packets result poorer performance.
     *
     * @param data this is the array of bytes to send to the client
+    * @throws IOException  if an I/O error occurs.
     */   
    public  void write(ByteBuffer data) throws IOException{  
       if(closed) {
@@ -238,6 +243,8 @@ public class SocketTransport implements Transport {
     * socket. Flushing with this method is always non-blocking, so
     * if the socket is not write ready and the buffer can be queued
     * it will be queued and the calling thread will return.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    public void flush() throws IOException {      
       if(closed) {
@@ -251,6 +258,8 @@ public class SocketTransport implements Transport {
     * the underlying socket. This method will not complete until
     * all buffered data is written and the underlying socket is
     * closed at which point this can be disposed of.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    public void close() throws IOException {
       if(!closed) {              

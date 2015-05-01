@@ -302,7 +302,7 @@ public class PathParser extends Parser implements Path{
     * @param len this is the number of characters in the path
     *
     * @return returns a path relative to the one it is given
-    * otherwize this method will return null 
+    * otherwise this method will return null 
     */
    private String getRelative(char[] text, int off, int len){
       if (len > path.len) {
@@ -337,7 +337,7 @@ public class PathParser extends Parser implements Path{
 
    /**
     * This will simply read the characters from the end of the
-    * buffer until it encounters the first peroid character. When
+    * buffer until it encounters the first period character. When
     * this is read it will store the file extension and remove the
     * characters from the buffer.
     */
@@ -362,7 +362,7 @@ public class PathParser extends Parser implements Path{
     * basically the strings delimited by the '/' character of a
     * normalized path. As well as extracting the path segments
     * this will also extract the directory of path, that is, the
-    * the path up to the last occurance of the '/' character. 
+    * the path up to the last occurrence of the '/' character. 
     */
    private void segments() {
       int pos = count - 1;
@@ -392,7 +392,7 @@ public class PathParser extends Parser implements Path{
    /**
     * The normalization of the path is the conversion of the path
     * given into it's actual path by removing the references to
-    * the parent directorys and to the current dir. So if the path
+    * the parent directories and to the current dir. So if the path
     * given was <code>/usr/bin/../etc/./README</code> then the actual
     * path, the normalized path, is <code>/usr/etc/README</code>.
     * <p>
@@ -493,6 +493,7 @@ public class PathParser extends Parser implements Path{
     * @return this returns the normalize path without
     *    <code>../</code> or <code>./</code>
     */
+   @Override
    public String toString(){
       return getPath();
    }
@@ -536,13 +537,14 @@ public class PathParser extends Parser implements Path{
       
       /**
        * This method will convert the <code>Token</code> into it's
-       * <code>String</code> equivelant. This will firstly check
+       * <code>String</code> equivalent. This will firstly check
        * to see if there is a value, for the string representation,
        * if there is the value is returned, otherwise the region
        * is converted into a <code>String</code> and returned.
        *
        * @return this returns a value representing the token
        */
+      @Override
       public String toString() {
          if(value != null) {
             return value;

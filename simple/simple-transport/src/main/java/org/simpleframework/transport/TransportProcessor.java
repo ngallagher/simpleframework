@@ -45,6 +45,7 @@ public interface TransportProcessor {
     * and process requests from those transports concurrently.  
     *      
     * @param transport the transport to process requests from
+    * @throws IOException  if an I/O error occurs.
     */
    void process(Transport transport) throws IOException;
    
@@ -58,6 +59,8 @@ public interface TransportProcessor {
     * server have been stopped. As a final act of shutting down the
     * entire server all threads must be stopped, this allows collection
     * of unused memory and the closing of file and socket resources.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */ 
    void stop() throws IOException;
 }

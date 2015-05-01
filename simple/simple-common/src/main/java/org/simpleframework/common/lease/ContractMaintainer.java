@@ -29,6 +29,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * 
  * @author Niall Gallagher
  * 
+ * @param T Key type
+ * 
  * @see org.simpleframework.common.lease.LeaseCleaner
  */
 class ContractMaintainer<T> implements ContractController<T> {       
@@ -55,7 +57,7 @@ class ContractMaintainer<T> implements ContractController<T> {
     * If the contract duration expires before it is renewed then a
     * notification is sent, typically to a <code>Cleaner</code> to
     * to signify that the resource should be released. The contract
-    * can also be cancelled by providing a zero length duration.
+    * can also be canceled by providing a zero length duration.
     * 
     * @param contract a contract representing a leased resource
     */  

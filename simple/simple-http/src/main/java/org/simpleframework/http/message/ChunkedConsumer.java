@@ -94,7 +94,7 @@ public class ChunkedConsumer extends UpdateConsumer {
     * Constructor for the <code>ChunkedConsumer</code> object. This 
     * is used to create a consumer that reads chunked encoded data and
     * appended that data in decoded form to an internal buffer so that
-    * it can be read in a clean decoded fromat.
+    * it can be read in a clean decoded format.
     *
     * @param allocator this is used to allocate the internal buffer
     */
@@ -106,7 +106,7 @@ public class ChunkedConsumer extends UpdateConsumer {
     * Constructor for the <code>ChunkedConsumer</code> object. This 
     * is used to create a consumer that reads chunked encoded data and
     * appended that data in decoded form to an internal buffer so that
-    * it can be read in a clean decoded fromat.
+    * it can be read in a clean decoded format.
     *
     * @param allocator this is used to allocate the internal buffer
     * @param chunk this is the maximum size line allowed
@@ -138,6 +138,7 @@ public class ChunkedConsumer extends UpdateConsumer {
     * @param array this is the array of bytes to be appended
     * @param off this is the start offset in the array to read from
     * @param len this is the number of bytes to write to the buffer  
+    * @throws IOException  if an I/O error occurs.
     */
    private void append(byte[] array, int off, int len) throws IOException {
       if(buffer == null) {
@@ -158,6 +159,7 @@ public class ChunkedConsumer extends UpdateConsumer {
     * @param size this is the number of bytes within the array
     *
     * @return this returns the number of bytes overflow that is read
+    * @throws IOException  if an I/O error occurs.
     */          
    @Override
    protected int update(byte[] array, int off, int size) throws IOException {
@@ -206,11 +208,13 @@ public class ChunkedConsumer extends UpdateConsumer {
    }   
    
    /**
-    * This method is used to convert the size in hexidecimal to a 
+    * This method is used to convert the size in hexadecimal to a 
     * decimal <code>int</code>. This will use the specified number 
     * of bytes from the internal buffer and parse each character 
-    * read as a hexidecimal character. This stops interpreting the
-    * size line when a non-hexidecimal character is encountered.
+    * read as a hexadecimal character. This stops interpreting the
+    * size line when a non-hexadecimal character is encountered.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    private void parse() throws IOException {
       int off = 0;
@@ -233,13 +237,13 @@ public class ChunkedConsumer extends UpdateConsumer {
 
    /**
     * This performs a conversion from a character to an integer. If
-    * the character given, as a <code>byte</code>, is a hexidecimal
-    * char this will convert it into its integer equivelant. So a 
+    * the character given, as a <code>byte</code>, is a hexadecimal
+    * char this will convert it into its integer equivalent. So a 
     * char of <code>A</code> is converted into <code>10</code>.
     *
-    * @param octet this is an ISO 8869-1 hexidecimal character
+    * @param octet this is an ISO 8869-1 hexadecimal character
     *
-    * @return returns the hex character into its decinal value
+    * @return returns the hex character into its decimal value
     */   
    private int toDecimal(byte octet){
       if(octet >= 'A' && octet <= 'Z') {

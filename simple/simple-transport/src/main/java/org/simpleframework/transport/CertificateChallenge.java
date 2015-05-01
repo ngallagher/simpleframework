@@ -56,6 +56,7 @@ public interface CertificateChallenge {
     * providing their certificate, and execution of the task. 
     * 
     * @return this future containing the original certificate
+    * @throws Exception  if an error occurs.
     */
    Future<Certificate> challenge() throws Exception;   
    
@@ -68,6 +69,7 @@ public interface CertificateChallenge {
     * @param completion task to be run on successful challenge
     * 
     * @return this future containing the original certificate    
+    * @throws Exception  if an error occurs.
     */
    Future<Certificate> challenge(Runnable completion) throws Exception;
 }

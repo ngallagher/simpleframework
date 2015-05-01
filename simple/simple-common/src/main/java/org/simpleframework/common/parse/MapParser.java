@@ -36,18 +36,19 @@ import java.util.Set;
  * subclasses are free to assign a different type to the map used.
  * 
  * @author Niall Gallagher
+ * @param <T> Parser element type
  */ 
 public abstract class MapParser<T> extends Parser implements Map<T, T> {
 
    /**
     * Represents all values inserted to the map as a list of values.
     */
-   protected Map<T, List<T>> all;
+   protected final Map<T, List<T>> all;
    
    /**
     * Represents the last value inserted into this map instance.
     */
-   protected Map<T, T> map;
+   protected final Map<T, T> map;
 
    /**
     * Constructor for the <code>MapParser</code> object. This is 

@@ -28,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * be performed without the need for a direct handle on the lease.
  * 
  * @author Niall Gallagher
+ *
+ * @param <T> Key type
  */
 public class LeaseMap<T> extends ConcurrentHashMap<T, Lease<T>> {
    

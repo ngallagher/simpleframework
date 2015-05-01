@@ -41,6 +41,7 @@ public interface Certificate {
     * on the initial connection or when it is challenged for.
     * 
     * @return this returns the clients X509 certificate chain
+    * @throws Exception  if an error occurs.
     */
    X509Certificate[] getChain() throws Exception; 
    
@@ -51,6 +52,7 @@ public interface Certificate {
     * task should be used to drive completion of an HTTPS request.   
     * 
     * @return this returns a challenge for the client certificate
+    * @throws Exception  if an error occurs.
     */
    CertificateChallenge getChallenge() throws Exception;
       
@@ -60,6 +62,7 @@ public interface Certificate {
     * can be used to request the certificate. 
     * 
     * @return true if the certificate chain is present
+    * @throws Exception  if an error occurs.
     */
    boolean isChainPresent() throws Exception;
 }
