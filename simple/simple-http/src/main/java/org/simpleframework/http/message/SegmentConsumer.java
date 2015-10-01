@@ -448,7 +448,9 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
     * @param value this is the value that is to be parsed
     */
    protected void language(String value) {
-      language = new LanguageParser(value);
+      if(language == null) {
+         language = new LanguageParser(value);
+      }
    }
    
    /**
@@ -460,7 +462,9 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
     * @param value this is the content type value to parse
     */
    protected void type(String value) {
-      type = new ContentTypeParser(value);
+      if(type == null) {
+         type = new ContentTypeParser(value);
+      }
    }
    
    /**
@@ -472,7 +476,9 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
     * @param value this is the content type value to parse
     */   
    protected void disposition(String value) {
-      disposition = new ContentDispositionParser(value);
+      if(disposition == null) {
+         disposition = new ContentDispositionParser(value);
+      }
    }
    
    /**
@@ -483,7 +489,9 @@ public class SegmentConsumer extends ArrayConsumer implements Segment {
     * @param value this is the value representing the encoding
     */
    protected void encoding(String value) {
-      encoding = value;
+      if(encoding == null) {
+         encoding = value;
+      }
    }
    
    /**

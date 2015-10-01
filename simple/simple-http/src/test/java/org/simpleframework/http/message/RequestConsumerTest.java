@@ -1,5 +1,7 @@
-package org.simpleframework.http.core;
+package org.simpleframework.http.message;
 
+import org.simpleframework.http.core.DribbleCursor;
+import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.message.RequestConsumer;
 import org.simpleframework.transport.ByteCursor;
 
