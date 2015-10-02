@@ -153,6 +153,7 @@ public class ContainerPerformanceTest extends TestCase {
                      client.write(ByteBuffer.wrap(SOURCE_2));
                      client.write(ByteBuffer.wrap(SOURCE_3));
                      client.write(ByteBuffer.wrap(SOURCE_4));
+                     Thread.sleep(1);
                   }
                   client.write(ByteBuffer.wrap(CLOSE));
                   client.close();
@@ -177,7 +178,7 @@ public class ContainerPerformanceTest extends TestCase {
       dumper.kill();
    }
    
-   // This is a container that counts the callbacks/requests it gets
+   // This is a container that counts the callbacks/requests it gets and sends a valid HTTP/1.1 response
    private class CounterContainer implements Container {
 
       private final AtomicInteger counter;
