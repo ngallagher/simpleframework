@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender class="org.apache.log4j.ConsoleAppender" name="STDOUT">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param value="%d [%t] %-5p %c{2} - %m%n" name="ConversionPattern" />
+    </layout>
+  </appender>
+  <appender class="org.apache.log4j.RollingFileAppender" name="R">
+    <param value="log/app.log" name="File" />
+    <param value="10" name="MaxBackupIndex" />
+    <param value="1000KB" name="MaxFileSize" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param value="%d [%t] %-5p %c{2} - %m%n" name="ConversionPattern" />
+    </layout>
+  </appender>
+  <appender class="org.apache.log4j.DailyRollingFileAppender" name="DAILY">
+    <param value="'.'yyyy-MM-dd" name="DatePattern" />
+    <param value="log/app.log" name="File" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param value="%d [%t] %-5p %c{2} - %m%n" name="ConversionPattern" />
+    </layout>
+  </appender>
+  <appender class="org.apache.log4j.rolling.RollingFileAppender" name="COMPRESS">
+    <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+      <param name="ActiveFileName" value="log/app.log" />
+      <param name="FileNamePattern" value="log/app.log.%d{yyyy-MM-dd}.gz" />
+    </rollingPolicy>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param value="%d [%t] %-5p %c{2} - %m%n" name="ConversionPattern" />
+    </layout>
+  </appender>
+  <logger name="General">
+    <level value="info" />
+  </logger>
+  <logger name="org.simpleframework">
+    <level value="info" />
+  </logger>
+  <root>
+    <level value="info" />
+    <appender-ref ref="COMPRESS" />
+  </root>
+</log4j:configuration>

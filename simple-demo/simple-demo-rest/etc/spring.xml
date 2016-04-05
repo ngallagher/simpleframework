@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <bean id="LogConfigurer" class="org.simpleframework.demo.log4j.LogConfigurer" init-method="configure">
+    <constructor-arg value="${log4j.configFile}" />
+  </bean>
+
+  <bean id="ContentTypeResolver" class="org.simpleframework.demo.http.resource.ContentTypeResolver">
+    <constructor-arg>
+      <map>
+        <entry key=".*.vm" value="text/html" />
+        <entry key=".*.html" value="text/html" />
+        <entry key=".*.png" value="image/png" />
+        <entry key=".*.gif" value="image/gif" />
+        <entry key=".*.css" value="text/css" />
+        <entry key=".*.js" value="text/javascript" />
+        <entry key=".*" value="text/html" />
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <bean id="FileManager" class="org.simpleframework.demo.io.FileManager">
+    <constructor-arg value="data/${context.path}" />
+  </bean>
+
+  <bean id="FileResolver" class="org.simpleframework.demo.io.FileResolver">
+    <constructor-arg ref="FileManager" />
+    <constructor-arg value="index.html" />
+    <constructor-arg value="index.html" />
+  </bean>
+
+  <bean id="FileSystemResource" class="org.simpleframework.demo.http.resource.FileSystemResource">
+    <constructor-arg ref="FileResolver" />
+    <constructor-arg ref="ContentTypeResolver" />
+  </bean>
+
+  <bean id="NotFoundResource" class="org.simpleframework.demo.http.resource.StringResource">
+    <constructor-arg value="Resource could not be found!!" />
+    <constructor-arg value="text/plain; charset=UTF-8" />
+    <constructor-arg value="UTF-8" />
+    <constructor-arg value="NOT_FOUND" />
+  </bean>
+
+  <bean id="FoundResource" class="org.simpleframework.demo.http.resource.StringResource">
+    <constructor-arg value="Redirecting to /index.html" />
+    <constructor-arg value="text/plain; charset=UTF-8" />
+    <constructor-arg value="UTF-8" />
+    <constructor-arg value="FOUND" />
+  </bean>
+
+  <bean id="RedirectResource" class="org.simpleframework.demo.http.resource.RedirectResource">
+    <constructor-arg ref="FoundResource" />
+    <constructor-arg value="/index.html" />
+  </bean>
+
+  <bean id="FailureResource" class="org.simpleframework.demo.http.resource.StringResource">
+    <constructor-arg value="An error occured serving a resource!" />
+    <constructor-arg value="text/plain; charset=UTF-8" />
+    <constructor-arg value="UTF-8" />
+    <constructor-arg value="INTERNAL_SERVER_ERROR" />
+  </bean>
+
+  <bean id="ChatRoom" class="org.simpleframework.demo.chat.ChatRoom"/>
+
+  <bean id="ChatRoomLogin" class="org.simpleframework.demo.chat.ChatRoomLogin">
+    <constructor-arg ref="FileSystemResource" />
+  </bean>
+
+  <bean id="ResourceEngine" class="org.simpleframework.demo.http.resource.RegularExpressionEngine">
+    <constructor-arg>
+      <map>
+        <entry key="/login.html" value-ref="ChatRoomLogin" />
+        <entry key=".*favicon.ico" value-ref="NotFoundResource" />
+        <entry key=".*.html" value-ref="FileSystemResource" />
+        <entry key=".*.png" value-ref="FileSystemResource" />
+        <entry key=".*.css" value-ref="FileSystemResource" />
+        <entry key=".*.js" value-ref="FileSystemResource" />
+        <entry key="/" value-ref="RedirectResource" />
+      </map>
+    </constructor-arg>
+    <constructor-arg ref="NotFoundResource" />
+  </bean>
+
+  <bean id="ResourceContainer" class="org.simpleframework.demo.http.resource.ResourceContainer">
+    <constructor-arg ref="ResourceEngine" />
+    <constructor-arg ref="FailureResource" />
+  </bean>
+  
+  <bean id="TraceAnalyzer" class="org.simpleframework.demo.trace.LogAnalyzer" init-method="start"/>  
+
+  <bean id="WebContainer" class="org.simpleframework.demo.http.WebContainer">
+    <constructor-arg ref="ResourceContainer" />
+    <constructor-arg value="Chat/1.0" />
+  </bean>
+
+  <bean id="WebSocketRouter" class="org.simpleframework.http.socket.service.DirectRouter">
+    <constructor-arg ref="ChatRoom" />
+  </bean>
+
+  <bean id="WebSocketContainer" class="org.simpleframework.http.socket.service.RouterContainer">
+    <constructor-arg ref="WebContainer" />
+    <constructor-arg ref="WebSocketRouter" />
+    <constructor-arg value="2" />
+  </bean>
+
+  <bean id="WebServer" class="org.simpleframework.demo.http.WebServer" init-method="start">
+    <constructor-arg ref="WebSocketContainer" />
+    <constructor-arg ref="TraceAnalyzer"/>    
+    <constructor-arg value="${server.listenPort}" />
+  </bean>
+
+</beans>
