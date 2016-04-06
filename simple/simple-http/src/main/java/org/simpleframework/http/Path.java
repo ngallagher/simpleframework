@@ -50,7 +50,7 @@ public interface Path {
     * As regargs the definition of the path in RFC 2396 the name
     * would be considered the last path segment. So if the path 
     * was <code>/usr/README</code> the name is <code>README</code>.
-    * Also for directorys the name of the directory in the last
+    * Also for directories the name of the directory in the last
     * path segment is returned. This returns the name without any
     * of the path parameters. As RFC 2396 defines the path to have
     * path parameters after the path segments.
@@ -125,7 +125,7 @@ public interface Path {
     * can be acquired. An example of that this would do given
     * the path <code>/pub/./bin/README</code> would be to return
     * the highest directory path <code>/pub/bin/</code>. The "/"
-    * character will allways be the last character in the path.
+    * character will always be the last character in the path.
     *
     * @return this method will return the highest directory
     */
@@ -146,7 +146,7 @@ public interface Path {
     * @param path the path prefix to acquire a relative path
     *
     * @return returns a path relative to the one it is given
-    * otherwize this method will return null 
+    * otherwise this method will return null 
     */
    String getRelative(String path);
 
@@ -162,5 +162,6 @@ public interface Path {
     * @return this returns the normalize path without
     *    <code>../</code> or <code>./</code>
     */
+   @Override
    String toString();
 }    

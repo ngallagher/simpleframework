@@ -79,6 +79,7 @@ public class TransportChannel implements Channel {
     * the network to the connected client.
     *
     * @param transport this is the underlying transport to be used
+    * @throws IOException  if an I/O error occurs.
     */ 
    public TransportChannel(Transport transport) throws IOException {
       this.cursor = new TransportCursor(transport);
@@ -183,7 +184,7 @@ public class TransportChannel implements Channel {
     * there needs to be a means to close it down. This provides such
     * a means. By closing the channel the cursor and sender will no
     * longer send or receive data to or from the network. The client
-    * will also be signalled that the connection has been severed.
+    * will also be signaled that the connection has been severed.
     */  
    public void close() {
       try {

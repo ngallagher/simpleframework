@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  * the controller which will reestablish the expiry time for it.
  *
  * @author Niall Gallagher 
+ * @param T Key type
  */
 class ContractLease<T> implements Lease<T> {
 

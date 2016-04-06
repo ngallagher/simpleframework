@@ -37,7 +37,7 @@ class PartHeaderConsumer extends SegmentConsumer {
    /**
     * This is used to allocate the internal buffer for the header.
     */
-   private Allocator allocator;
+   private final Allocator allocator;
    
    /**
     * This is the internal buffer used to store the header.

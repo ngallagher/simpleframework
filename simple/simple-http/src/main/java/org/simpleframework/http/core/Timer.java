@@ -38,7 +38,7 @@ class Timer {
    /**
     * This is the time unit that this timer provides the time in.
     */
-   private TimeUnit unit;
+   private final TimeUnit unit;
    
    /**
     * This is the time in milliseconds used to record the event.

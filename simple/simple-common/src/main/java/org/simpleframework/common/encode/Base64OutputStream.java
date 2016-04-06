@@ -68,6 +68,7 @@ public class Base64OutputStream extends OutputStream {
     * encoded from the written binary data.
     * 
     * @param octet the octet to encode in to the internal buffer
+    * @throws IOException  if an I/O error occurs.
     */
    @Override
    public void write(int octet) throws IOException {
@@ -83,6 +84,7 @@ public class Base64OutputStream extends OutputStream {
     * @param array the octets to encode to the internal buffer
     * @param offset this is the offset in the array to encode from
     * @param length this is the number of bytes to be encoded
+    * @throws IOException  if an I/O error occurs.
     */
    @Override
    public void write(byte[] array, int offset, int length) throws IOException {
@@ -116,6 +118,8 @@ public class Base64OutputStream extends OutputStream {
     * to base64. Once this method is invoked no further data can be
     * encoded with the stream. The <code>toString</code> method can
     * be used to acquire the base64 encoded text. 
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    @Override
    public void close() throws IOException {

@@ -18,8 +18,6 @@
 
 package org.simpleframework.common.lease;
 
-import org.simpleframework.common.lease.LeaseException;
-
 /**
  * The <code>ContractController</code> forms the interface to the 
  * lease management system. There are two actions permitted for 
@@ -30,6 +28,8 @@ import org.simpleframework.common.lease.LeaseException;
  *
  * @author Niall Gallagher
  *
+ * @param T Key type
+ * 
  * @see org.simpleframework.common.lease.ContractMaintainer
  */
 interface ContractController<T> {
@@ -39,11 +39,11 @@ interface ContractController<T> {
     * If the contract duration expires before it is renewed then a
     * notification is sent, typically to a <code>Cleaner</code> to
     * to signify that the resource should be released. The contract
-    * can also be cancelled by providing a zero length duration.
+    * can also be canceled by providing a zero length duration.
     * 
     * @param contract a contract representing a leased resource
     *
-    * @exception Exception if the lease could not be done
+    * @exception LeaseException if the lease could not be done
     */   
    void issue(Contract<T> contract) throws LeaseException;
    
@@ -56,7 +56,7 @@ interface ContractController<T> {
     *
     * @param contract a contract representing a leased resource
     *
-    * @exception Exception if the lease could not be done
+    * @exception LeaseException if the lease could not be done
     */
    void renew(Contract<T> contract) throws LeaseException;   
    
@@ -69,7 +69,7 @@ interface ContractController<T> {
     *
     * @param contract a contract representing a leased resource
     *
-    * @exception Exception if the expiry has been passed
+    * @exception LeaseException if the expiry has been passed
     */
    void cancel(Contract<T> contract) throws LeaseException;
    

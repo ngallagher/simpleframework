@@ -65,6 +65,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * can be used to send and receive data to and from.
     * 
     * @param processor this is used to process transports
+    * @throws IOException  if an I/O error occurs.
     */
    public TransportSocketProcessor(TransportProcessor processor) throws IOException {
       this(processor, 8);
@@ -78,6 +79,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * 
     * @param processor this is used to process transports
     * @param threads this is the number of threads this will use
+    * @throws IOException  if an I/O error occurs.
     */
    public TransportSocketProcessor(TransportProcessor processor, int threads) throws IOException {
       this(processor, threads, 4096);
@@ -92,6 +94,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * @param processor this is used to process transports
     * @param threads this is the number of threads this will use
     * @param buffer this is the initial size of the output buffer 
+    * @throws IOException  if an I/O error occurs.
     */
    public TransportSocketProcessor(TransportProcessor processor, int threads, int buffer) throws IOException {
       this(processor, threads, buffer, 20480);
@@ -107,6 +110,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * @param threads this is the number of threads this will use
     * @param buffer this is the initial size of the output buffer      
     * @param threshold this is the maximum size of the output buffer
+    * @throws IOException  if an I/O error occurs.
     */
    public TransportSocketProcessor(TransportProcessor processor, int threads, int buffer, int threshold) throws IOException {
       this(processor, threads, buffer, threshold, false);
@@ -123,6 +127,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * @param buffer this is the initial size of the output buffer      
     * @param threshold this is the maximum size of the output buffer
     * @param client determines if the SSL handshake is for a client
+    * @throws IOException  if an I/O error occurs.
     */
    public TransportSocketProcessor(TransportProcessor processor, int threads, int buffer, int threshold, boolean client) throws IOException {
       this.executor = new ConcurrentExecutor(Operation.class, threads);     
@@ -140,6 +145,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * finished if the connection is secure.    
     *
     * @param socket this is the connected HTTP pipeline to process
+    * @throws IOException  if an I/O error occurs.
     */    
    public void process(Socket socket) throws IOException {
       Operation task = factory.getInstance(socket);
@@ -155,6 +161,8 @@ public class TransportSocketProcessor implements SocketProcessor {
     * shutdown allows a server resource executed via a HTTP request
     * can stop the server without any danger of killing itself or
     * even worse causing a deadlock.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */    
    public void stop() throws IOException {
       cleaner.start();

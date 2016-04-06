@@ -52,12 +52,12 @@ class FrameHeaderConsumer implements FrameHeader {
    /**
     * This is the mask that is used to obfuscate client frames.
     */
-   private byte[] mask;
+   private final byte[] mask;
    
    /**
     * This is the octet that is used to read one byte  at a time.
     */
-   private byte[] octet;
+   private final byte[] octet;
    
    /**
     * Required number of bytes within the frame header.
@@ -98,7 +98,7 @@ class FrameHeaderConsumer implements FrameHeader {
    
    /**
     * This provides the client mask send with the request. The mask is 
-    * a 32 bit value that is used as an XOR bitmask of the client
+    * a 32 bit value that is used as an XOR bit-mask of the client
     * payload. Masking applies only in the client to server direction. 
     * 
     * @return this returns the 32 bit mask used for this frame
@@ -109,7 +109,7 @@ class FrameHeaderConsumer implements FrameHeader {
    
    /**
     * This is used to determine the type of frame. Interpretation of
-    * this type is outlined in RFC 6455 and can be loosely categorised
+    * this type is outlined in RFC 6455 and can be loosely categorized
     * as control frames and either data or binary frames.     
     * 
     * @return this returns the type of frame that this represents
@@ -121,7 +121,7 @@ class FrameHeaderConsumer implements FrameHeader {
    /**
     * This is used to determine if the frame is masked. All client 
     * frames should be masked according to RFC 6455. If masked the 
-    * payload will have its contents bitmasked with a 32 bit value.
+    * payload will have its contents bit-masked with a 32 bit value.
     * 
     * @return this returns true if the payload has been masked
     */   
@@ -204,7 +204,7 @@ class FrameHeaderConsumer implements FrameHeader {
    /**
     * This is used to determine if the collector has finished. If it
     * is not finished the collector will be registered to listen for
-    * an I/O intrrupt to read further bytes of the frame.
+    * an I/O interrupt to read further bytes of the frame.
     * 
     * @return true if the collector has finished consuming
     */

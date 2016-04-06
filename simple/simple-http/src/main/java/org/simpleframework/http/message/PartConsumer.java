@@ -36,7 +36,7 @@ class PartConsumer implements ByteConsumer {
    /**
     * This is used to consume the header message of the part.
     */  
-   private SegmentConsumer header;
+   private final SegmentConsumer header;
    
    /**
     * This is used to consume the body data from the part.
@@ -46,12 +46,12 @@ class PartConsumer implements ByteConsumer {
    /**
     * This is used to determine what type the body data is.
     */ 
-   private PartFactory factory;   
+   private final PartFactory factory;   
    
    /**
     * This is used to add the consumed parts to when finished.
     */  
-   private PartSeries series;   
+   private final PartSeries series;   
    
    /**
     * This is the current consumer used to read from the cursor.
@@ -61,7 +61,7 @@ class PartConsumer implements ByteConsumer {
    /**
     * This is the terminal token that ends the part payload.
     */ 
-   private byte[] terminal;
+   private final byte[] terminal;
    
    /**
     * Constructor for the <code>PartConsumer</code> object. This is
@@ -69,7 +69,7 @@ class PartConsumer implements ByteConsumer {
     * and the boundary that terminates the content. Any parts that
     * are created by this are added to the provided part list.
     *
-    * @param allocator this is the allocator used to creat buffers
+    * @param allocator this is the allocator used to create buffers
     * @param series this is the part list used to store the parts
     * @param terminal this is the terminal token for the part
     * @param length this is the length of the parent part series    

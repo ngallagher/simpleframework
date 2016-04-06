@@ -49,7 +49,7 @@ public interface RequestHeader extends RequestLine {
     * This can be used to get the integer of the first message header
     * that has the specified name. This is a convenience method that 
     * avoids having to deal with parsing the value of the requested
-    * HTTP message header. This returns -1 if theres no HTTP header
+    * HTTP message header. This returns -1 if there is no HTTP header
     * value for the specified name.
     *
     * @param name the HTTP message header to get the value from

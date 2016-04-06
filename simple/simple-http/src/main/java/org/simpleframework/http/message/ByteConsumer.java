@@ -49,6 +49,7 @@ public interface ByteConsumer {
     * read. If there are no ready bytes then this method return.
     *
     * @param cursor used to consume the bytes from the cursor
+    * @throws IOException  if an I/O error occurs.
     */ 
    void consume(ByteCursor cursor) throws IOException;
    

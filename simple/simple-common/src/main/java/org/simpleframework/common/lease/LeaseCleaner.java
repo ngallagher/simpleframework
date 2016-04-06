@@ -31,6 +31,8 @@ import org.simpleframework.common.thread.Daemon;
  * attempts to clean the next contract.
  *
  * @author Niall Gallagher
+ * 
+ * @param Key type
  */
 class LeaseCleaner<T> extends Daemon {
 

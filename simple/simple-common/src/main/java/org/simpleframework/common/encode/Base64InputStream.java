@@ -37,7 +37,7 @@ public class Base64InputStream extends InputStream {
    /**
     * This is that original base64 text that is to be decoded.
     */
-   private char[] encoded;
+   private final char[] encoded;
    
    /**
     * This is used to accumulate the decoded text as an array.
@@ -47,7 +47,7 @@ public class Base64InputStream extends InputStream {
    /**
     * This is a temporary buffer used to read one byte at a time.
     */
-   private byte[] temp;
+   private final byte[] temp;
    
    /**
     * This is the total number of bytes that have been read.
@@ -71,6 +71,7 @@ public class Base64InputStream extends InputStream {
     * standard -1. 
     * 
     * @return this returns the next octet decoded
+    * @throws IOException  if an I/O error occurs.
     */
    @Override
    public int read() throws IOException {
@@ -89,9 +90,12 @@ public class Base64InputStream extends InputStream {
     * 
     * @param array this is the array to decode the text to
     * @param offset this is the offset to decode in to the array
-    * @param this is the number of bytes available to decode to
+    * @param length this is the number of bytes available to decode to
     * 
     * @return this returns the number of octets decoded
+    * @throws IOException  If the first byte cannot be read for any reason
+    * other than end of file, or if the input stream has been closed, or if
+    * some other I/O error occurs.
     */
    @Override
    public int read(byte[] array, int offset, int length) throws IOException {

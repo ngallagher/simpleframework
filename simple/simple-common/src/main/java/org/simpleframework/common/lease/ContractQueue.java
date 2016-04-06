@@ -15,30 +15,31 @@
  * implied. See the License for the specific language governing 
  * permissions and limitations under the License.
  */
-
 package org.simpleframework.common.lease;
 
 import java.util.concurrent.DelayQueue;
 
 /**
- * The <code>ContraceQueue</code> object is used to queue contracts
- * between two asynchronous threads of execution. This allows the
- * controller to schedule the lease contract for expiry. Taking the
- * contracts from the queue is delayed for the contract duration.
- * 
+ * The <code>ContraceQueue</code> object is used to queue contracts between two
+ * asynchronous threads of execution. This allows the controller to schedule the
+ * lease contract for expiry. Taking the contracts from the queue is delayed for
+ * the contract duration.
+ *
  * @author Niall Gallagher
  * 
+ * @param T Key type
+ *
  * @see org.simpleframework.common.lease.Contract
  */
 class ContractQueue<T> extends DelayQueue<Contract<T>> {
-   
-   /**
-    * Constructor for the <code>ContractQueue</code> object. This
-    * is used to create a queue for passing contracts between two
-    * asynchronous threads of execution. This is used by the 
-    * lease controller to schedule the lease contract for expiry.    
-    */
-    public  ContractQueue() {
-      super();
+
+    /**
+     * Constructor for the <code>ContractQueue</code> object. This is used to
+     * create a queue for passing contracts between two asynchronous threads of
+     * execution. This is used by the lease controller to schedule the lease
+     * contract for expiry.
+     */
+    public ContractQueue() {
+        super();
     }
 }

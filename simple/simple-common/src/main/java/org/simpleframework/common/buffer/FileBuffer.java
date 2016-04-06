@@ -44,7 +44,7 @@ class FileBuffer implements Buffer {
    /**
     * This is the file output stream used for this buffer object.
     */
-   private OutputStream buffer;
+   private final OutputStream buffer;
    
    /**
     * This represents the last file segment that has been created.
@@ -54,7 +54,7 @@ class FileBuffer implements Buffer {
    /**
     * This is the path for the file that this buffer appends to.
     */
-   private File file;
+   private final File file;
    
    /**
     * This is the number of bytes currently appended to the buffer.
@@ -74,6 +74,7 @@ class FileBuffer implements Buffer {
     * then it can be acquired using the buffers input stream.
     * 
     * @param file this is the file used for the file buffer
+    * @throws IOException  if an I/O error occurs.
     */
    public FileBuffer(File file) throws IOException {
       this.buffer  = new FileOutputStream(file);
@@ -88,6 +89,7 @@ class FileBuffer implements Buffer {
     * treated as an independent source of data.
     * 
     * @return this returns a buffer which is a segment of this 
+    * @throws IOException  if an I/O error occurs.
     */
    public Buffer allocate() throws IOException {
       if(closed) {
@@ -112,6 +114,7 @@ class FileBuffer implements Buffer {
     * @param array this is the array to write the the file
     * 
     * @return this returns this buffer for further operations
+    * @throws IOException  if an I/O error occurs.
     */
    public Buffer append(byte[] array) throws IOException {
       return append(array, 0, array.length);
@@ -129,6 +132,7 @@ class FileBuffer implements Buffer {
     * @param size this is the number of bytes to be appended
     * 
     * @return this returns this buffer for further operations
+    * @throws IOException  if an I/O error occurs.
     */
    public Buffer append(byte[] array, int off, int size) throws IOException {
       if(closed) {
@@ -149,6 +153,7 @@ class FileBuffer implements Buffer {
     * used, however this is unlikely as UTF-8 should be supported.
     *
     * @return this returns a UTF-8 encoding of the buffer contents
+    * @throws IOException  if an I/O error occurs.
     */ 
    public String encode() throws IOException {
       return encode("UTF-8");
@@ -163,6 +168,7 @@ class FileBuffer implements Buffer {
     * @param charset this is the charset to encode the data with
     *
     * @return this returns the encoding of the buffer contents
+    * @throws IOException  if an I/O error occurs.
     */   
    public String encode(String charset) throws IOException {
       InputStream source = open();
@@ -185,6 +191,7 @@ class FileBuffer implements Buffer {
     * @param count this is the number of bytes to be encoded
     *
     * @return this returns the encoding of the buffer contents
+    * @throws IOException  if an I/O error occurs.
     */   
    private String convert(InputStream source, String charset, int count) throws IOException {
       byte[] buffer = new byte[count];
@@ -208,6 +215,7 @@ class FileBuffer implements Buffer {
     * an input stream so that it can be read directly.
     *
     * @return a stream that can be used to read the buffered bytes
+    * @throws IOException  if an I/O error occurs.
     */ 
    public InputStream open() throws IOException {
       if(!closed) {
@@ -225,6 +233,7 @@ class FileBuffer implements Buffer {
     * @param file this is the file used to create the input stream
     *
     * @return a stream that can be used to read the buffered bytes
+    * @throws IOException  if an I/O error occurs.
     */ 
    private InputStream open(File file) throws IOException {
       InputStream source = new FileInputStream(file);
@@ -240,6 +249,8 @@ class FileBuffer implements Buffer {
     * count to be zero, it will not clear the memory occupied by the
     * instance as the internal buffer will remain. This allows the
     * memory occupied to be reused as many times as is required.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */   
    public void clear() throws IOException {
       if(closed) {
@@ -252,6 +263,8 @@ class FileBuffer implements Buffer {
     * the buffer is closed it is an immutable collection of bytes and
     * can not longer be modified. This ensures that it can be passed
     * by value without the risk of modification of the bytes.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */   
    public void close() throws IOException {
       if(!closed) {
@@ -292,12 +305,12 @@ class FileBuffer implements Buffer {
       /**
        * This is the parent buffer that bytes are to be appended to.
        */
-      private Buffer parent;
+      private final Buffer parent;
       
       /**
        * This is the offset of the first byte within the sequence.
        */
-      private long first;
+      private final long first;
       
       /**
        * This is the last byte within the segment for this segment.
@@ -332,6 +345,7 @@ class FileBuffer implements Buffer {
        * treated as an independent source of data.
        * 
        * @return this returns a buffer which is a segment of this 
+       * @throws IOException  if an I/O error occurs.
        */
       public Buffer allocate() throws IOException {
          if(closed) {
@@ -356,6 +370,7 @@ class FileBuffer implements Buffer {
        * @param array this is the array to write the the file
        * 
        * @return this returns this buffer for further operations
+       * @throws IOException  if an I/O error occurs.
        */
       public Buffer append(byte[] array) throws IOException {
          return append(array, 0, array.length);
@@ -373,6 +388,7 @@ class FileBuffer implements Buffer {
        * @param size this is the number of bytes to be appended
        * 
        * @return this returns this buffer for further operations
+       * @throws IOException  if an I/O error occurs.
        */
       public Buffer append(byte[] array, int off, int size) throws IOException {
          if(closed) {
@@ -393,6 +409,7 @@ class FileBuffer implements Buffer {
        * used, however this is unlikely as UTF-8 should be supported.
        *
        * @return this returns a UTF-8 encoding of the buffer contents
+       * @throws IOException  if an I/O error occurs.
        */ 
       public String encode() throws IOException {
          return encode("UTF-8");
@@ -407,6 +424,7 @@ class FileBuffer implements Buffer {
        * @param charset this is the charset to encode the data with
        *
        * @return this returns the encoding of the buffer contents
+       * @throws IOException  if an I/O error occurs.
        */  
       public String encode(String charset) throws IOException {
          InputStream source = open();
@@ -426,6 +444,7 @@ class FileBuffer implements Buffer {
        * an input stream so that it can be read directly.
        *
        * @return a stream that can be used to read the buffered bytes
+       * @throws IOException  if an I/O error occurs.
        */ 
       public InputStream open() throws IOException {
          InputStream source = new FileInputStream(file);
@@ -442,6 +461,8 @@ class FileBuffer implements Buffer {
        * count to be zero, it will not clear the memory occupied by the
        * instance as the internal buffer will remain. This allows the
        * memory occupied to be reused as many times as is required.
+       * 
+       * @throws IOException  if an I/O error occurs.
        */  
       public void clear() throws IOException {
          if(closed) {
@@ -527,6 +548,7 @@ class FileBuffer implements Buffer {
        * the bytes are exhausted within the stream this returns -1.
        * 
        * @return this returns the octet from the underlying stream
+       * @throws IOException  if an I/O error occurs.
        */
       @Override
       public int read() throws IOException {
@@ -549,6 +571,7 @@ class FileBuffer implements Buffer {
        * @param size this is the number of bytes that are required
        * 
        * @return this returns the number of bytes that were read
+       * @throws IOException  if an I/O error occurs.
        */
       @Override
       public int read(byte[] array, int off, int size) throws IOException {
@@ -574,6 +597,7 @@ class FileBuffer implements Buffer {
        * contains as the underlying file will not block reading.
        * 
        * @return this returns the number of bytes within the range
+       * @throws IOException  if an I/O error occurs.
        */
       @Override
       public int available() throws IOException {

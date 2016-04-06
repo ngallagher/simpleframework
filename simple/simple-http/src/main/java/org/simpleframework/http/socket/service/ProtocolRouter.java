@@ -60,6 +60,7 @@ public class ProtocolRouter implements Router {
     * 
     * @param registry this is the registry of available services
     * @param primary this is the default service to use
+    * @throws IOException  if an I/O error occurs.
     */
    public ProtocolRouter(Map<String, Service> registry, Service primary) throws IOException {
       this.registry = registry;

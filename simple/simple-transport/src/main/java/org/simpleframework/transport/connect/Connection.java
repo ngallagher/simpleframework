@@ -53,6 +53,7 @@ public interface Connection extends Closeable {
     * @param address this is the address used to accept connections
     * 
     * @return this returns the actual local address that is used
+    * @throws IOException  if an I/O error occurs.
     */   
    SocketAddress connect(SocketAddress address) throws IOException;
    
@@ -68,6 +69,7 @@ public interface Connection extends Closeable {
     * @param context this is used for secure SSL connections
     * 
     * @return this returns the actual local address that is used
+    * @throws IOException  if an I/O error occurs.
     */    
    SocketAddress connect(SocketAddress address, SSLContext context) throws IOException;
 }

@@ -27,6 +27,8 @@ package org.simpleframework.common.lease;
  * used should be distinct over time to avoid conflicts.
  *
  * @author Niall Gallagher
+ 
+ * @param <T> Type of the key
  *
  * @see org.simpleframework.common.lease.Lease
  */
@@ -39,6 +41,7 @@ public interface Cleaner<T> {
     * should spawn a thread to perform time consuming tasks.    
     *
     * @param key this is the key for the resource to clean
+    * @throws Exception  if an Exception occurs during clean
     */
    void clean(T key) throws Exception;
 }

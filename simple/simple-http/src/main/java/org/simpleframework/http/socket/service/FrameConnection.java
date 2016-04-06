@@ -37,7 +37,7 @@ import org.simpleframework.transport.trace.Trace;
 
 /**
  * The <code>FrameConnection</code> represents a connection that can
- * send and receivd WebSocket frames. Any instance of this will provide
+ * send and received WebSocket frames. Any instance of this will provide
  * a means to perform asynchronous writes and reads to a remote client
  * using a lightweight framing protocol. A frame is a finite length
  * sequence of bytes that can hold either text or binary data. Also,

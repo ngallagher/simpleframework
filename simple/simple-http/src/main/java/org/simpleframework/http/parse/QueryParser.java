@@ -143,7 +143,7 @@ public class QueryParser extends MapParser<String> implements Query {
       if(value != null) {         
          flag = Boolean.valueOf(value);
       }
-      return flag.booleanValue();
+      return flag;
    }
 
    
@@ -165,7 +165,7 @@ public class QueryParser extends MapParser<String> implements Query {
     * This performs the actual parsing of the parameter text. The
     * parameters parsed from this are taken as "name=value" pairs.
     * Multiple pairs within the text are separated by an "&amp;".
-    * This will parse and insert all parameters into a hashtable.
+    * This will parse and insert all parameters into a hash table.
     */
    protected void parse() {            
       param();
@@ -273,10 +273,10 @@ public class QueryParser extends MapParser<String> implements Query {
    
    /** 
     * This converts an encountered escaped sequence, that is all
-    * embedded hexidecimal characters into a native UCS character 
+    * embedded hexadecimal characters into a native UCS character 
     * value. This does not take any characters from the stream it 
     * just prepares the buffer with the correct byte. The escaped 
-    * sequence within the URI will be interpreded as UTF-8.
+    * sequence within the URI will be interpreted as UTF-8.
     * <p>
     * This will leave the next character to read from the buffer 
     * as the character encoded from the URI. If there is a fully 
@@ -388,7 +388,7 @@ public class QueryParser extends MapParser<String> implements Query {
     * there is a parsing error, then parsing is aborted an false
     * is returned, as a result the URI is left unchanged.
     *
-    * @param peek bytes that have been accumulated fron the URI
+    * @param peek bytes that have been accumulated from the URI
     * @param more this specifies the number of UTF octets left
     * @param pos this specifies the position the parsing begins
     *
@@ -416,11 +416,11 @@ public class QueryParser extends MapParser<String> implements Query {
    }
 
    /**
-    * Defines behaviour for UCS-2 versus UCS-4 conversion from four
+    * Defines behavior for UCS-2 versus UCS-4 conversion from four
     * octets. The UTF-8 encoding scheme enables UCS-4 characters to
-    * be encoded and decodeded. However, Java supports the 16-bit
+    * be encoded and decoded. However, Java supports the 16-bit
     * UCS-2 character set, and so the 32-bit UCS-4 character set is
-    * not compatable. This basically decides what to do with UCS-4.
+    * not compatible. This basically decides what to do with UCS-4.
     *
     * @param data up to four octets to be converted to UCS-2 format
     *
@@ -457,7 +457,7 @@ public class QueryParser extends MapParser<String> implements Query {
    }
 
    /**
-    * This will convert the two hexidecimal characters to a real
+    * This will convert the two hexadecimal characters to a real
     * integer value, which is returned. This requires characters
     * within the range of 'A' to 'F' and 'a' to 'f', and also 
     * the digits '0' to '9'. The characters encoded using the
@@ -467,7 +467,7 @@ public class QueryParser extends MapParser<String> implements Query {
     * @param high this is the high four bits within the integer
     * @param low this is the low four bits within the integer
     *  
-    * @return this returns the indeger value of the conversion 
+    * @return this returns the integer value of the conversion 
     */
    private int convert(char high, char low) {
       int hex = 0x00;

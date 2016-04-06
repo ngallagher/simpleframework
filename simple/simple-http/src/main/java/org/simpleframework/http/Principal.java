@@ -38,7 +38,7 @@ public interface Principal {
    String getPassword();
    
    /**
-    * The <code>getName</code> method is used to retreive 
+    * The <code>getName</code> method is used to retrieve 
     * the name of the principal. This is the name tag in 
     * the RFC 2616 Authorization credentials expression.
     *

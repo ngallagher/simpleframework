@@ -51,6 +51,7 @@ public class ContainerTransportProcessor implements TransportProcessor {
     * @param container the container to dispatch requests to
     * @param allocator this is the allocator used to buffer data
     * @param count this is the number of threads to be used
+    * @throws IOException  if an I/O error occurs.
     */
    public ContainerTransportProcessor(Container container, Allocator allocator, int count) throws IOException {
      this(container, allocator, count, 1);
@@ -66,6 +67,7 @@ public class ContainerTransportProcessor implements TransportProcessor {
     * @param allocator this is the allocator used to buffer data
     * @param count this is the number of threads to be used
     * @param select this is the number of controller threads to use
+    * @throws IOException  if an I/O error occurs.
     */
    public ContainerTransportProcessor(Container container, Allocator allocator, int count, int select) throws IOException {
      this.controller = new ContainerController(container, allocator, count, select);
@@ -79,6 +81,7 @@ public class ContainerTransportProcessor implements TransportProcessor {
     * the SSL handshake will have fully completed.
     *      
     * @param transport the transport to process requests from
+    * @throws IOException  if an I/O error occurs.
     */   
    public void process(Transport transport) throws IOException {
       controller.start(new TransportChannel(transport));
@@ -89,6 +92,8 @@ public class ContainerTransportProcessor implements TransportProcessor {
     * will not accept and process any further messages. If there are
     * resources to clean up they may be cleaned up asynchronously
     * so that this method can return without blocking.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */    
    public void stop() throws IOException {
       controller.stop();

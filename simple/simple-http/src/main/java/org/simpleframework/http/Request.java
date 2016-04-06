@@ -35,8 +35,8 @@ import org.simpleframework.transport.Channel;
  * the message is a multipart encoded body, then the individual
  * parts of the request body can be acquired.
  * <p>
- * This can also maintain data during the request lifecycle as well
- * as the session lifecycle. A <code>Session</code> is made available
+ * This can also maintain data during the request life-cycle as well
+ * as the session life-cycle. A <code>Session</code> is made available
  * for convenience. It provides a means for the services to associate
  * data with a given client session, which can be retrieved when 
  * there are subsequent requests sent to the server.
@@ -146,6 +146,7 @@ public interface Request extends RequestHeader {
     * the <code>getParameters</code> method with the given name.
     * 
     * @param name this is the name of the parameter value
+    * @return the parameter value associated with the name
     */   
    String getParameter(String name); 
    
@@ -181,6 +182,7 @@ public interface Request extends RequestHeader {
     * using this method if there is a need to parse that content.
     *     
     * @return this returns the message bytes as an encoded string
+    * @throws IOException  if an I/O error occurs.
     */    
    String getContent() throws IOException;
    
@@ -193,6 +195,7 @@ public interface Request extends RequestHeader {
     * however the raw content of the multipart body is still available.
     *
     * @return this returns an input stream containing the message body
+    * @throws IOException  if an I/O error occurs.
     */ 
    InputStream getInputStream() throws IOException;
    
@@ -205,6 +208,7 @@ public interface Request extends RequestHeader {
     * the content is internally buffered, so this can do a full read.
     * 
     * @return this returns the byte channel used to read the content
+    * @throws IOException  if an I/O error occurs.
     */
    ReadableByteChannel getByteChannel() throws IOException; 
 }

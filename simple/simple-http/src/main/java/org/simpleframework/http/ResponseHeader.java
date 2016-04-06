@@ -300,5 +300,6 @@ public interface ResponseHeader extends StatusLine {
     * 
     * @return this returns a string representation of this response
     */
+   @Override
    String toString();
 }

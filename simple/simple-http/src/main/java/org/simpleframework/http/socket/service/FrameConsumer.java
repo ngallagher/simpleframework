@@ -38,12 +38,12 @@ class FrameConsumer {
    /**
     * This is used to consume the header part of the frame.
     */
-   private FrameHeaderConsumer header;
+   private final FrameHeaderConsumer header;
    
    /**
     * This is used to interpret the header and create a frame.
     */
-   private FrameBuilder builder;
+   private final FrameBuilder builder;
    
    /**
     * This is used to buffer the bytes that form the frame.
@@ -69,7 +69,7 @@ class FrameConsumer {
    
    /**
     * This is used to determine the type of frame. Interpretation of
-    * this type is outlined in RFC 6455 and can be loosely categorised
+    * this type is outlined in RFC 6455 and can be loosely categorized
     * as control frames and either data or binary frames.     
     * 
     * @return this returns the type of frame that this represents
@@ -96,6 +96,7 @@ class FrameConsumer {
     * and dispatch once the whole frame has been consumed.
     * 
     * @param cursor the cursor to consume the frame data from
+    * @throws IOException if there is an I/O error.
     */
    public void consume(ByteCursor cursor) throws IOException {
       while (cursor.isReady()) {

@@ -78,7 +78,7 @@ public class DataConverter {
     * specified when constructing the converter. Typically this will use
     * UTF-8 as required by RFC 6455.
     * 
-    * @param text this is the byte array to convert to a string
+    * @param binary this is the byte array to convert to a string
     * 
     * @return a string encoded using the specified encoding
     */
@@ -95,7 +95,7 @@ public class DataConverter {
     * specified when constructing the converter. Typically this will use
     * UTF-8 as required by RFC 6455.
     * 
-    * @param text this is the byte array to convert to a string
+    * @param binary this is the byte array to convert to a string
     * @param offset the is the offset to read the bytes from
     * @param size this is the number of bytes to be used
     * 

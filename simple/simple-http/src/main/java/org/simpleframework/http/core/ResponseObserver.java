@@ -44,37 +44,37 @@ class ResponseObserver implements BodyObserver {
    /**
     * This is used to determine if the response has committed.
     */
-   private AtomicBoolean committed;
+   private final AtomicBoolean committed;
    
    /**
     * This flag determines whether the connection was closed.
     */
-   private AtomicBoolean closed;
+   private final AtomicBoolean closed;
    
    /**
     * This flag determines whether the was a response error.
     */
-   private AtomicBoolean error;      
+   private final AtomicBoolean error;      
    
    /**
     * This is the controller used to initiate a new request.
     */
-   private Controller controller;
+   private final Controller controller;
    
    /**
     * This is the channel associated with the client connection.
     */
-   private Channel channel;
+   private final Channel channel;
    
    /**
     * This is the trace used to observe the state of the stream.
     */
-   private Trace trace;
+   private final Trace trace;
    
    /**
     * This represents a time stamp that records the finish time.
     */
-   private Timer timer;
+   private final Timer timer;
    
    /**
     * Constructor for the <code>ResponseObserver</code> object. This 
@@ -167,7 +167,7 @@ class ResponseObserver implements BodyObserver {
    /**
     * This is used to purge the writer so that it closes the socket
     * ensuring there is no connection leak on shutdown. This is used
-    * when there is an exception signalling the state of the writer. 
+    * when there is an exception signaling the state of the writer. 
     * 
     * @param writer this is the writer that is to be purged
     */

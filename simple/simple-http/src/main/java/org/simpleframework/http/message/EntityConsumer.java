@@ -115,6 +115,7 @@ public class EntityConsumer implements ByteConsumer {
     * is given which has an empty input stream.
     * 
     * @param cursor used to consumed the bytes for the entity
+    * @throws IOException  if an I/O error occurs.
     */
    public void consume(ByteCursor cursor) throws IOException {
       while(cursor.isReady()) {

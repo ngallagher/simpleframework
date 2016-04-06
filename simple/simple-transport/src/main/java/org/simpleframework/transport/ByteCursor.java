@@ -45,6 +45,7 @@ public interface ByteCursor {
     * then the cursor is still considered open. 
     * 
     * @return true if the read method does not return a -1 value
+    * @throws IOException  if an I/O error occurs.
     */
    boolean isOpen() throws IOException;
    
@@ -54,6 +55,7 @@ public interface ByteCursor {
     * can be read from the underlying stream without blocking.
     *
     * @return true if some data can be read without blocking
+    * @throws IOException  if an I/O error occurs.
     */         
    boolean isReady() throws IOException;
 
@@ -64,6 +66,7 @@ public interface ByteCursor {
     * the cursor may perform a blocking read.
     *
     * @return the number of bytes that can be read without blocking
+    * @throws IOException  if an I/O error occurs.
     */ 
    int ready() throws IOException;
 
@@ -76,6 +79,7 @@ public interface ByteCursor {
     * @param data this is the array to read the bytes in to 
     *
     * @return this returns the number of bytes read from the stream 
+    * @throws IOException  if an I/O error occurs.
     */ 
    int read(byte[] data) throws IOException;
 
@@ -90,6 +94,7 @@ public interface ByteCursor {
     * @param len this is the number of bytes that are requested 
     *
     * @return this returns the number of bytes read from the stream 
+    * @throws IOException  if an I/O error occurs.
     */ 
    int read(byte[] data, int off, int len) throws IOException;
    
@@ -101,6 +106,7 @@ public interface ByteCursor {
     * on to the cursor allows more flexibility.
     * 
     * @param data this is the data to be pushed on to the cursor
+    * @throws IOException  if an I/O error occurs.
     */
    void push(byte[] data) throws IOException;
    
@@ -114,6 +120,7 @@ public interface ByteCursor {
     * @param data this is the data to be pushed on to the cursor
     * @param off this is the offset to begin reading the bytes
     * @param len this is the number of bytes that are to be used 
+    * @throws IOException  if an I/O error occurs.
     */
    void push(byte[] data, int off, int len) throws IOException;
 
@@ -126,6 +133,7 @@ public interface ByteCursor {
     * @param len this is the number of bytes to reset back
     *
     * @return this is the number of bytes that have been reset
+    * @throws IOException  if an I/O error occurs.
     */
    int reset(int len) throws IOException;   
 }

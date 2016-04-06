@@ -38,7 +38,7 @@ public class FixedLengthConsumer extends UpdateConsumer {
    /**
     * This is the allocator used to allocate the buffer used.
     */         
-   private Allocator allocator;
+   private final Allocator allocator;
    
    /**
     * This is the internal buffer used to accumulate the body.
@@ -87,6 +87,7 @@ public class FixedLengthConsumer extends UpdateConsumer {
     * @param array this is the array of bytes to be appended
     * @param off this is the start offset in the array to read from
     * @param len this is the number of bytes to write to the buffer  
+    * @throws IOException  if an I/O error occurs.
     */
    private void append(byte[] array, int off, int len) throws IOException {
       if(buffer == null) {
@@ -106,6 +107,7 @@ public class FixedLengthConsumer extends UpdateConsumer {
     * @param count this is the number of bytes within the array
     *
     * @return this returns the number of bytes overflow that is read
+    * @throws IOException  if an I/O error occurs.
     */       
    @Override
    protected int update(byte[] array, int off, int count) throws IOException {

@@ -48,6 +48,8 @@ public class SynchronousReactor implements Reactor {
     * is used to create a reactor that does not require thread pooling
     * to execute the ready operations. All I/O operations are run
     * in the selection thread and should complete quickly.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    public SynchronousReactor() throws IOException {
       this(false);
@@ -59,7 +61,8 @@ public class SynchronousReactor implements Reactor {
     * to execute the ready operations. All I/O operations are run
     * in the selection thread and should complete quickly.
     * 
-    * @param cancel determines the selection key should be cancelled
+    * @param cancel determines the selection key should be canceled
+    * @throws IOException  if an I/O error occurs.
     */   
    public SynchronousReactor(boolean cancel) throws IOException {
       this.executor = new SynchronousExecutor();
@@ -75,6 +78,7 @@ public class SynchronousReactor implements Reactor {
     * to perform a poll rather than a select on the channel.
     *
     * @param task this is the task to execute immediately
+    * @throws IOException  if an I/O error occurs.
     */   
    public void process(Operation task) throws IOException {
       executor.execute(task);          
@@ -89,6 +93,7 @@ public class SynchronousReactor implements Reactor {
     *
     * @param task this is the task to execute on interested events
     * @param require this is the bit-mask value for interested events
+    * @throws IOException  if an I/O error occurs.
     */  
    public void process(Operation task, int require) throws IOException {          
       exchange.process(task, require);    
@@ -100,6 +105,8 @@ public class SynchronousReactor implements Reactor {
     * the reactors resources and unregister any operations that are
     * currently awaiting execution. This should be used to ensure
     * any threads used by the reactor graceful stop.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */   
    public void stop() throws IOException {
       exchange.close();

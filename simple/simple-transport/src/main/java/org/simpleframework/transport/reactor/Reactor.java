@@ -49,6 +49,7 @@ public interface Reactor {
    * to perform a poll rather than a select on the channel.
    *
    * @param task this is the task to execute immediately
+   * @throws IOException  if an I/O error occurs.
    */ 
   void process(Operation task) throws IOException;
 
@@ -61,6 +62,7 @@ public interface Reactor {
    *
    * @param task this is the task to execute on interested events    
    * @param require this is the bitmask value for interested events
+    * @throws IOException  if an I/O error occurs.
    */
   void process(Operation task, int require) throws IOException;
 
@@ -70,6 +72,8 @@ public interface Reactor {
    * the reactors resources and unregister any operations that are
    * currently awaiting execution. This should be used to ensure
    * any threads used by the reactor gracefully stop.
+   * 
+   * @throws IOException  if an I/O error occurs.
    */ 
   void stop() throws IOException;
 }

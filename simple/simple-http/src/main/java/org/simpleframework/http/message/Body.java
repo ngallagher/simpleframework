@@ -44,6 +44,7 @@ public interface Body {
     * It will simply create a UTF-8 string using the body bytes.
     *
     * @return returns a UTF-8 string representation of the body
+    * @throws IOException  if an I/O error occurs.
     */ 
    String getContent() throws IOException;
    
@@ -53,7 +54,10 @@ public interface Body {
     * from the HTTP Content-Type header. Although any encoding can
     * be specified to convert the body to a string representation.
     *
+    * @param charset this is the charset to use when reading the 
+    * body
     * @return returns an encoded string representation of the body
+    * @throws IOException  if an I/O error occurs.
     */ 
    String getContent(String charset) throws IOException;   
 
@@ -65,6 +69,7 @@ public interface Body {
     * any issues arising from previous reads.
     *
     * @return this returns a new string used to read the body
+    * @throws IOException  if an I/O error occurs.
     */    
    InputStream getInputStream() throws IOException;   
  

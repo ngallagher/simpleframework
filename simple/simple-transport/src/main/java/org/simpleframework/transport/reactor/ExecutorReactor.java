@@ -52,6 +52,7 @@ public class ExecutorReactor implements Reactor {
    * be used to show interest in several operations at once.
    *
    * @param executor this is the executor used to run the operations
+   * @throws IOException  if an I/O error occurs.
    */  
   public ExecutorReactor(Executor executor) throws IOException {
      this(executor, 1);
@@ -66,6 +67,7 @@ public class ExecutorReactor implements Reactor {
    *
    * @param executor this is the executor used to run the operations
    * @param count this is the number of distributors to be used
+   * @throws IOException  if an I/O error occurs.
    */  
   public ExecutorReactor(Executor executor, int count) throws IOException {    
      this(executor, count, 120000);
@@ -81,6 +83,7 @@ public class ExecutorReactor implements Reactor {
    * @param executor this is the executor used to run the operations
    * @param count this is the number of distributors to be used
    * @param expiry the length of time to maintain and idle operation
+   * @throws IOException  if an I/O error occurs.
    */    
   public ExecutorReactor(Executor executor, int count, long expiry) throws IOException {    
     this.exchange = new PartitionDistributor(executor, count, expiry);    
@@ -96,6 +99,7 @@ public class ExecutorReactor implements Reactor {
    * to perform a poll rather than a select on the channel.
    *
    * @param task this is the task to execute immediately
+   * @throws IOException  if an I/O error occurs.
    */   
   public void process(Operation task) throws IOException {
      executor.execute(task);          
@@ -110,6 +114,7 @@ public class ExecutorReactor implements Reactor {
    *
    * @param task this is the task to execute on interested events
    * @param require this is the bit-mask value for interested events
+   * @throws IOException  if an I/O error occurs.
    */  
   public void process(Operation task, int require) throws IOException {         
      exchange.process(task, require);    
@@ -121,6 +126,8 @@ public class ExecutorReactor implements Reactor {
    * the reactors resources and unregister any operations that are
    * currently awaiting execution. This should be used to ensure
    * any threads used by the reactor gracefully stop.
+   * 
+   * @throws IOException  if an I/O error occurs.
    */   
   public void stop() throws IOException {
      exchange.close();

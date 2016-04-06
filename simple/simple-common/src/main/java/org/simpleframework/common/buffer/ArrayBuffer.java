@@ -117,6 +117,7 @@ public class ArrayBuffer implements Buffer {
     * parent is split in to logically smaller segments.
     *
     * @return this returns a buffer which is a segment of this buffer
+    * @throws IOException  if an I/O error occurs.
     */ 
    public Buffer allocate() throws IOException {
       return new Segment(this,count);
@@ -130,6 +131,7 @@ public class ArrayBuffer implements Buffer {
     * used, however this is unlikely as UTF-8 should be supported.
     *
     * @return this returns a UTF-8 encoding of the buffer contents
+     * @throws IOException  if an I/O error occurs.
     */ 
    public String encode() throws IOException {
       return encode("UTF-8");           
@@ -142,6 +144,7 @@ public class ArrayBuffer implements Buffer {
     * the bytes using the specified character encoding format.
     *
     * @return this returns the encoding of the buffer contents
+    * @throws IOException  if an I/O error occurs.
     */
    public String encode(String charset) throws IOException {
       return new String(buffer,0,count, charset);                  
@@ -155,6 +158,7 @@ public class ArrayBuffer implements Buffer {
     * @param array this is the byte array to append to this buffer
     *
     * @return this returns this buffer for another operation       
+    * @throws IOException  if an I/O error occurs.
     */  
    public Buffer append(byte[] array) throws IOException {
       return append(array, 0, array.length);
@@ -170,6 +174,7 @@ public class ArrayBuffer implements Buffer {
     * @param size the number of bytes to be read from the array
     *
     * @return this returns this buffer for another operation       
+    * @throws IOException  if an I/O error occurs.
     */   
    public Buffer append(byte[] array, int off, int size) throws IOException {
       if(closed) {  
@@ -191,6 +196,7 @@ public class ArrayBuffer implements Buffer {
     * larger than the required capacity the this will do nothing.
     *
     * @param capacity the minimum size needed for this buffer object
+    * @throws IOException  if an I/O error occurs.
     */   
    private void expand(int capacity) throws IOException {
       if(capacity > limit) {
@@ -209,6 +215,7 @@ public class ArrayBuffer implements Buffer {
     * count to be zero, it will not clear the memory occupied by the
     * instance as the internal buffer will remain. This allows the
     * memory occupied to be reused as many times as is required.
+    * @throws IOException  if an I/O error occurs.
     */ 
    public void clear() throws IOException {
       if(closed) {
@@ -222,6 +229,8 @@ public class ArrayBuffer implements Buffer {
     * the buffer is closed it is an immutable collection of bytes and
     * can not longer be modified. This ensures that it can be passed
     * by value without the risk of modification of the bytes.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */
    public void close() throws IOException {
       closed = true;
@@ -250,7 +259,7 @@ public class ArrayBuffer implements Buffer {
       /**
        * This is the parent buffer which is used for collecting data.
        */
-      private Buffer parent;
+      private final Buffer parent;
       
       /**
        * This is used to determine if the buffer has closed or not.
@@ -260,7 +269,7 @@ public class ArrayBuffer implements Buffer {
       /**
        * This represents the start of the segment within the buffer.
        */ 
-      private int start;
+      private final int start;
 
       /**
        * This represents the number of bytes this segment contains.
@@ -288,6 +297,7 @@ public class ArrayBuffer implements Buffer {
       * an input stream so that it can be read directly.
       *
       * @return a stream that can be used to read the buffered bytes
+      * @throws IOException  if an I/O error occurs.
       */ 
       public InputStream open() throws IOException {
         return new ByteArrayInputStream(buffer,start,length);              
@@ -301,6 +311,7 @@ public class ArrayBuffer implements Buffer {
        * parent is split in to logically smaller segments.
        *
        * @return this returns a buffer which is a segment of this buffer
+       * @throws IOException  if an I/O error occurs.
        */       
       public Buffer allocate() throws IOException {
          return new Segment(this,count);              
@@ -314,6 +325,7 @@ public class ArrayBuffer implements Buffer {
        * used, however this is unlikely as UTF-8 should be supported.
        *
        * @return this returns a UTF-8 encoding of the buffer contents
+       * @throws IOException  if an I/O error occurs.
        */       
       public String encode() throws IOException {
          return encode("UTF-8");               
@@ -326,6 +338,7 @@ public class ArrayBuffer implements Buffer {
        * the bytes using the specified character encoding format.
        *
        * @return this returns the encoding of the buffer contents
+       * @throws IOException  if an I/O error occurs.
        */      
       public String encode(String charset) throws IOException {
          return new String(buffer,start,length, charset);  
@@ -337,6 +350,7 @@ public class ArrayBuffer implements Buffer {
        * enough space to accommodate the extra bytes.
        *
        * @param array this is the byte array to append to this buffer
+       * @throws IOException  if an I/O error occurs.
        */       
       public Buffer append(byte[] array) throws IOException {
          return append(array, 0, array.length);              
@@ -350,6 +364,7 @@ public class ArrayBuffer implements Buffer {
        * @param array this is the byte array to append to this buffer
        * @param off this is the offset to begin reading the bytes from
        * @param size the number of bytes to be read from the array
+       * @throws IOException  if an I/O error occurs.
        */       
       public Buffer append(byte[] array, int off, int size) throws IOException {
          if(closed) {

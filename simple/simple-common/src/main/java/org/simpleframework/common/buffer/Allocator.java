@@ -38,6 +38,7 @@ public interface Allocator {
     * can not be allocated for some reason this throws an exception.
     *
     * @return this returns an allocated buffer with a default size
+    * @throws IOException  if an I/O error occurs.
     */         
    Buffer allocate() throws IOException;
 
@@ -50,6 +51,7 @@ public interface Allocator {
     * @param size this is the initial capacity the buffer should have
     *
     * @return this returns an allocated buffer with a specified size
+    * @throws IOException  if an I/O error occurs.
     */
    Buffer allocate(long size) throws IOException;
 }

@@ -76,7 +76,7 @@ public interface Frame {
    
    /**
     * This is used to determine the type of frame. Interpretation of
-    * this type is outlined in RFC 6455 and can be loosely categorised
+    * this type is outlined in RFC 6455 and can be loosely categorized
     * as control frames and either data or binary frames.     
     * 
     * @return this returns the type of frame that this represents

@@ -36,7 +36,7 @@ class TokenConsumer extends ArrayConsumer {
    /**
     * This is used to allocate a buffer to append the contents.
     */
-   private Allocator allocator;
+   private final Allocator allocator;
    
    /**
     * This is used to append the contents of consumed token.
@@ -46,7 +46,7 @@ class TokenConsumer extends ArrayConsumer {
    /**
     * This is the token that is to be consumed from the cursor.
     */
-   private byte[] token;
+   private final byte[] token;
    
    /**
     * This tracks the number of bytes that are read from the token.
@@ -56,7 +56,7 @@ class TokenConsumer extends ArrayConsumer {
    /**
     * This is the length of the token that is to be consumed.
     */
-   private int length;
+   private final int length;
    
    /**
     * The <code>TokenConsumer</code> object is used to read a token

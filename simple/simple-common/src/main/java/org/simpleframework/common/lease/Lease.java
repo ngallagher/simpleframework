@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
  * up any allocated memory, file descriptors, or other such data.
  *
  * @author Niall Gallagher 
+ * 
+ * @param <T> Type of the key
  */
 public interface Lease<T> {   
    
@@ -42,7 +44,7 @@ public interface Lease<T> {
     * 
     * @return the duration remaining within this lease instance
     * 
-    * @exception Exception if the expiry could not be acquired     
+    * @exception LeaseException if the expiry could not be acquired     
     */
    long getExpiry(TimeUnit unit) throws LeaseException;   
    
@@ -57,7 +59,7 @@ public interface Lease<T> {
     * @param duration this is the length of time to renew for
     * @param unit this is the time unit used for the duration
     * 
-    * @exception Exception if the lease could not be renewed
+    * @exception LeaseException if the lease could not be renewed
     */
    void renew(long duration, TimeUnit unit) throws LeaseException;
    
@@ -68,7 +70,7 @@ public interface Lease<T> {
     * <code>Cleaner</code> used should be notified immediately.
     * If the lease has already expired this throws an exception.
     *
-    * @exception Exception if the expiry has been passed
+    * @exception LeaseException if the expiry has been passed
     */
    void cancel() throws LeaseException;
    

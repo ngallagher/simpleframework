@@ -69,7 +69,7 @@ class FrameEncoder {
    /**
     * Constructor for the <code>FrameEncoder</code> object. This is 
     * used to create an encoder to sending frames over the provided
-    * channel. Frames send remain unflushed so they can be batched
+    * channel. Frames send remain un-flushed so they can be batched
     * on a single output buffer.
     * 
     * @param request contains the opening handshake information
@@ -81,7 +81,7 @@ class FrameEncoder {
    /**
     * Constructor for the <code>FrameEncoder</code> object. This is 
     * used to create an encoder to sending frames over the provided
-    * channel. Frames send remain unflushed so they can be batched
+    * channel. Frames send remain un-flushed so they can be batched
     * on a single output buffer.
     * 
     * @param request contains the opening handshake information
@@ -102,6 +102,7 @@ class FrameEncoder {
     * @param text this is the data used to encode the frame
     * 
     * @return the size of the generated frame including the header
+    * @throws IOException if there is an I/O error.
     */
    public int encode(String text) throws IOException {
       byte[] data = text.getBytes(charset);
@@ -116,6 +117,7 @@ class FrameEncoder {
     * @param data this is the data used to encode the frame
     * 
     * @return the size of the generated frame including the header
+    * @throws IOException if there is an I/O error.
     */
    public int encode(byte[] data) throws IOException {
       return encode(BINARY, data, true);
@@ -134,6 +136,7 @@ class FrameEncoder {
     * @param reason this is the data used to encode the frame
     * 
     * @return the size of the generated frame including the header
+    * @throws IOException if there is an I/O error.
     */
    public int encode(Reason reason) throws IOException {
       CloseCode code = reason.getCode();
@@ -163,6 +166,7 @@ class FrameEncoder {
     * @param frame this is frame that is to be send over the channel
     * 
     * @return the size of the generated frame including the header
+    * @throws IOException if there is an I/O error.
     */
    public int encode(Frame frame) throws IOException {
       FrameType code = frame.getType();
@@ -182,6 +186,7 @@ class FrameEncoder {
     * @param last determines if the is the last frame in a sequence    
     * 
     * @return the size of the generated frame including the header
+    * @throws IOException if there is an I/O error.
     */
    private int encode(FrameType type, byte[] data, boolean last) throws IOException {
       byte[] header = new byte[10];      

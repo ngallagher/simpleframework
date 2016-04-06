@@ -26,9 +26,11 @@ import java.util.concurrent.TimeUnit;
  * lease has been issued. This contains all relevant information
  * regarding the lease, such as the keyed resource that has been 
  * leased and the duration of the lease. Delays for the contract
- * can be measured in any <code>TimeUnit</code> for convinienct.
+ * can be measured in any <code>TimeUnit</code> for convenience.
  *
  * @author Niall Gallagher
+ * 
+ * @param T Key type
  */
 interface Contract<T> extends Delayed {
    
@@ -61,7 +63,7 @@ interface Contract<T> extends Delayed {
     * previous expiry time is ignores, so only one clean is called.
     * 
     * @param delay this is the delay to be used for this contract
-    * @param unit this is the time unit measurment for the delay
+    * @param unit this is the time unit measurement for the delay
     */
    void setDelay(long delay, TimeUnit unit);  
    
@@ -73,5 +75,6 @@ interface Contract<T> extends Delayed {
     * 
     * @return a descriptive message describing the contract object
     */
+   @Override
    String toString();
 }

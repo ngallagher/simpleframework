@@ -64,6 +64,7 @@ public class RouterContainer implements Container {
     * @param container this is the container to delegate to
     * @param router this is the router used to select services
     * @param threads this contains the number of threads to use
+    * @throws IOException  if an I/O error occurs.
     */
    public RouterContainer(Container container, Router router, int threads) throws IOException {
       this(container, router, threads, 10000);
@@ -79,6 +80,7 @@ public class RouterContainer implements Container {
     * @param router this is the router used to select services
     * @param threads this contains the number of threads to use
     * @param ping this is the frequency to send ping frames with
+    * @throws IOException  if an I/O error occurs.
     */
    public RouterContainer(Container container, Router router, int threads, long ping) throws IOException {
       this.dispatcher = new ServiceDispatcher(router, threads, ping);

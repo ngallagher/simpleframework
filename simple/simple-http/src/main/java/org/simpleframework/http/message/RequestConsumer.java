@@ -137,7 +137,7 @@ public class RequestConsumer extends HeaderConsumer {
    
    /**
     * This can be used to get the major number from a HTTP version.
-    * The major version corrosponds to the major protocol type, that
+    * The major version corresponds to the major protocol type, that
     * is the 1 of a HTTP/1.0 version string. Typically the major 
     * type is 1, by can be 0 for HTTP/0.9 clients.
     *
@@ -149,7 +149,7 @@ public class RequestConsumer extends HeaderConsumer {
    
    /**
     * This can be used to get the minor number from a HTTP version. 
-    * The minor version corrosponds to the minor protocol type, that
+    * The minor version corresponds to the minor protocol type, that
     * is the 0 of a HTTP/1.0 version string. This number is typically
     * used to determine whether persistent connections are supported.
     *
@@ -163,13 +163,14 @@ public class RequestConsumer extends HeaderConsumer {
     * This can be used to get the date of the first message header
     * that has the specified name. This is a convenience method that 
     * avoids having to deal with parsing the value of the requested
-    * HTTP message header. This returns -1 if theres no HTTP header
+    * HTTP message header. This returns -1 if there is no HTTP header
     * value for the specified name.
     *
     * @param name the HTTP message header to get the value from
     *
     * @return this returns the date as a long from the header value 
     */      
+   @Override
    public long getDate(String name) {
       return header.getDate(name);
    }
@@ -185,6 +186,7 @@ public class RequestConsumer extends HeaderConsumer {
     *
     * @return this returns the date as a long from the header value 
     */    
+   @Override
    public int getInteger(String name) {
       return header.getInteger(name);
    }
@@ -197,6 +199,7 @@ public class RequestConsumer extends HeaderConsumer {
     *
     * @return this returns a list of the names within the header
     */   
+   @Override
    public List<String> getNames() {
       return header.getNames();
    }
@@ -205,7 +208,7 @@ public class RequestConsumer extends HeaderConsumer {
     * This method is invoked after the terminal token has been read.
     * It is used to process the consumed data and is typically used to
     * parse the input such that it can be used by the subclass for
-    * some useful puropse. This is called only once by the consumer.
+    * some useful purpose. This is called only once by the consumer.
     */    
    @Override
    protected void process() {
@@ -338,6 +341,7 @@ public class RequestConsumer extends HeaderConsumer {
     * 
     * @return the encoded string representing the token 
     */
+   @Override
    public String toString() {
       return getHeader().toString();
    }
@@ -430,6 +434,7 @@ public class RequestConsumer extends HeaderConsumer {
        * 
        * @return this returns an encoded version of the header
        */
+      @Override
       public String toString() {
          return toString("UTF-8");
       }

@@ -43,6 +43,7 @@ public interface SocketProcessor {
     * finished if the connection is secure.
     *
     * @param socket this is the connected HTTP socket to process
+    * @throws IOException  if an I/O error occurs.
     */ 
    void process(Socket socket) throws IOException;
 
@@ -56,6 +57,8 @@ public interface SocketProcessor {
     * server have been stopped. As a final act of shutting down the
     * entire server all threads must be stopped, this allows collection
     * of unused memory and the closing of file and socket resources.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */ 
    void stop() throws IOException;
 }

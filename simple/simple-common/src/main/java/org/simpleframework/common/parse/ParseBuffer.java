@@ -234,6 +234,7 @@ public class ParseBuffer {
     *
     * @return the <code>char</code>'s appended as a <code>String</code>
     */
+   @Override
    public String toString(){
       if(count <= 0) {
          return null;

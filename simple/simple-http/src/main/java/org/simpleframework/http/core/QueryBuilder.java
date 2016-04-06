@@ -30,7 +30,7 @@ import org.simpleframework.http.message.Header;
 /**
  * The <code>QueryBuilder</code> object is used to create the query. 
  * It is created using the request URI query and a form post body if
- * sent. The application/x-www-form-urlencoded conent type identifies
+ * sent. The application/x-www-form-urlencoded content type identifies
  * the body as contain form data. If there are duplicates then they
  * both are available from the query that is built.
  * 
@@ -68,7 +68,7 @@ class QueryBuilder {
     * 
     * @return the query associated with the HTTP target URI
     */   
-   public Query build() {;
+   public Query build() {
       Query query = header.getQuery();
       
       if(!isFormPost()) {

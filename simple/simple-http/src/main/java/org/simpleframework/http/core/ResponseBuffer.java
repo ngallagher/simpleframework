@@ -118,6 +118,8 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * stream can not be reset. Resetting the stream is typically 
     * done if there is an error in writing the response and an error
     * message is generated to replaced the partial response.
+    * 
+    * @throws IOException  if there is an I/O error.
     */  
    public void reset() throws IOException {
       if(flushed) {
@@ -133,6 +135,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * then this will write directly to the underlying transport.
     *
     * @param octet this is the octet that is to be written
+    * @throws IOException  if there is an I/O error.
     */ 
    public void write(int octet) throws IOException {
       byte value = (byte) octet;  
@@ -152,7 +155,9 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * @param array this is the array of bytes to send to the client
     * @param off this is the offset within the array to send from
     * @param size this is the number of bytes that are to be sent
+    * @throws IOException  if there is an I/O error.
     */ 
+   @Override
    public void write(byte[] array, int off, int size) throws IOException {
       ByteBuffer buffer = ByteBuffer.wrap(array, off, size);
       
@@ -170,6 +175,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * @param source this is the byte buffer to send to the client
     * 
     * @return this returns the number of bytes that have been sent
+    * @throws IOException  if there is an I/O error.
     */ 
    public int write(ByteBuffer source) throws IOException {
       int mark = source.position();
@@ -192,6 +198,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * @param size this is the number of bytes that are to be sent 
     * 
     * @return this returns the number of bytes that have been sent
+    * @throws IOException  if there is an I/O error.
     */ 
    public int write(ByteBuffer source, int off, int size) throws IOException {
       if(closed) {
@@ -223,6 +230,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * the requested capacity.
     *
     * @param capacity this is the capacity to expand the buffer to
+    * @throws IOException  if there is an I/O error.
     */ 
    public void expand(int capacity) throws IOException {
       if(buffer.length < capacity) {
@@ -240,7 +248,10 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * underlying transport. Once the accumulator is flushed the HTTP
     * headers are written such that the semantics of the connection
     * match the protocol version and the existing response headers.
+    * 
+    * @throws IOException  if there is an I/O error.
     */ 
+   @Override
    public void flush() throws IOException {    
       flush(true);
    }  
@@ -274,6 +285,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
     * match the protocol version and the existing response headers.
     * Closing this stream does not mean the connection is closed.
     */ 
+   @Override
    public void close() throws IOException {
       if(!closed) {
          commit();
@@ -285,7 +297,7 @@ class ResponseBuffer extends OutputStream implements WritableByteChannel {
    /**
     * This will close the underlying transfer object which will 
     * notify the server kernel that the next request is read to be
-    * processed. If the accumulator is unflushed then this will set
+    * processed. If the accumulator is un-flushed then this will set
     * a Content-Length header such that it matches the number of
     * bytes that are buffered within the internal buffer.
     */ 

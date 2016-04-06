@@ -47,17 +47,17 @@ class ContentConsumer extends UpdateConsumer {
    /**
     * This is the part list that this part is to be added to.
     */ 
-   private PartSeries series;
+   private final PartSeries series;
    
    /**
     * This is used to allocate the internal buffer when required.
     */ 
-   private Allocator allocator;
+   private final Allocator allocator;
    
    /**
     * Represents the HTTP headers that were provided for the part.
     */ 
-   private Segment segment;      
+   private final Segment segment;      
    
    /**
     * This is the internal buffer used to house the part body.
@@ -67,7 +67,7 @@ class ContentConsumer extends UpdateConsumer {
    /**
     * Represents the message boundary that terminates the part body.
     */ 
-   private byte[] boundary;
+   private final byte[] boundary;
    
    /**
     * This is used to determine if the start token had been read.
@@ -131,6 +131,7 @@ class ContentConsumer extends UpdateConsumer {
     * @param array this is the array of bytes to be appended
     * @param off this is the start offset in the array to read from
     * @param len this is the number of bytes to write to the buffer  
+    * @throws IOException  if an I/O error occurs.
     */
    private void append(byte[] array, int off, int len) throws IOException {
       if(buffer == null) {
@@ -147,6 +148,7 @@ class ContentConsumer extends UpdateConsumer {
     * this can cause an infinite loop if the connection is bad.
     * 
     * @param cursor this is the cursor used by this consumer
+    * @throws IOException  if an I/O error occurs.
     */
    @Override
    protected void commit(ByteCursor cursor) throws IOException {
@@ -165,6 +167,7 @@ class ContentConsumer extends UpdateConsumer {
     * @param size this is the number of bytes within the array
     *
     * @return this returns the number of bytes overflow that is read
+    * @throws IOException  if an I/O error occurs.
     */        
    @Override
    protected int update(byte[] array, int off, int size) throws IOException {

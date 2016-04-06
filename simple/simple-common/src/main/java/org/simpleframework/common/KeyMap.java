@@ -34,6 +34,7 @@ import java.util.Set;
  * also be used in a fore each look using the string keys.
  * 
  * @author Niall Gallagher
+ * @param <T> Value type
  */
 public class KeyMap<T> extends LinkedHashMap<String, T> implements Iterable<String> {
    

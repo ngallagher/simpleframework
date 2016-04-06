@@ -134,7 +134,7 @@ class ResponseBuilder  {
    
    /**
     * This is used to respond to the client with a HTTP 101 response
-    * to indicate that the WebSocket handshake succeeeded. Once this
+    * to indicate that the WebSocket handshake succeeded. Once this
     * response has been sent all traffic between the client and 
     * server will be with WebSocket frames as defined by RFC 6455. 
     */

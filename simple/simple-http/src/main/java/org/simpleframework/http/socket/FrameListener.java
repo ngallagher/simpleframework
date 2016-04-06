@@ -22,7 +22,7 @@ package org.simpleframework.http.socket;
  * The <code>FrameListener</code> is used to listen for incoming frames
  * on a <code>WebSocket</code>. Any number of listeners can listen on 
  * a single web socket and it will receive all incoming events. For 
- * consistency this interface is modelled on the WebSocket API as
+ * consistency this interface is modeled on the WebSocket API as
  * defined by W3C Candidate Recommendation as of 20 September 2012.
  * 
  * @author Niall Gallagher
@@ -48,7 +48,7 @@ public interface FrameListener {
     * an internal server error. 
     * 
     * @param session this is the associated session
-    * @param frame this is the exception that has been thrown
+    * @param cause this is the exception that has been thrown
     */
    void onError(Session session, Exception cause);
    

@@ -85,6 +85,7 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * an input stream so that it can be read directly.
     *
     * @return a stream that can be used to read the buffered bytes
+    * @throws IOException  if an I/O error occurs.
     */    
    public InputStream open() throws IOException {  
       if(buffer == null) {
@@ -100,6 +101,7 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * used, however this is unlikely as UTF-8 should be supported.
     *
     * @return this returns a UTF-8 encoding of the buffer contents
+    * @throws IOException  if an I/O error occurs.
     */ 
    public String encode() throws IOException { 
       if(buffer == null) {
@@ -115,6 +117,7 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * the bytes using the specified character encoding format.
     *
     * @return this returns the encoding of the buffer contents
+    * @throws IOException  if an I/O error occurs.
     */      
    public String encode(String charset) throws IOException {   
       if(buffer == null) {
@@ -131,6 +134,7 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * @param array this is the byte array to append to this buffer
     *
     * @return this returns this buffer for another operation
+    * @throws IOException  if an I/O error occurs.
     */ 
    public Buffer append(byte[] array) throws IOException {      
       return append(array, 0, array.length);
@@ -146,6 +150,7 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * @param off this is the offset to begin reading the bytes from
     *
     * @return this returns this buffer for another operation    
+    * @throws IOException  if an I/O error occurs.
     */    
    public Buffer append(byte[] array, int off, int size) throws IOException {
       if(buffer == null) {
@@ -159,6 +164,8 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * count to be zero, it will not clear the memory occupied by the
     * instance as the internal buffer will remain. This allows the
     * memory occupied to be reused as many times as is required.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */    
    public void clear() throws IOException {
       if(buffer != null) {
@@ -171,6 +178,8 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * the buffer is closed it is an immutable collection of bytes and
     * can not longer be modified. This ensures that it can be passed
     * by value without the risk of modification of the bytes.
+    * 
+    * @throws IOException  if an I/O error occurs.
     */     
    public void close() throws IOException {
       if(buffer == null) {
@@ -186,6 +195,7 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * requested is larger than the limit an exception is thrown.
     *
     * @return this returns an allocated buffer with a default size
+    * @throws IOException  if an I/O error occurs.
     */ 
    @Override
    public Buffer allocate() throws IOException {
@@ -201,6 +211,7 @@ public class BufferAllocator extends FilterAllocator implements Buffer {
     * @param size the initial capacity of the allocated buffer
     *
     * @return this returns an allocated buffer with a default size
+    * @throws IOException  if an I/O error occurs.
     */   
    @Override
    public Buffer allocate(long size) throws IOException {

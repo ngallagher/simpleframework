@@ -57,6 +57,7 @@ import org.simpleframework.common.parse.Parser;
  * that the quality parameters a removed from the resulting text.
  * 
  * @author Niall Gallagher
+ * @param <T> Value Type
  */
 public abstract class ListParser<T> extends Parser {
    
@@ -377,6 +378,7 @@ public abstract class ListParser<T> extends Parser {
     * @param text this is the text buffer to acquire the value from
     * @param start the offset within the array to take characters
     * @param len this is the number of characters within the token
+    * @return the value object of type T
     */
    protected abstract T create(char[] text, int start, int len);
    

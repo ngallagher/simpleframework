@@ -60,6 +60,7 @@ public class PathRouter implements Router {
     * 
     * @param registry this is the registry of available services
     * @param primary this is the default service to use
+    * @throws IOException  if an I/O error occurs.
     */
    public PathRouter(Map<String, Service> registry, Service primary) throws IOException {
       this.registry = registry;

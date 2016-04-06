@@ -85,6 +85,7 @@ public class LanguageParser extends ListParser<Locale> {
     * @param text this is the text buffer to acquire the value from
     * @param start the offset within the array to take characters
     * @param len this is the number of characters within the token
+    * @return The created Locale
     */
    @Override
    protected Locale create(char[] text, int start, int len){

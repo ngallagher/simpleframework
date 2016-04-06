@@ -67,6 +67,7 @@ public class SocketConnection implements Connection {
     * and response objects to the internal container.
     * 
     * @param processor this is the connector that receives requests
+    * @throws IOException  if an I/O error occurs.
     */    
    public SocketConnection(SocketProcessor processor) throws IOException {
       this(processor, null);
@@ -81,6 +82,7 @@ public class SocketConnection implements Connection {
     * 
     * @param processor this is the connector that receives requests
     * @param analyzer this is used to create a trace for the socket
+    * @throws IOException  if an I/O error occurs.
     */    
    public SocketConnection(SocketProcessor processor, TraceAnalyzer analyzer) throws IOException {
       this.manager = new SocketListenerManager(processor, analyzer);
@@ -96,6 +98,7 @@ public class SocketConnection implements Connection {
     * @param address this is the address used to accept connections
     * 
     * @return this returns the actual local address that is used
+    * @throws IOException  if an I/O error occurs.
     */   
    public SocketAddress connect(SocketAddress address) throws IOException {
       if(closed) {
@@ -114,6 +117,7 @@ public class SocketConnection implements Connection {
     * @param context this is used for secure SSL connections
     * 
     * @return this returns the actual local address that is used
+    * @throws IOException  if an I/O error occurs.
     */ 
    public SocketAddress connect(SocketAddress address, SSLContext context) throws IOException {
       if(closed) {

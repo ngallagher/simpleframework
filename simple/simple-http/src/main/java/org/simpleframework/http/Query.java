@@ -95,5 +95,6 @@ public interface Query extends Map<String, String> {
     *
     * @return returns an empty string if the is no parameters
     */ 
+   @Override
    String toString();
 }
