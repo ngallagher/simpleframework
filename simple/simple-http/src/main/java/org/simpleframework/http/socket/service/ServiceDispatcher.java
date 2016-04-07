@@ -80,7 +80,7 @@ class ServiceDispatcher {
     * @param ping this is the frequency used to send ping frames
     */
    public ServiceDispatcher(Router router, int threads, long ping) throws IOException {
-      this.scheduler = new ConcurrentScheduler(FrameCollector.class, threads);      
+      this.scheduler = new ConcurrentScheduler(FrameCollector.class, threads, null);
       this.reactor = new ExecutorReactor(scheduler);
       this.builder = new SessionBuilder(scheduler, reactor, ping);
       this.dispatcher = new SessionDispatcher(builder, router);      

@@ -18,6 +18,7 @@
 
 package org.simpleframework.common.thread;
 
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,7 +45,7 @@ public class ConcurrentScheduler implements Scheduler {
     * @param type this is the type of the worker threads
     */
    public ConcurrentScheduler(Class type) {
-      this(type, 10);
+      this(type, 10, null);
    }
    
    /**
@@ -55,9 +56,10 @@ public class ConcurrentScheduler implements Scheduler {
     * 
     * @param type this is the type of the worker threads
     * @param size this is the number of threads for the scheduler
+    * @param factory an optional {@link ThreadFactory}
     */
-   public ConcurrentScheduler(Class type, int size) {
-      this.queue = new SchedulerQueue(type, size);
+   public ConcurrentScheduler(Class type, int size, ThreadFactory factory) {
+      this.queue = new SchedulerQueue(type, size, factory);
    }
 
    /**

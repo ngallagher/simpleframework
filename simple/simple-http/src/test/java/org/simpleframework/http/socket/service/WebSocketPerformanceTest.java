@@ -155,7 +155,7 @@ public class WebSocketPerformanceTest {
          this.negotiator = new DirectRouter(service);
          this.container = new RouterContainer(this, negotiator, 10, 100000);
          this.allocator = new ArrayAllocator();
-         this.processor = new ContainerTransportProcessor(container, allocator, 10);
+         this.processor = new ContainerTransportProcessor(container, allocator, 10, null);
          this.server = new TransportSocketProcessor(processor, 10, 8192*10);
          this.connection = new SocketConnection(server, agent);
          this.address = new InetSocketAddress(port);

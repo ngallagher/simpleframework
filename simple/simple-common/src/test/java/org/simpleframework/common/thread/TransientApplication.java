@@ -9,7 +9,7 @@ public class TransientApplication {
 
    public static void main(String[] list) throws Exception {
       BlockingQueue queue = new LinkedBlockingQueue();
-      ConcurrentExecutor pool = new ConcurrentExecutor(TerminateTask.class, 10);      
+      ConcurrentExecutor pool = new ConcurrentExecutor(TerminateTask.class, 10, null);      
       
       for(int i = 0; i < 50; i++) {
          pool.execute(new LongTask(queue, String.valueOf(i)));

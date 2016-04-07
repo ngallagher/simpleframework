@@ -125,7 +125,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * @param client determines if the SSL handshake is for a client
     */
    public TransportSocketProcessor(TransportProcessor processor, int threads, int buffer, int threshold, boolean client) throws IOException {
-      this.executor = new ConcurrentExecutor(Operation.class, threads);     
+      this.executor = new ConcurrentExecutor(Operation.class, threads, null);
       this.reactor = new ExecutorReactor(executor);
       this.factory = new OperationFactory(processor, reactor, buffer, threshold, client);
       this.cleaner = new ServerCleaner(processor, executor, reactor);
