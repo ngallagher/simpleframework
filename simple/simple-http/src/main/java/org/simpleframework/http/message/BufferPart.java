@@ -69,7 +69,11 @@ class BufferPart implements Part {
     * @return this returns true if the associated part is a file
     */
    public boolean isFile() {
-      return getDisposition().isFile();
+      ContentDisposition disposition = getDisposition();
+      if (disposition == null) {
+         return false;
+      }
+      return disposition.isFile();
    }
 
    /**
@@ -80,7 +84,11 @@ class BufferPart implements Part {
     * @return this returns the name of the associated part
     */
    public String getName() {
-      return getDisposition().getName();
+      ContentDisposition disposition = getDisposition();
+      if (disposition == null) {
+         return null;
+      }
+      return disposition.getName();
    }
 
    /**
@@ -91,7 +99,11 @@ class BufferPart implements Part {
     * @return this returns the file name of the associated part
     */
    public String getFileName() {
-      return getDisposition().getFileName();
+      ContentDisposition disposition = getDisposition();
+      if (disposition == null) {
+         return null;
+      }
+      return disposition.getFileName();
    }
 
    /**
