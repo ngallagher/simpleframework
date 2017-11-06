@@ -217,7 +217,7 @@ class NegotiationState implements Certificate {
        * completion of the SSL renegotiation results in the client
        * providing their certificate, and execution of the task. 
        * 
-       * @param completion task to be run on successful challenge
+       * @param task to be run on successful challenge
        */
       public Future<Certificate> challenge(Runnable task) {
          try {
@@ -238,7 +238,7 @@ class NegotiationState implements Certificate {
        * completion of the SSL renegotiation results in the client
        * providing their certificate, and execution of the task. 
        * 
-       * @param completion task to be run on successful challenge
+       * @param task to be run on successful challenge
        */
       private void resume(Runnable task) {
          try {

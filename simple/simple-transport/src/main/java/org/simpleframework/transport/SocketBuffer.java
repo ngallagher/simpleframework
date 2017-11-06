@@ -125,7 +125,7 @@ class SocketBuffer {
     * 
     * @return this returns true if no reference was held
     */     
-   public synchronized boolean write(ByteBuffer duplicate) throws IOException {
+   public synchronized boolean write(ByteBuffer data) throws IOException {
       if(closed) {
          throw new TransportException("Buffer has been closed");
       }
@@ -135,22 +135,22 @@ class SocketBuffer {
       int count = appender.length();
       
       if(count > 0) {
-         return merge(duplicate);
+         return merge(data);
       }
-      int remaining = duplicate.remaining();
+      int remaining = data.remaining();
       
       if(remaining < chunk) {
-         appender.append(duplicate);// just save it..
+         appender.append(data);// just save it..
          return true;
       }
-      if(!flush(duplicate)) { // attempt a write
+      if(!flush(data)) { // attempt a write
          int space = appender.space();
          
          if(remaining < space) {
-            appender.append(duplicate);
+            appender.append(data);
             return true;
          }
-         reference = duplicate;
+         reference = data;
          return false;         
       }
       return true;
@@ -230,7 +230,6 @@ class SocketBuffer {
     * can be acquired from the <code>length</code> method. Once all
     * of the bytes are written the packet must be closed.
     *
-    * @param channel this is the channel to write the packet to
     * @param segment this is the segment that is to be written
     *
     * @return this returns the number of bytes that were written

@@ -176,12 +176,16 @@ class TransportReader implements ByteReader {
       if(count > 0) {
          buffer.compact(); // compact the buffer
       }
-      count += transport.read(buffer); // how many were read
+      int read = transport.read(buffer); // how many were read
+
+      if(read > 0) {
+         count += read;
+      }
 
       if(count > 0) {
          buffer.flip(); // if there is something then flip
       }
-      if(count < 0) { // close when stream is fully read
+      if(read < 0 && count <= 0) { // close when stream is fully read
          close();
       }
       return count;
@@ -198,6 +202,9 @@ class TransportReader implements ByteReader {
     * @return this is the number of bytes that have been reset
     */
    public int reset(int size) throws IOException {
+      if (size <=0) {
+          throw new IllegalArgumentException("invalid size " + size + " while resetting");
+      }
       int mark = buffer.position();
       
       if(size > mark) {

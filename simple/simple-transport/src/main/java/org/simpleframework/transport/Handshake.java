@@ -431,21 +431,15 @@ class Handshake implements Negotiation {
     * @return this returns true when the message has been read
     */
    public boolean receive() throws IOException {
-      int count = input.capacity();
-      
-      if(count > 0) {
-         input.compact();
-      }
+      input.compact();   // maximize read buffer
       int size = channel.read(input); 
+      input.flip();
 
       if(trace != null) {
         trace.trace(READ, size);
       }      
       if(size < 0) {
          throw new TransportException("Client closed connection");      
-      }
-      if(count > 0) {
-         input.flip(); 
       }
       return size > 0;
    }

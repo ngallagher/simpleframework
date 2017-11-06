@@ -78,7 +78,6 @@ class RequestCollector implements Collector {
     * an internal buffer to store the consumed body.
     * 
     * @param allocator this is the allocator used to buffer data
-    * @param tracker this is the tracker used to create sessions
     * @param channel this is the channel used to read the data
     */
    public RequestCollector(Allocator allocator, Channel channel) { 
