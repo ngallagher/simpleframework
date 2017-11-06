@@ -188,15 +188,14 @@ class FileBuffer implements Buffer {
     */   
    private String convert(InputStream source, String charset, int count) throws IOException {
       byte[] buffer = new byte[count];
-      int left = count;
       
-      while(left > 0) {
-         int size = source.read(buffer, 0, left);
+      int read;
+      for(int offset = 0; offset < count; offset+=read) {
+         read = source.read(buffer, offset, count-offset);
          
-         if(size == -1) {
+         if(read <= -1) {
             throw new BufferException("Could not read buffer");
          }
-         left -= count;
       }
       return new String(buffer, charset);
    }
@@ -530,10 +529,10 @@ class FileBuffer implements Buffer {
        */
       @Override
       public int read() throws IOException {
-         if(length-- > 0) {
+         if(length >= 1) {
+            length--;
             return in.read();
-         }
-         if(length <= 0) {
+         } else {
             close();
          }
          return -1;

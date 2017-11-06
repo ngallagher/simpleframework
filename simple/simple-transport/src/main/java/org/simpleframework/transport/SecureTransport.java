@@ -199,16 +199,20 @@ class SecureTransport implements Transport {
     * @return this returns the number of bytes that have been read  
     */ 
    public int read(ByteBuffer buffer) throws IOException {
-      if(closed) {
-         throw new TransportException("Transport is closed");              
-      }   
-      if(finished) {
-         return -1;
+
+      int count = fill(buffer);
+
+      if (count <= 0) {
+         count = process(buffer);
       }
-      int count = fill(buffer); 
-      
-      if(count <= 0) {
-         return process(buffer);
+
+      if (count <= 0) {
+         if(closed) {
+            throw new TransportException("Transport is closed");              
+         }
+         if(finished) {
+            return -1;
+         }
       }
       return count;
    }
@@ -225,24 +229,8 @@ class SecureTransport implements Transport {
     * @return this returns the number of bytes that have been read  
     */ 
    private int process(ByteBuffer buffer) throws IOException {
-      int size = swap.position();  
-      
-      if(size >= 0) {
-         swap.compact(); 
-      }
-      int space = swap.remaining(); 
-      
-      if(space > 0) {
-         size = transport.read(swap); 
-         
-         if(size < 0) {
-            finished = true;
-         }
-      }
-      if(size > 0 || space > 0) { 
-         swap.flip();
-         receive(); 
-      }
+      receive(); 
+
       return fill(buffer);
    }     
    
@@ -257,35 +245,11 @@ class SecureTransport implements Transport {
     * @return this returns the number of bytes that have been read 
     */
    private int fill(ByteBuffer buffer) throws IOException {
-      int space = buffer.remaining();
-      int count = input.position();
-      
-      if(count > 0) {
-         if(count > space) {
-            count = space;
-         }
-      }
-      return fill(buffer, count);
-      
-   }
-
-   /**
-    * This is used to fill the provided buffer with data that has 
-    * been read from the secure socket channel. This enables reading
-    * of the decrypted data in chunks that are smaller than the 
-    * size of the input buffer used to contain the plain text data.
-    * 
-    * @param buffer this is the buffer to append the bytes to
-    * @param count this is the number of bytes that are to be read
-    *
-    * @return this returns the number of bytes that have been read 
-    */
-   private int fill(ByteBuffer buffer, int count) throws IOException {
       input.flip();
+      int count = Math.min(input.remaining(), buffer.remaining());
       
-      if(count > 0) {
-         count = append(buffer, count);
-      }
+      count = append(buffer, count);
+
       input.compact();    
       return count;
    }
@@ -302,16 +266,14 @@ class SecureTransport implements Transport {
     * @return returns the number of bytes that have been moved
     */  
    private int append(ByteBuffer buffer, int count) throws IOException {
-      ByteBuffer segment = input.slice();
 
-      if(closed) {
-         throw new TransportException("Transport is closed");               
-      }
-      int mark = input.position();
-      int size = mark + count;
-      
       if(count > 0) {
+         ByteBuffer segment = input.slice();
+
+         int mark = input.position();
+         int size = mark + count;
          input.position(size); 
+
          segment.limit(count);         
          buffer.put(segment);
       }
@@ -326,26 +288,37 @@ class SecureTransport implements Transport {
     * will return the number of bytes read. Finally if the socket
     * is closed this will return a -1 value.
     */    
-   private void receive() throws IOException {
-      int count = swap.remaining(); 
+   private int receive() throws IOException {
+      int bytesProduced = 0;
+      boolean exitWhile = false;
+      while(!exitWhile) {
+         // Read from transport
+         swap.compact();
+         int read = transport.read(swap);
+         swap.flip();
       
-      while(count > 0) {
          SSLEngineResult result = engine.unwrap(swap, input);
          Status status = result.getStatus();
+
+         bytesProduced += result.bytesProduced();
          
          switch(status) {
+            case OK:
+               break;
+            case CLOSED:
+               finished = true;
+               // no break
          case BUFFER_OVERFLOW:
          case BUFFER_UNDERFLOW:
-            return;
-         case CLOSED:     
-            throw new TransportException("Transport error " + result);       
+               exitWhile = true;
+               break;
          }    
-         count = swap.remaining();
          
-         if(count <= 0) {
-            break;
+         if (read < 0) {
+            finished = true;
          }
       }
+      return (bytesProduced == 0 && finished)? -1 : bytesProduced;
    }
    
    /**
@@ -359,22 +332,9 @@ class SecureTransport implements Transport {
    public void write(ByteBuffer buffer) throws IOException {    
       if(closed) {
         throw new TransportException("Transport is closed");              
-      }            
-      int capacity = output.capacity();
-      int ready = buffer.remaining();
-      int length = ready;
-      
-      while(ready > 0) {
-         int size = Math.min(ready, capacity / 2);
-         int mark = buffer.position();
-         
-         if(length * 2 > capacity) {                      
-            buffer.limit(mark + size);         
-         }
-         send(buffer);
-         output.clear();
-         ready -= size;
       }
+
+      send(buffer);
    }
    
    /**
@@ -385,19 +345,27 @@ class SecureTransport implements Transport {
     *
     * @param buffer this is the array of bytes to send to the client
     */ 
-   private void send(ByteBuffer buffer) throws IOException {   
-      SSLEngineResult result = engine.wrap(buffer, output);
-      Status status = result.getStatus();
-      
-      switch(status){
-      case BUFFER_OVERFLOW:
-      case BUFFER_UNDERFLOW:
-      case CLOSED:
-         throw new TransportException("Transport error " + status);
-      default:
-         output.flip(); 
-      }     
-      transport.write(output);
+   private void send(ByteBuffer buffer) throws IOException {
+      boolean exitWhile = false;
+      while (!exitWhile) {
+         SSLEngineResult result = engine.wrap(buffer, output);
+         Status status = result.getStatus();
+
+         switch (status) {
+            case BUFFER_OVERFLOW:
+            case BUFFER_UNDERFLOW:
+               exitWhile = true;
+               break;
+            case CLOSED:
+               throw new TransportException("Transport error " + status);
+            case OK:
+               exitWhile = ((result.bytesProduced()==0) && ! buffer.hasRemaining());
+               break;
+         }
+         output.flip();
+         transport.write(output);
+         output.compact();
+      }
    }
    
    /**

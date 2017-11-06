@@ -73,7 +73,7 @@ public class TransportCursor implements ByteCursor {
     * @param transport this is the underlying transport to use
     */  
    public TransportCursor(Transport transport) {
-      this(transport, 2048);
+      this(transport, 20*2048);
    }
    
    /**
