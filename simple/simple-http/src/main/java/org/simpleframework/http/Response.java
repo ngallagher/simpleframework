@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.channels.WritableByteChannel;
+import java.nio.charset.Charset;
 
 /**
  * This is used to represent the HTTP response. This provides methods 
@@ -49,7 +50,13 @@ import java.nio.channels.WritableByteChannel;
  * @author Niall Gallagher
  */ 
 public interface Response extends ResponseHeader { 
-   
+    
+   /**
+    * This method sets the <code>Charset</code> of the response.     *
+    * @param charset the new <code>Charset</code> to set to the response
+    */
+    void setCharset(Charset charset);
+    
    /**
     * This should be used when the size of the message body is known. 
     * This ensures that Persistent HTTP (PHTTP) connections can be 

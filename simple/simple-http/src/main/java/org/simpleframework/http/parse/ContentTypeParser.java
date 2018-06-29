@@ -89,6 +89,9 @@ public class ContentTypeParser extends Parser implements ContentType {
       this.type = new ParseBuffer(); 
       this.name = new ParseBuffer(); 
       this.map = new KeyMap<String>();
+      
+      setCharset("utf-8");      
+      
    }
 
    /** 

@@ -19,6 +19,8 @@
 package org.simpleframework.transport;
 
 import java.io.IOException;
+import org.simpleframework.http.core.ContainerController;
+import org.simpleframework.http.core.Controller;
 
 /**
  * This is the <code>TransportProcessor</code> used to process the
@@ -60,4 +62,6 @@ public interface TransportProcessor {
     * of unused memory and the closing of file and socket resources.
     */ 
    void stop() throws IOException;
+   
+   public ContainerController getControler();
 }

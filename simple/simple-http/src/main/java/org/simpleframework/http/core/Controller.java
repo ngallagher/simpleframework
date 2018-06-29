@@ -46,7 +46,16 @@ import org.simpleframework.transport.Channel;
  * 
  * @see org.simpleframework.http.core.Collector
  */
-interface Controller {
+public interface Controller {
+    
+    /** 
+     * This is the list of requests/threads stop strategies
+     * 
+     * WAIT: will wait for a timeout amount
+     * KILL: will immediately interrupt the execution
+     * 
+     */
+    public static enum STOP_STRATEGY {WAIT,KILL};
    
   /**   
    * This is used to initiate the processing of the channel. Once

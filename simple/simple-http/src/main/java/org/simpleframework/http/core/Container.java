@@ -20,6 +20,7 @@ package org.simpleframework.http.core;
 
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
+import org.simpleframework.http.core.Controller.STOP_STRATEGY;
 
 /**
  * The <code>Container</code> object is used to process HTTP requests
@@ -59,4 +60,5 @@ public interface Container {
     * @param resp the response used to deliver the server response
     */
    void handle(Request req, Response resp);
+   
 }

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.channels.WritableByteChannel;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /** 
@@ -55,6 +56,13 @@ public class ResponseWrapper implements Response {
     */
    protected Response response;          
 
+    /**
+    * This method sets the <code>Charset</code> of the response.     *
+    * @param charset the new <code>Charset</code> to set to the response
+    */ 
+   public void setCharset(Charset charset){
+       this.response.setCharset(charset);
+   }  
    /** 
     * Constructor for <code>ResponseWrapper</code> object. This allows
     * the original <code>Response</code> object to be wrapped so that 

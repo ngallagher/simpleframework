@@ -19,6 +19,7 @@
 package org.simpleframework.common.thread;
 
 import java.util.concurrent.TimeUnit;
+import org.simpleframework.http.core.Controller;
 
 /**
  * The <code>ConcurrentScheduler</code> object is used to schedule tasks 
@@ -111,6 +112,18 @@ public class ConcurrentScheduler implements Scheduler {
    /**
     * This is used to stop the scheduler by interrupting all running
     * tasks and shutting down the threads within the pool. This will
+    * return immediately once it has been stopped, and not further
+    * tasks will be accepted by this pool for execution.
+    * 
+    * @param stopStrategy the requests/threads stop strategy 
+    */ 
+   public void stop(Controller.STOP_STRATEGY stopStrategy) {
+      stop(stopStrategy, 60000);
+   } 
+   
+   /**
+    * This is used to stop the scheduler by interrupting all running
+    * tasks and shutting down the threads within the pool. This will
     * return once it has been stopped, and no further tasks will be 
     * accepted by this pool for execution.
     *
@@ -118,5 +131,18 @@ public class ConcurrentScheduler implements Scheduler {
     */   
    public void stop(long wait) {
       queue.stop(wait);
+   }   
+   
+   /**
+    * This is used to stop the scheduler by interrupting all running
+    * tasks and shutting down the threads within the pool. This will
+    * return once it has been stopped, and no further tasks will be 
+    * accepted by this pool for execution.
+    *
+    * @param stopStrategy the number of milliseconds to wait for it to stop 
+    * @param wait the number of milliseconds to wait for it to stop 
+    */ 
+   public void stop(Controller.STOP_STRATEGY stopStrategy, long wait) {
+      queue.stop(stopStrategy, wait);
    }
 }

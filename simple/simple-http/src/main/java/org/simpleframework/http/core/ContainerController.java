@@ -40,7 +40,17 @@ import org.simpleframework.transport.reactor.Reactor;
  * 
  * @author Niall Gallagher
  */
-class ContainerController implements Controller {  
+public class ContainerController implements Controller {  
+        
+    /** 
+     * This is the default requests/threads stop strategy
+     */
+    private STOP_STRATEGY stopStrategy = STOP_STRATEGY.WAIT;
+    
+    /** 
+     * This is the default requests/threads stop strategy timeout
+     */
+    private long stopTimeout = 60000;    
    
    /**
     * This is the thread pool used for servicing the requests.
@@ -66,6 +76,30 @@ class ContainerController implements Controller {
     * This is the reactor used to schedule the collectors.
     */
    private final Reactor reactor; 
+   
+   
+   /**
+    * Constructor for the <code>ContainerController</code> object. This
+    * is used to create a controller which will collect and dispatch
+    * requests using two thread pools. The first is used to collect
+    * the requests, the second is used to service those requests.
+    * 
+    * @param container this is the container used to service requests
+    * @param allocator this is used to allocate any buffers needed
+    * @param count this is the number of threads per thread pool
+    * @param select this is the number of controller threads to use
+    * @param closeStrategy this is the manner of requests/threads closing
+    * @param closeTimeout this is the timeout of requests/threads closing
+    */
+   public ContainerController(Container container, Allocator allocator, int count, int select, STOP_STRATEGY stopStrategy, long stopTimeout) throws IOException {
+      this.executor = new ConcurrentExecutor(RequestDispatcher.class, count); 
+      this.collect = new ConcurrentExecutor(RequestReader.class, count);
+      this.reactor = new ExecutorReactor(collect, select);     
+      this.allocator = allocator;
+      this.container = container;
+      this.stopStrategy = stopStrategy;
+      this.stopTimeout = stopTimeout;
+   }
 
    /**
     * Constructor for the <code>ContainerController</code> object. This
@@ -152,10 +186,46 @@ class ContainerController implements Controller {
    public void stop() throws IOException {
      try {
         reactor.stop();
-        executor.stop();
-        collect.stop();
+        executor.stop(stopStrategy, stopTimeout);
+        collect.stop(stopStrategy, stopTimeout);
      } catch(Exception cause) {
         throw new TransportException("Error stopping", cause);
      }
-   }
+   }  
+   
+   /**
+   * Returns the <code>STOP_STRATEGY</code> for the controller.
+   *
+   * @return the <code>STOP_STRATEGY</code> for the controller
+   */
+    public STOP_STRATEGY getStopStrategy() {
+        return stopStrategy;
+    }
+
+   /**
+   * Sets the <code>STOP_STRATEGY</code>.
+   *
+   * @param stopStrategy the <code>STOP_STRATEGY</code> to set
+   */
+    public void setStopStrategy(STOP_STRATEGY stopStrategy) {
+        this.stopStrategy = stopStrategy;
+    }
+
+   /**
+   * Returns the timeout after the controller stops.
+   *
+   * @return the timeout after the controller stops
+   */
+    public long getStopTimeout() {
+        return stopTimeout;
+    }
+    
+   /**
+   * Sets the timeout after the controller stops.
+   *
+   * @param stopTimeout the timeout after the controller stops
+   */
+    public void setStopTimeout(long stopTimeout) {
+        this.stopTimeout = stopTimeout;
+    }
 }
