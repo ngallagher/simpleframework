@@ -42,6 +42,8 @@ import org.simpleframework.transport.trace.Trace;
  */ 
 public interface Socket {
    
+   String getProtocol();
+   
    /**
     * This is used to acquire the trace object that is associated
     * with the socket. A trace object is used to collection details

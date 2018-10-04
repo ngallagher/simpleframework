@@ -25,6 +25,10 @@ public class MockSocket implements Socket {
       this.engine = engine;
       this.socket = socket;
    } 
+   
+   public String getProtocol() {
+      return null;
+   }
   
    public SSLEngine getEngine() {
       return engine;

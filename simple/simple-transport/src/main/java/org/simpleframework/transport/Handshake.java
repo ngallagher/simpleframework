@@ -22,6 +22,7 @@ import static java.nio.channels.SelectionKey.OP_READ;
 import static java.nio.channels.SelectionKey.OP_WRITE;
 import static org.simpleframework.transport.PhaseType.COMMIT;
 import static org.simpleframework.transport.PhaseType.CONSUME;
+import static org.simpleframework.transport.PhaseType.IGNORE;
 import static org.simpleframework.transport.PhaseType.PRODUCE;
 import static org.simpleframework.transport.TransportEvent.ERROR;
 import static org.simpleframework.transport.TransportEvent.HANDSHAKE_BEGIN;
@@ -29,17 +30,21 @@ import static org.simpleframework.transport.TransportEvent.HANDSHAKE_DONE;
 import static org.simpleframework.transport.TransportEvent.HANDSHAKE_FAILED;
 import static org.simpleframework.transport.TransportEvent.READ;
 import static org.simpleframework.transport.TransportEvent.WRITE;
+import static org.simpleframework.transport.TransportType.PLAIN;
+import static org.simpleframework.transport.TransportType.UNKNOWN;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SocketChannel;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
+import org.eclipse.jetty.alpn.ALPN;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
 
@@ -65,10 +70,15 @@ class Handshake implements Negotiation {
     */
    private final TransportProcessor processor;   
    
+   private final TransportSelector selector;
+   
    /**
     * This is the certificate associated with this negotiation.
     */
    private final NegotiationState state;
+
+   
+   private final TransportProbe probe;
    
    /**
     * This is the socket channel used to read and write data to.
@@ -173,6 +183,8 @@ class Handshake implements Negotiation {
     */
    public Handshake(TransportProcessor processor, Transport transport, Reactor reactor, int size, boolean client) {
       this.state = new NegotiationState(this, transport);
+      this.probe = new TransportProbe(512);
+      this.selector = new TransportSelector(probe, transport, state);
       this.output = ByteBuffer.allocate(size);
       this.input = ByteBuffer.allocate(size);
       this.channel = transport.getChannel();   
@@ -183,7 +195,25 @@ class Handshake implements Negotiation {
       this.transport = transport;
       this.reactor = reactor;
       this.client = client;
+      
+      ALPN.put(engine, new ALPN.ServerProvider()
+      {         
+         public void unsupported()
+         {
+         }
+
+         public String select(List<String> protocols)
+         {
+             System.err.println("client protocols: " + protocols);
+             if(protocols.contains("h2")) {
+                protocol = "h2";
+                return "h2";
+             }
+             return null;
+         }
+     });
    }
+   String protocol;
    
    /**
     * This is used to acquire the trace object that is associated
@@ -328,6 +358,14 @@ class Handshake implements Negotiation {
     * @return the next action that should be taken by the handshake
     */
    private PhaseType read() throws IOException {
+      TransportType type = probe.update(input);
+      
+      switch(type){
+      case UNKNOWN:
+         return CONSUME;
+      case PLAIN:
+         return COMMIT;
+      }
       return read(5);
    }
 
@@ -491,11 +529,11 @@ class Handshake implements Negotiation {
     * secure transport is to be handed to the processor.
     */
    private void dispatch() throws IOException {
-      Transport secure = new SecureTransport(transport, state, output, input);
+      Transport transport = selector.select(output, input, protocol);
 
       if(processor != null) {
          trace.trace(HANDSHAKE_DONE);
-         processor.process(secure);
+         processor.process(transport);
       }
    }  
    

@@ -70,6 +70,8 @@ class SecureTransport implements Transport {
     */
    private SSLEngine engine;
    
+   private String protocol;
+   
    /**
     * This is the trace that is used to monitor socket activity.
     */
@@ -96,8 +98,8 @@ class SecureTransport implements Transport {
     * @param input this is the input buffer used to read the data
     * @param swap this is the swap buffer to be used for reading 
     */
-   public SecureTransport(Transport transport, Certificate certificate, ByteBuffer input, ByteBuffer swap) {
-      this(transport, certificate, input, swap, 20480);
+   public SecureTransport(Transport transport, Certificate certificate, ByteBuffer input, ByteBuffer swap, String protocol) {
+      this(transport, certificate, input, swap, protocol, 20480);
    }
    
    /**
@@ -112,14 +114,19 @@ class SecureTransport implements Transport {
     * @param swap this is the swap buffer to be used for reading 
     * @param size this is the size of the buffers to be allocated
     */
-   public SecureTransport(Transport transport, Certificate certificate, ByteBuffer input, ByteBuffer swap, int size) {
+   public SecureTransport(Transport transport, Certificate certificate, ByteBuffer input, ByteBuffer swap, String protocol, int size) {
       this.output = ByteBuffer.allocate(size);
       this.engine = transport.getEngine();
       this.trace = transport.getTrace();
       this.certificate = certificate;
       this.transport = transport;
+      this.protocol = protocol;
       this.input = input;    
       this.swap = swap;
+   }
+   
+   public String getProtocol() {
+      return protocol;
    }
 
    /**

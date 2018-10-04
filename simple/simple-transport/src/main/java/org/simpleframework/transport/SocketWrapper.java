@@ -90,6 +90,10 @@ public class SocketWrapper implements Socket {
       this.trace = trace;
    } 
    
+   public String getProtocol() {
+      return null;
+   }
+   
    /**
     * This is used to acquire the trace object that is associated
     * with the socket. A trace object is used to collection details

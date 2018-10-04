@@ -128,6 +128,10 @@ public class SocketTransport implements Transport {
      this.socket = socket;
    }
    
+   public String getProtocol() {
+      return null;
+   }
+   
    /**
     * This is used to acquire the SSL certificate used when the
     * server is using a HTTPS connection. For plain text connections

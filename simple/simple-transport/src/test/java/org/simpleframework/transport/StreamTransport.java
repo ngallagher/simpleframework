@@ -26,6 +26,10 @@ public class StreamTransport implements Transport {
       this.read = Channels.newChannel(in);
       this.out = out;
    }
+   
+   public String getProtocol() {
+      return null;
+   }
 
    public void close() throws IOException {
       write.close();

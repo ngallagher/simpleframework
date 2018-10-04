@@ -24,7 +24,11 @@ public class MockSocket implements Socket {
       this.map = new HashMap();
       this.engine = engine;
       this.socket = socket;
-   } 
+   }
+   
+   public String getProtocol() {
+      return null;
+   }
   
    public SSLEngine getEngine() {
       return engine;

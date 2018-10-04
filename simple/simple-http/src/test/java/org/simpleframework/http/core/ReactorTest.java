@@ -66,6 +66,10 @@ public class ReactorTest extends TestCase implements Controller {
          return false;
       }
       
+      public String getProtocol(){
+         return null;
+      }
+      
       public Trace getTrace() {
          return new MockTrace();
       }      

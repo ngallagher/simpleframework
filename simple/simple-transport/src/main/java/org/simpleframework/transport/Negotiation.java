@@ -45,7 +45,7 @@ interface Negotiation extends Operation  {
     * will typically be invoked when an SSL handshake or
     * termination exchange has completed successfully. 
     */
-   void commit() throws IOException;     
+   void commit() throws IOException; 
    
    /**
     * This is used to send any messages the negotiation may have.

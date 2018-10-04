@@ -101,6 +101,10 @@ class RequestCollector implements Collector {
     * @param controller this is the controller used to queue this
     */
    public void collect(Controller controller) throws IOException {
+      String protocol = channel.getProtocol();
+      
+      System.err.println("PROTOCOL WAS: "+protocol);
+      
       while(cursor.isReady()) { 
          if(entity.isFinished()) {
              break;

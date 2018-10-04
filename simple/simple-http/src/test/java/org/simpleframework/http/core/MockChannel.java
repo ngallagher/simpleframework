@@ -25,6 +25,10 @@ public class MockChannel implements Channel {
       return false;
    }
    
+   public String getProtocol(){
+      return null;
+   }
+   
    public Trace getTrace(){
       return new MockTrace();
    }

@@ -101,6 +101,10 @@ public class TransportChannel implements Channel {
       return engine != null;
    }
    
+   public String getProtocol(){
+      return transport.getProtocol();
+   }
+   
    /**
     * This is used to acquire the SSL certificate used for security. 
     * If the socket is connected to an SSL transport this returns an 

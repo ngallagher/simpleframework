@@ -29,6 +29,11 @@ package org.simpleframework.transport;
 enum PhaseType {
    
    /**
+    * Tells the negotiation to ignore all further operations.
+    */
+   IGNORE,
+   
+   /**
     * Tells the negotiation that a read operations is needed.
     */
    CONSUME,

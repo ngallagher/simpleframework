@@ -28,6 +28,10 @@ public class StreamTransport implements Transport {
       this.out = out;
    }
 
+   public String getProtocol() {
+      return null;
+   }
+   
    public void close() throws IOException {
       write.close();
       read.close();

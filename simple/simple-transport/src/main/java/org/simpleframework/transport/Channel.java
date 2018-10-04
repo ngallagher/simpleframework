@@ -51,6 +51,8 @@ public interface Channel {
     */
    boolean isSecure();
    
+   String getProtocol();
+   
    /**
     * This is the connected socket channel associated with this. In
     * order to determine if content can be read or written to or
