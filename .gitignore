@@ -1,1 +1,32 @@
-simple-core/target/apidocs/org/simpleframework/http/Address.html
+
+# Vim
+*.sw[op]
+
+# Gradle
+.gradle
+build
+
+# IDEA
+.idea
+!.idea/codeStyleSettings.xml
+*.iml
+*.iws
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin
+
+# Maven
+*.log
+log/
+target/
+
+# Output
+log
+logs
+out
+
+# Mac
+.DS_Store

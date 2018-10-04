@@ -23,6 +23,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import org.simpleframework.http.core.Controller;
 
 /**
  * The <code>SchedulerQueue</code> object is used to schedule tasks 
@@ -124,4 +126,40 @@ class SchedulerQueue {
          }         
       }
    }
+
+    /**
+    * This is used to stop the executor by interrupting all running
+    * tasks and shutting down the threads within the pool. This will
+    * return once it has been stopped, and no further tasks will be 
+    * accepted by this pool for execution.
+     * 
+     * @param stopStrategy the <code>STOP_STRATEGY</code> to use 
+     */
+    public void stop(Controller.STOP_STRATEGY stopStrategy) {
+        stop(stopStrategy, 60000);
+    }
+
+    /**
+    * This is used to stop the executor by interrupting all running
+    * tasks and shutting down the threads within the pool. This will
+    * return once it has been stopped, and no further tasks will be 
+    * accepted by this pool for execution.
+     * 
+     * @param stopStrategy the <code>STOP_STRATEGY</code> to use 
+     * @param wait the number of milliseconds to wait for it to stop
+     */
+    public void stop(Controller.STOP_STRATEGY stopStrategy, long wait) {
+        if (!executor.isTerminated()) {
+            try {
+                if (stopStrategy == Controller.STOP_STRATEGY.KILL) {
+                    executor.shutdownNow();
+                } else {
+                    executor.shutdown();
+                    executor.awaitTermination(wait, MILLISECONDS);
+                }
+            } catch (Exception e) {
+                throw new IllegalStateException("Could not stop pool", e);
+            }
+        }
+    }
 }

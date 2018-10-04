@@ -190,23 +190,6 @@ class ResponseMessage extends MessageHeader implements ResponseHeader {
       this.minor = minor;
    }
    
-   /**
-    * This is a convenience method that can be used to determine the 
-    * content type of the message body. This will determine whether
-    * there is a <code>Content-Type</code> header, if there is then
-    * this will parse that header and represent it as a typed object
-    * which will expose the various parts of the HTTP header.
-    *
-    * @return this returns the content type value if it exists
-    */    
-   public ContentType getContentType() {
-      String value = getValue(CONTENT_TYPE);
-      
-      if(value == null) {
-         return null; 
-      }
-      return new ContentTypeParser(value);
-   }
    
    /**
     * This is a convenience method that can be used to determine

@@ -51,6 +51,39 @@ public class ContainerTransportProcessor implements TransportProcessor {
     * @param container the container to dispatch requests to
     * @param allocator this is the allocator used to buffer data
     * @param count this is the number of threads to be used
+    * @param stopStrategy this is the stop strategy
+    * @param stopTimeout this is the timeout for stopping
+    */
+   public ContainerTransportProcessor(Container container, Allocator allocator, int count, Controller.STOP_STRATEGY stopStrategy, long stopTimeout) throws IOException {
+     this(container, allocator, count, 1, stopStrategy, stopTimeout);
+   }  
+ 
+   /**
+    * Constructor for the <code>ContainerProcessor</code> object.
+    * This is used to create a processor which will convert the
+    * provided transport objects to channels, which can then be
+    * processed by the controller and dispatched to the container.
+    * 
+    * @param container the container to dispatch requests to
+    * @param allocator this is the allocator used to buffer data
+    * @param count this is the number of threads to be used
+    * @param select this is the number of controller threads to use
+    * @param stopStrategy this is the stop strategy
+    * @param stopTimeout this is the timeout for stopping
+    */
+   public ContainerTransportProcessor(Container container, Allocator allocator, int count, int select, Controller.STOP_STRATEGY stopStrategy, long stopTimeout) throws IOException {
+     this.controller = new ContainerController(container, allocator, count, select, stopStrategy, stopTimeout);
+   }     
+
+   /**
+    * Constructor for the <code>ContainerProcessor</code> object.
+    * This is used to create a processor which will convert the
+    * provided transport objects to channels, which can then be
+    * processed by the controller and dispatched to the container.
+    * 
+    * @param container the container to dispatch requests to
+    * @param allocator this is the allocator used to buffer data
+    * @param count this is the number of threads to be used
     */
    public ContainerTransportProcessor(Container container, Allocator allocator, int count) throws IOException {
      this(container, allocator, count, 1);
@@ -92,5 +125,14 @@ public class ContainerTransportProcessor implements TransportProcessor {
     */    
    public void stop() throws IOException {
       controller.stop();
+   }
+   
+   /**
+   * Returns the <code>ContainerControler</code>.
+   *
+   * @return the <code>ContainerControler</code>
+   */
+   public ContainerController getControler(){
+       return (ContainerController) this.controller;
    }
  }
