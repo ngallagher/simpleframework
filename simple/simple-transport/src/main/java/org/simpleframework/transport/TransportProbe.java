@@ -14,7 +14,7 @@ public class TransportProbe {
    private int count;
 
    public TransportProbe(boolean client) {
-      this(client, 512);
+      this(client, 64);
    }
    
    public TransportProbe(boolean client, int capacity) {
