@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 public class TransportProbeTest extends TestCase {
 
    public void testPlainProbe() throws Exception {
-      TransportProbe probe = new TransportProbe(512);
+      TransportProbe probe = new TransportProbe(false);
       TransportType type = null;
       
       type = probe.update(ByteBuffer.wrap("GET".getBytes("UTF-8")));
@@ -27,7 +27,7 @@ public class TransportProbeTest extends TestCase {
    }
    
    public void testSecureProbe() throws Exception {
-      TransportProbe probe = new TransportProbe(512);
+      TransportProbe probe = new TransportProbe(false);
       byte[] header = new SSLHandshakePeek().peek();
       TransportType type = null;
       

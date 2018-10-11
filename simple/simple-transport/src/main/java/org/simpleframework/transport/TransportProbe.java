@@ -13,8 +13,12 @@ public class TransportProbe {
    private byte[] data;
    private int count;
 
-   public TransportProbe(int capacity) {
-      this.reference = new AtomicReference<TransportType>(UNKNOWN);
+   public TransportProbe(boolean client) {
+      this(client, 512);
+   }
+   
+   public TransportProbe(boolean client, int capacity) {
+      this.reference = new AtomicReference<TransportType>(client ? SECURE : UNKNOWN);
       this.data = new byte[capacity];
    }
    
