@@ -132,10 +132,19 @@ public enum FrameType {
    public static FrameType resolveType(int octet) {
       int value = octet & 0xff;
       
-      for(FrameType code : values()) {
-         if(code.code == value) {
-            return code;
-         }
+      switch(value) {
+      case 0x00:
+         return CONTINUATION;
+      case 0x01:
+         return TEXT;
+      case 0x02:
+         return BINARY;
+      case 0x08:
+         return CLOSE;
+      case 0x09:
+         return PING;
+      case 0x0a:
+         return PONG;
       }
       return null;
    }

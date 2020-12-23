@@ -14,6 +14,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.buffer.ArrayAllocator;
@@ -27,32 +28,31 @@ import org.simpleframework.http.core.ThreadDumper;
 import org.simpleframework.http.message.ReplyConsumer;
 import org.simpleframework.http.socket.DataFrame;
 import org.simpleframework.http.socket.Frame;
+import org.simpleframework.http.socket.FrameChannel;
 import org.simpleframework.http.socket.FrameListener;
 import org.simpleframework.http.socket.FrameType;
 import org.simpleframework.http.socket.Reason;
 import org.simpleframework.http.socket.Session;
-import org.simpleframework.http.socket.FrameChannel;
-import org.simpleframework.http.socket.WebSocketAnalyzer;
+import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.TransportProcessor;
 import org.simpleframework.transport.TransportSocketProcessor;
-import org.simpleframework.transport.SocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
-import org.simpleframework.transport.trace.TraceAnalyzer;
 import org.simpleframework.transport.trace.Trace;
+import org.simpleframework.transport.trace.TraceAnalyzer;
 
 public class WebSocketPerformanceTest {
 
    public static class MessageCounter implements FrameListener {
       
-      private final AtomicInteger counter;
+      private final LongAdder counter;
       
-      public MessageCounter(AtomicInteger counter) {
+      public MessageCounter(LongAdder counter) {
          this.counter = counter;
       }
 
       public void onFrame(Session socket, Frame frame) {
-         counter.getAndIncrement();
+         counter.increment();
       }
 
       public void onError(Session socket, Exception cause) {
@@ -87,12 +87,12 @@ public class WebSocketPerformanceTest {
       
       private final Set<FrameChannel> sockets;
       private final MessageCounter listener;
-      private final AtomicInteger counter;
+      private final LongAdder counter;
       private final AtomicBoolean begin;
 
       public MessageGeneratorService() {
          this.sockets = new CopyOnWriteArraySet<FrameChannel>();
-         this.counter = new AtomicInteger();
+         this.counter = new LongAdder();
          this.listener = new MessageCounter(counter);
          this.begin = new AtomicBoolean();
       }  
@@ -132,8 +132,15 @@ public class WebSocketPerformanceTest {
       
       public void run() {
          try {
+            StringBuilder builder = new StringBuilder();
+        	
             for(int i = 0; i < 10000000; i++) {
-               distribute(new DataFrame(FrameType.TEXT, System.currentTimeMillis() + ":" + MESSAGE));
+               builder.setLength(0);
+            	builder.append(System.currentTimeMillis());
+            	builder.append(":");
+            	builder.append(MESSAGE);
+            	String text = builder.toString();
+               distribute(new DataFrame(FrameType.TEXT, text));
             }
          } catch(Exception e) {
             e.printStackTrace();
@@ -153,10 +160,10 @@ public class WebSocketPerformanceTest {
       
       public MessageGeneratorContainer(MessageGeneratorService service, TraceAnalyzer agent, int port) throws Exception {
          this.negotiator = new DirectRouter(service);
-         this.container = new RouterContainer(this, negotiator, 10, 100000);
+         this.container = new RouterContainer(this, negotiator, 1, 100000);
          this.allocator = new ArrayAllocator();
-         this.processor = new ContainerTransportProcessor(container, allocator, 10);
-         this.server = new TransportSocketProcessor(processor, 10, 8192*10);
+         this.processor = new ContainerTransportProcessor(container, allocator, 1);
+         this.server = new TransportSocketProcessor(processor, 1, 8192 * 20, 8192 * 20);
          this.connection = new SocketConnection(server, agent);
          this.address = new InetSocketAddress(port);
       }
@@ -191,12 +198,12 @@ public class WebSocketPerformanceTest {
    public static class MessageGeneratorClient extends Thread {
       
       private final MessageGeneratorService service;
-      private final AtomicInteger counter;
+      private final LongAdder counter;
       private final AtomicLong duration;
       private final int port;
       private final boolean debug;
       
-      public MessageGeneratorClient(MessageGeneratorService service, AtomicInteger counter, AtomicLong duration, int port, boolean debug) {
+      public MessageGeneratorClient(MessageGeneratorService service, LongAdder counter, AtomicLong duration, int port, boolean debug) {
          this.duration = duration;
          this.counter = counter;
          this.service = service;
@@ -221,6 +228,7 @@ public class WebSocketPerformanceTest {
                "Origin: http://example.com\r\n" +
                "\r\n").getBytes("ISO-8859-1");            
             
+            socket.setTcpNoDelay(true);
             socket.getOutputStream().write(request);
             
             while(cursor.isOpen()) {
@@ -245,9 +253,9 @@ public class WebSocketPerformanceTest {
                   consumer.clear();
                }
                
-               if(!cursor.isReady()) { // wait for it to fill                  
+               /* if(!cursor.isReady()) { // wait for it to fill                  
                   Thread.sleep(1);
-               }               
+               } */              
             }
          } catch(Exception e) {
             e.printStackTrace();
@@ -265,7 +273,7 @@ public class WebSocketPerformanceTest {
             long timeElapsed = System.currentTimeMillis() - sendTime;
          
             duration.getAndAdd(timeElapsed);
-            counter.getAndIncrement();
+            counter.increment();
 
             if(debug) {                                    
                System.err.println("count=" + counter + " text="+text + " time="+duration);            
@@ -277,9 +285,9 @@ public class WebSocketPerformanceTest {
    public static class MessageTimer extends Thread {
       
       private final AtomicLong duration;
-      private final AtomicInteger counter;
+      private final LongAdder counter;
       
-      public MessageTimer(AtomicInteger counter, AtomicLong duration) {
+      public MessageTimer(LongAdder counter, AtomicLong duration) {
          this.duration = duration;
          this.counter = counter;
       }
@@ -288,7 +296,7 @@ public class WebSocketPerformanceTest {
          while(true) {
             try {
                Thread.sleep(1000);
-               int count = counter.getAndSet(0);
+               long count = counter.sumThenReset();
                long total = duration.getAndSet(0);              
                long average = (total > 0 ? total : 1) / (count > 0 ? count : 1);               
                
@@ -420,7 +428,7 @@ public class WebSocketPerformanceTest {
       ThreadDumper dumper = new ThreadDumper();
       ConsoleAnalyzer agent = new ConsoleAnalyzer();
       AtomicLong duration = new AtomicLong();
-      AtomicInteger counter = new AtomicInteger();
+      LongAdder counter = new LongAdder();
       MessageGeneratorService service = new MessageGeneratorService();
       MessageGeneratorContainer container = new MessageGeneratorContainer(service, agent, 7070);
       MessageTimer timer = new MessageTimer(counter, duration);
@@ -430,7 +438,7 @@ public class WebSocketPerformanceTest {
       timer.start();
       container.connect();
       
-      for(int i = 0; i < 100; i++) {
+      for(int i = 0; i < 20; i++) {
          MessageGeneratorClient client = new MessageGeneratorClient(service, counter, duration, 7070, false);
          client.start();
       }

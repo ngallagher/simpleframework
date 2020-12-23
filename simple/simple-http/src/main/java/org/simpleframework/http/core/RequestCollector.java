@@ -103,8 +103,6 @@ class RequestCollector implements Collector {
    public void collect(Controller controller) throws IOException {
       String protocol = channel.getProtocol();
       
-      System.err.println("PROTOCOL WAS: "+protocol);
-      
       while(cursor.isReady()) { 
          if(entity.isFinished()) {
              break;
