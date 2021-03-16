@@ -39,11 +39,6 @@ class ServerCleaner extends Daemon {
    private final TransportProcessor processor;
    
    /**
-    * This is the thread pool implementation used by the server.
-    */
-   private final ConcurrentExecutor executor;
-   
-   /**
     * This is the internal write reactor that is terminated.
     */
    private final Reactor reactor;
@@ -54,12 +49,10 @@ class ServerCleaner extends Daemon {
     * provided to the constructor will be stopped asynchronously.
     *
     * @param processor this is the processor that is to be stopped
-    * @param executor this is the executor used by the server
     * @param reactor this is the reactor that is to be closed
     */
-   public ServerCleaner(TransportProcessor processor, ConcurrentExecutor executor, Reactor reactor) {
-      this.processor = processor;  
-      this.executor = executor;
+   public ServerCleaner(TransportProcessor processor, Reactor reactor) {
+      this.processor = processor;
       this.reactor = reactor;      
    }
    
@@ -77,7 +70,6 @@ class ServerCleaner extends Daemon {
    public void run() {
       try {
          processor.stop();
-         executor.stop();
          reactor.stop();
       } catch(Exception e) {
          return;

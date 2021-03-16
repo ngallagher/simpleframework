@@ -163,7 +163,7 @@ public class WebSocketPerformanceTest {
          this.container = new RouterContainer(this, negotiator, 1, 100000);
          this.allocator = new ArrayAllocator();
          this.processor = new ContainerTransportProcessor(container, allocator, 1);
-         this.server = new TransportSocketProcessor(processor, 1, 8192 * 20, 8192 * 20);
+         this.server = new TransportSocketProcessor(processor, 8192 * 20, 8192 * 20);
          this.connection = new SocketConnection(server, agent);
          this.address = new InetSocketAddress(port);
       }

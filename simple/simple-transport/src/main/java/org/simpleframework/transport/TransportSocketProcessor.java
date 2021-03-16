@@ -20,8 +20,8 @@ package org.simpleframework.transport;
 
 import java.io.IOException;
 
-import org.simpleframework.common.thread.ConcurrentExecutor;
 import org.simpleframework.common.thread.Daemon;
+import org.simpleframework.common.thread.SynchronousExecutor;
 import org.simpleframework.transport.reactor.ExecutorReactor;
 import org.simpleframework.transport.reactor.Operation;
 import org.simpleframework.transport.reactor.Reactor;
@@ -41,7 +41,7 @@ public class TransportSocketProcessor implements SocketProcessor {
    /**
     * This is the executor used to execute the I/O operations.
     */
-   private final ConcurrentExecutor executor;   
+   private final SynchronousExecutor executor;
 
    /**
     * This is the factory used to create the required operations.
@@ -67,20 +67,7 @@ public class TransportSocketProcessor implements SocketProcessor {
     * @param processor this is used to process transports
     */
    public TransportSocketProcessor(TransportProcessor processor) throws IOException {
-      this(processor, 8);
-   }
-   
-   /**
-    * Constructor for the <code>TransportSocketProcessor</code> object. 
-    * The transport processor is used to process plain connections
-    * and wrap those connections in a <code>Transport</code> that
-    * can be used to send and receive data to and from.
-    * 
-    * @param processor this is used to process transports
-    * @param threads this is the number of threads this will use
-    */
-   public TransportSocketProcessor(TransportProcessor processor, int threads) throws IOException {
-      this(processor, threads, 4096);
+      this(processor, 4096);
    }
       
    /**
@@ -90,11 +77,10 @@ public class TransportSocketProcessor implements SocketProcessor {
     * can be used to send and receive data to and from.
     * 
     * @param processor this is used to process transports
-    * @param threads this is the number of threads this will use
     * @param buffer this is the initial size of the output buffer 
     */
-   public TransportSocketProcessor(TransportProcessor processor, int threads, int buffer) throws IOException {
-      this(processor, threads, buffer, 20480);
+   public TransportSocketProcessor(TransportProcessor processor, int buffer) throws IOException {
+      this(processor, buffer, 20480);
    }
    
    /**
@@ -104,12 +90,11 @@ public class TransportSocketProcessor implements SocketProcessor {
     * can be used to send and receive data to and from.
     * 
     * @param processor this is used to process transports
-    * @param threads this is the number of threads this will use
     * @param buffer this is the initial size of the output buffer      
     * @param threshold this is the maximum size of the output buffer
     */
-   public TransportSocketProcessor(TransportProcessor processor, int threads, int buffer, int threshold) throws IOException {
-      this(processor, threads, buffer, threshold, false);
+   public TransportSocketProcessor(TransportProcessor processor, int buffer, int threshold) throws IOException {
+      this(processor, buffer, threshold, false);
    }
    
    /**
@@ -119,16 +104,15 @@ public class TransportSocketProcessor implements SocketProcessor {
     * can be used to send and receive data to and from.
     * 
     * @param processor this is used to process transports
-    * @param threads this is the number of threads this will use
     * @param buffer this is the initial size of the output buffer      
     * @param threshold this is the maximum size of the output buffer
     * @param client determines if the SSL handshake is for a client
     */
-   public TransportSocketProcessor(TransportProcessor processor, int threads, int buffer, int threshold, boolean client) throws IOException {
-      this.executor = new ConcurrentExecutor(Operation.class, threads);     
+   public TransportSocketProcessor(TransportProcessor processor, int buffer, int threshold, boolean client) throws IOException {
+      this.executor = new SynchronousExecutor();
       this.reactor = new ExecutorReactor(executor);
       this.factory = new OperationFactory(processor, reactor, buffer, threshold, client);
-      this.cleaner = new ServerCleaner(processor, executor, reactor);
+      this.cleaner = new ServerCleaner(processor, reactor);
    }
 
    /**
@@ -158,6 +142,5 @@ public class TransportSocketProcessor implements SocketProcessor {
     */    
    public void stop() throws IOException {
       cleaner.start();
-      executor.stop();
    }
  }

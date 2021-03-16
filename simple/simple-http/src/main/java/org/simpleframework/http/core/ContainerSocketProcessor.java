@@ -100,7 +100,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     */   
    public ContainerSocketProcessor(Container container, Allocator allocator, int count) throws IOException {
      this.processor = new ContainerTransportProcessor(container, allocator, count);
-     this.adapter = new TransportSocketProcessor(processor, count); 
+     this.adapter = new TransportSocketProcessor(processor);
    }  
 
    /**
