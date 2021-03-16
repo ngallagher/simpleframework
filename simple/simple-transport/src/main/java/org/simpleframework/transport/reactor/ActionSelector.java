@@ -50,8 +50,12 @@ class ActionSelector {
     * with an associated <code>ActionSet</code>. The set can then be
     * used to store actions to be executed upon selection.
     */
-   public ActionSelector() throws IOException {
-      this.selector = Selector.open();
+   public ActionSelector() {
+      try {
+         this.selector = Selector.open();
+      } catch(Exception cause) {
+         throw new IllegalStateException("Could not open selector", cause);
+      }
    }  
    
    /**

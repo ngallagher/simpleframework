@@ -131,7 +131,7 @@ class ActionDistributor extends Daemon implements OperationDistributor {
     *
     * @param executor this is the executor used to execute operations
     */   
-   public ActionDistributor(Executor executor) throws IOException {
+   public ActionDistributor(Executor executor) {
       this(executor, true);
    } 
  
@@ -146,7 +146,7 @@ class ActionDistributor extends Daemon implements OperationDistributor {
     * @param executor this is the executor used to execute operations
     * @param cancel should the channel be removed from selection
     */   
-   public ActionDistributor(Executor executor, boolean cancel) throws IOException {
+   public ActionDistributor(Executor executor, boolean cancel) {
       this(executor, cancel, 120000);
    }
    
@@ -162,7 +162,7 @@ class ActionDistributor extends Daemon implements OperationDistributor {
     * @param cancel should the channel be removed from selection
     * @param expiry this the maximum idle time for an operation
     */   
-   public ActionDistributor(Executor executor, boolean cancel, long expiry) throws IOException {
+   public ActionDistributor(Executor executor, boolean cancel, long expiry) {
       this.pending = new ConcurrentLinkedQueue<>();
       this.invalid = new ConcurrentLinkedQueue<>();
       this.selecting = new LinkedHashMap<>();

@@ -53,7 +53,7 @@ public class ExecutorReactor implements Reactor {
    *
    * @param executor this is the executor used to run the operations
    */  
-  public ExecutorReactor(Executor executor) throws IOException {
+  public ExecutorReactor(Executor executor) {
      this(executor, 120000);
   }  
 
@@ -67,7 +67,7 @@ public class ExecutorReactor implements Reactor {
    * @param executor this is the executor used to run the operations
    * @param expiry the length of time to maintain and idle operation
    */    
-  public ExecutorReactor(Executor executor, long expiry) throws IOException {
+  public ExecutorReactor(Executor executor, long expiry) {
     this.exchange = new ActionDistributor(executor, true, expiry);
     this.executor = executor;
   }
