@@ -74,20 +74,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param count this is the number of threads used for each pool
     */
    public ContainerSocketProcessor(Container container, int count) throws IOException {
-      this(container, count, 1);
-   }
-   
-   /**
-    * Constructor for the <code>ContainerSocketProcessor</code> object. The
-    * connector created will collect HTTP requests from the pipelines
-    * provided and dispatch those requests to the provided container.
-    * 
-    * @param container this is the container used to service requests
-    * @param count this is the number of threads used for each pool
-    * @param select this is the number of selector threads to use
-    */
-   public ContainerSocketProcessor(Container container, int count, int select) throws IOException {
-      this(container, new FileAllocator(), count, select);
+      this(container, new FileAllocator(), count);
    }
    
    /**
@@ -112,21 +99,7 @@ public class ContainerSocketProcessor implements SocketProcessor {
     * @param count this is the number of threads used for each pool
     */   
    public ContainerSocketProcessor(Container container, Allocator allocator, int count) throws IOException {
-      this(container, allocator, count, 1);
-   }   
-   
-   /**
-    * Constructor for the <code>ContainerSocketProcessor</code> object. 
-    * The connector created will collect HTTP requests from the pipelines
-    * provided and dispatch those requests to the provided container.
-    * 
-    * @param container this is the container used to service requests
-    * @param allocator this is the allocator used to create buffers
-    * @param count this is the number of threads used for each pool
-    * @param select this is the number of selector threads to use
-    */   
-   public ContainerSocketProcessor(Container container, Allocator allocator, int count, int select) throws IOException {
-     this.processor = new ContainerTransportProcessor(container, allocator, count, select);
+     this.processor = new ContainerTransportProcessor(container, allocator, count);
      this.adapter = new TransportSocketProcessor(processor, count); 
    }  
 

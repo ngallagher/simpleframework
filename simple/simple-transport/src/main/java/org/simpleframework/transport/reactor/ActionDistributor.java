@@ -163,10 +163,10 @@ class ActionDistributor extends Daemon implements OperationDistributor {
     * @param expiry this the maximum idle time for an operation
     */   
    public ActionDistributor(Executor executor, boolean cancel, long expiry) throws IOException {
-      this.selecting = new LinkedHashMap<Channel, ActionSet>();
-      this.executing = new LinkedHashMap<Channel, ActionSet>();
-      this.pending = new ConcurrentLinkedQueue<Action>();
-      this.invalid = new ConcurrentLinkedQueue<Channel>();      
+      this.pending = new ConcurrentLinkedQueue<>();
+      this.invalid = new ConcurrentLinkedQueue<>();
+      this.selecting = new LinkedHashMap<>();
+      this.executing = new LinkedHashMap<>();
       this.selector = new ActionSelector();  
       this.latch = new Latch();
       this.executor = executor;    

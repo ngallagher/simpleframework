@@ -79,7 +79,7 @@ public class WebSocketUpgradeTest extends TestCase implements Container {
 
    public void testWebSocketUpgrade() throws Exception {      
       Allocator allocator = new ArrayAllocator();
-      Controller handler = new ContainerController(this, allocator, 10, 2);
+      Controller handler = new ContainerController(this, allocator, 10);
       StreamCursor cursor = new StreamCursor(OPEN_HANDSHAKE);
       Channel channel = new MockChannel(cursor, 10);
       

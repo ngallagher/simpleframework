@@ -113,7 +113,7 @@ public class ContainerPerformanceTest extends TestCase {
       //TraceAnalyzer analyzer = new DebugTraceAnalyzer(counter, true);
       TraceAnalyzer analyzer = new DebugTraceAnalyzer(counter, false);
       CounterContainer container = new CounterContainer(counter, latch);
-      ContainerSocketProcessor processor = new ContainerSocketProcessor(container, 50, 1);
+      ContainerSocketProcessor processor = new ContainerSocketProcessor(container, 50);
       Connection connection = new SocketConnection(processor, analyzer);
       InetSocketAddress address = (InetSocketAddress)connection.connect(null); // ephemeral port
       Thread.sleep(1000);

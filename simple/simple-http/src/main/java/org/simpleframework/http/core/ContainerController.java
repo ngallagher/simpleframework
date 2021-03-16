@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import org.simpleframework.common.buffer.Allocator;
 import org.simpleframework.common.thread.ConcurrentExecutor;
+import org.simpleframework.common.thread.SynchronousExecutor;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.TransportException;
 import org.simpleframework.transport.reactor.ExecutorReactor;
@@ -50,7 +51,7 @@ class ContainerController implements Controller {
    /**
     * This is the thread pool used for collecting the requests.
     */
-   private final ConcurrentExecutor collect;
+   private final SynchronousExecutor collect;
 
    /**
     * This is the allocator used to create the buffers needed.
@@ -76,12 +77,11 @@ class ContainerController implements Controller {
     * @param container this is the container used to service requests
     * @param allocator this is used to allocate any buffers needed
     * @param count this is the number of threads per thread pool
-    * @param select this is the number of controller threads to use
     */
-   public ContainerController(Container container, Allocator allocator, int count, int select) throws IOException {
+   public ContainerController(Container container, Allocator allocator, int count) throws IOException {
       this.executor = new ConcurrentExecutor(RequestDispatcher.class, count); 
-      this.collect = new ConcurrentExecutor(RequestReader.class, count);
-      this.reactor = new ExecutorReactor(collect, select);     
+      this.collect = new SynchronousExecutor();
+      this.reactor = new ExecutorReactor(collect);
       this.allocator = allocator;
       this.container = container;
    }
@@ -153,7 +153,6 @@ class ContainerController implements Controller {
      try {
         reactor.stop();
         executor.stop();
-        collect.stop();
      } catch(Exception cause) {
         throw new TransportException("Error stopping", cause);
      }

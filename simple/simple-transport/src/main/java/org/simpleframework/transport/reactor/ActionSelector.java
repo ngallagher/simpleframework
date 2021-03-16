@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,35 +101,26 @@ class ActionSelector {
     */
    public List<ActionSet> registeredSets() {
       Set<SelectionKey> keys = selector.keys();
-      Iterator<SelectionKey> ready = keys.iterator();
-     
-      return registeredSets(ready);
-   }
-   
-   /**
-    * This is used to acquire all the action sets that are associated
-    * with this selector. Only action sets that have a valid selection
-    * key are returned. Modification of the list will not affect the
-    * associated selector instance.
-    * 
-    * @param keys the selection keys to get the associated sets from
-    * 
-    * @return this returns all the associated action sets for this
-    */
-   private List<ActionSet> registeredSets(Iterator<SelectionKey> keys) {
-      List<ActionSet> sets = new LinkedList<ActionSet>();
-      
-      while(keys.hasNext()) {
-         SelectionKey key = keys.next();
-         ActionSet actions = (ActionSet)key.attachment();
- 
-         if(!key.isValid()) {
-            key.cancel();
-         } else {
-            sets.add(actions);
+
+      if(!keys.isEmpty()) {
+         List<SelectionKey> cancel = new LinkedList<>();
+         List<ActionSet> ready = new LinkedList<>();
+
+         for(SelectionKey key : keys) {
+            ActionSet actions = (ActionSet) key.attachment();
+
+            if (!key.isValid()) {
+               cancel.add(key);
+            } else {
+               ready.add(actions);
+            }
          }
-      }  
-      return sets;
+         for (SelectionKey key : cancel) {
+            key.cancel();
+         }
+         return ready;
+      }
+      return Collections.emptyList();
    }
    
    /**
@@ -141,36 +133,25 @@ class ActionSelector {
     */
    public List<ActionSet> selectedSets() throws IOException {
       Set<SelectionKey> keys = selector.selectedKeys();
-      Iterator<SelectionKey> ready = keys.iterator();
-     
-      return selectedSets(ready);
-   }
-   
-   /**
-    * This is used to acquire all the action sets that are selected
-    * by this selector. All action sets returned are unregistered from
-    * the selector and must be registered again to hear about further
-    * I/O events that occur on the associated channel.
-    * 
-    * @param keys the selection keys to get the associated sets from
-    * 
-    * @return this returns all the selected action sets for this
-    */
-   private List<ActionSet> selectedSets(Iterator<SelectionKey> keys) {
-      List<ActionSet> ready = new LinkedList<ActionSet>();
-      
-      while(keys.hasNext()) {
-         SelectionKey key = keys.next();
-         ActionSet actions = (ActionSet)key.attachment();
- 
-         if(key != null) {
-            keys.remove();
+      Iterator<SelectionKey> iterator = keys.iterator();
+
+      if(iterator.hasNext()) {
+         List<ActionSet> ready = new LinkedList<>();
+
+         while(iterator.hasNext()) {
+            SelectionKey key = iterator.next();
+            ActionSet actions = (ActionSet)key.attachment();
+
+            if (key != null) {
+               iterator.remove();
+            }
+            if (key != null) {
+               ready.add(actions);
+            }
          }
-         if(key != null) {
-            ready.add(actions);
-         }
-      }  
-      return ready;
+         return ready;
+      }
+      return Collections.emptyList();
    }
    
    /**

@@ -54,21 +54,7 @@ public class ExecutorReactor implements Reactor {
    * @param executor this is the executor used to run the operations
    */  
   public ExecutorReactor(Executor executor) throws IOException {
-     this(executor, 1);
-  }
-  
-  /**
-   * Constructor for the <code>ExecutorReactor</code> object. This is
-   * used to create a reactor that can delegate to the executor. This
-   * also accepts the operations it is interested in, the value is
-   * taken from the <code>SelectionKey</code> object. A bit mask can
-   * be used to show interest in several operations at once.
-   *
-   * @param executor this is the executor used to run the operations
-   * @param count this is the number of distributors to be used
-   */  
-  public ExecutorReactor(Executor executor, int count) throws IOException {    
-     this(executor, count, 120000);
+     this(executor, 120000);
   }  
 
   /**
@@ -79,11 +65,10 @@ public class ExecutorReactor implements Reactor {
    * be used to show interest in several operations at once.
    *
    * @param executor this is the executor used to run the operations
-   * @param count this is the number of distributors to be used
    * @param expiry the length of time to maintain and idle operation
    */    
-  public ExecutorReactor(Executor executor, int count, long expiry) throws IOException {    
-    this.exchange = new PartitionDistributor(executor, count, expiry);    
+  public ExecutorReactor(Executor executor, long expiry) throws IOException {
+    this.exchange = new ActionDistributor(executor, true, expiry);
     this.executor = executor;
   }
 

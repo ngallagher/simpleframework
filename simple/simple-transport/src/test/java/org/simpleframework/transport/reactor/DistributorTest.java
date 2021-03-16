@@ -236,7 +236,7 @@ public class DistributorTest extends TestCase {
       CountDownLatch latch = new CountDownLatch(1);
       Server server = new Server(latch, ready, port);
       Executor executor = Executors.newFixedThreadPool(10);
-      Reactor reactor = new ExecutorReactor(executor, 1);
+      Reactor reactor = new ExecutorReactor(executor);
       
       long start = System.currentTimeMillis();
       
