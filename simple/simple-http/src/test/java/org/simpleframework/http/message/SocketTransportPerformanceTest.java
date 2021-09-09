@@ -125,7 +125,12 @@ public class SocketTransportPerformanceTest extends TestCase {
          int ready = cursor.ready();
          
          if(count++ % 50000 == 0) {
-            System.err.println("Done: " +format.format(count) + " in " + (System.currentTimeMillis()-start) + " ms");
+            long duration = System.currentTimeMillis() - start;
+
+            System.err.println("Done " + format.format(count)
+                 + " in " + duration + " ms, "
+                 + TimeCalculator.calculateOpsPerSecond(ITERATIONS, duration) + " ops/sec, "
+                 + TimeCalculator.calculateMicrosPerOp(ITERATIONS, duration) + " micros/op");
          }
          if(ready == -1) {
             break;

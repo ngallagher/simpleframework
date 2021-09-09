@@ -91,6 +91,11 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
    private Token domain;
 
    /**
+    * Used to store the <code>SameSite</code> values.
+    */
+   private Token strict;
+
+   /**
     * Create a <code>CookieParser</code> that contains no cookies.
     * the instance will return <code>false</code> for the
     * <code>hasNext</code> method. cookies may be parsed using
@@ -101,6 +106,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
       this.domain = new Token();
       this.name = new Token();
       this.value = new Token();
+      this.strict = new Token();
       this.finished = true;
    }
 

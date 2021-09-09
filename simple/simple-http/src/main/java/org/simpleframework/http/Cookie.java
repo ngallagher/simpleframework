@@ -69,6 +69,11 @@ public class Cookie {
    private String domain;
 
    /**
+    * Represents the value of the site attribute.
+    */
+   private boolean sticky;
+
+   /**
     * Determines whether the cookie should be secure.
     */
    private boolean secure;
@@ -281,6 +286,28 @@ public class Cookie {
    public void setSecure(boolean secure) {
       this.secure = secure;
    }
+
+   /**
+    * This determines whether the cookie should stick to the
+    * same site. When this is set to true the browser will not
+    * send the cookie to any other domains.
+    *
+    * @return this returns true if the cookie is same site
+    */
+   public boolean isSameSite() {
+      return sticky;
+   }
+
+   /**
+    * When this is set to true the browser will not send the cookie
+    * to any other domains. This will set <code>SameSite=Strict</code>
+    * which may or may not be supported by the client browser.
+    *
+    * @param sticky if true if this should stick to the same site
+    */
+   public void setSameSite(boolean sticky) {
+      this.sticky = sticky;
+   }
    
    /**
     * This is used to determine if the cookie is protected against
@@ -435,6 +462,7 @@ public class Cookie {
         (domain ==null ?"": "; domain="+domain)+
         (expiry< 0?"":"; expires="+date.format(expiry))+
        (expiry < 0 ? "" : "; max-age="+expiry)+
+         (sticky ? "; samesite=strict" : "") +
          (secure ? "; secure" : "") +
          (protect ? "; httponly" : "");
          

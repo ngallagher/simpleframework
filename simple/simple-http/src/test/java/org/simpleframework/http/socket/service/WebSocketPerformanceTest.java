@@ -26,6 +26,7 @@ import org.simpleframework.http.core.ContainerTransportProcessor;
 import org.simpleframework.http.core.StreamCursor;
 import org.simpleframework.http.core.ThreadDumper;
 import org.simpleframework.http.message.ReplyConsumer;
+import org.simpleframework.http.socket.CloseCode;
 import org.simpleframework.http.socket.DataFrame;
 import org.simpleframework.http.socket.Frame;
 import org.simpleframework.http.socket.FrameChannel;
@@ -118,7 +119,7 @@ public class WebSocketPerformanceTest {
          try {         
             for(FrameChannel socket : sockets) {
                try {                  
-                  socket.send(frame);
+                  socket.close(new Reason(CloseCode.NORMAL_CLOSURE, ""));
                } catch(Exception e){
                   e.printStackTrace();
                   sockets.remove(socket);
@@ -151,10 +152,10 @@ public class WebSocketPerformanceTest {
    public static class MessageGeneratorContainer implements Container {   
 
       private final RouterContainer container;
+      private final TransportProcessor processor;
       private final SocketAddress address;
       private final Connection connection;
       private final Allocator allocator;
-      private final TransportProcessor processor;
       private final Router negotiator;
       private final SocketProcessor server;
       
