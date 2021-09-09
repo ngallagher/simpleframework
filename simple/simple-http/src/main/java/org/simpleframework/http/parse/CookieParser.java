@@ -11,8 +11,8 @@
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
 
@@ -91,11 +91,6 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
    private Token domain;
 
    /**
-    * Used to store the <code>SameSite</code> values.
-    */
-   private Token strict;
-
-   /**
     * Create a <code>CookieParser</code> that contains no cookies.
     * the instance will return <code>false</code> for the
     * <code>hasNext</code> method. cookies may be parsed using
@@ -106,7 +101,6 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
       this.domain = new Token();
       this.name = new Token();
       this.value = new Token();
-      this.strict = new Token();
       this.finished = true;
    }
 
@@ -171,7 +165,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
     *
     * @return true if the <code>String</code> was skipped
     */
-   protected boolean skip(String text){      
+   protected boolean skip(String text){
       int size = text.length();
       int seek = off;
       int read = 0;
@@ -205,13 +199,13 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
       }
       return true;
    }
-   
+
    /**
     * This is used to acquire the cookie values from the provided 
     * the provided source text. This allows the cookie parser to be
     * used within a for each loop to parse out the values of a
     * cookie one by one so that they may be used or stored.
-    * 
+    *
     * @return this returns an iterator for extracting cookie value
     */
    public Iterator<Cookie> iterator() {
@@ -264,7 +258,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
     */
    private Cookie getCookie(String name, String value) {
       Cookie cookie = new Cookie(name, value, false);
-      
+
       if(domain.len > 0) {
          cookie.setDomain(domain.toString());
       }
@@ -489,7 +483,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
     * @return true if this is a semicolon character
     */
    private boolean terminal(char ch) {
-      return ch == ';'; 
+      return ch == ';';
    }
 
    /**
@@ -499,7 +493,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
     * with for each loops. Cookies can not be removed with this.
     */
    private class Sequence implements Iterator<Cookie> {
-      
+
       /**
        * Extracts the next <code>Cookie</code> object from the string
        * given. This will return <code>null</code> when there are no
@@ -521,7 +515,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
          parsed = false;
          return getCookie();
       }
-      
+
 
       /**
        * Determine whether or not there are any <code>Cookie</code>s
@@ -543,7 +537,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
             return true;
          }
          parse();
-         
+
          if(name.len <=0){
             finished = true;
             return false;
@@ -551,7 +545,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
          return true;
 
       }
-      
+
       /**
        * This method is used to remove items from the iterator. This
        * however performs no action as the act of parsing should not
@@ -562,7 +556,7 @@ public class CookieParser extends Parser implements Iterable<Cookie> {
          return;
       }
    }
-   
+
    /**
     * This is a token object that is used to store the offset and
     * length of a region of chars in the <code>CookieParser.buf</code>
