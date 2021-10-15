@@ -52,6 +52,8 @@ public interface Channel {
    boolean isSecure();
    
    String getProtocol();
+
+   NetworkAddress getAddress();
    
    /**
     * This is the connected socket channel associated with this. In

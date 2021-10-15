@@ -41,6 +41,7 @@ import org.simpleframework.http.message.Body;
 import org.simpleframework.http.message.Entity;
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
+import org.simpleframework.transport.NetworkAddress;
 
 /**
  * This object is used to represent a HTTP request. This defines the
@@ -214,28 +215,8 @@ class RequestEntity extends RequestMessage implements Request {
     * 
     * @return this returns the client address for this request
     */
-   public InetSocketAddress getClientAddress() {
-      SocketChannel socket = channel.getSocket();
-      Socket client = socket.socket();
-      
-      return getClientAddress(client);
-   }
-   
-   /**
-    * This is used to acquire the remote client address. This can 
-    * be used to acquire both the port and the I.P address for the 
-    * client. It allows the connected clients to be logged and if
-    * require it can be used to perform course grained security.
-    * 
-    * @param socket this is the socket to get the address for
-    * 
-    * @return this returns the client address for this request
-    */
-   private InetSocketAddress getClientAddress(Socket socket) {
-      InetAddress address = socket.getInetAddress();
-      int port = socket.getPort();
-      
-      return new InetSocketAddress(address, port);
+   public NetworkAddress getClientAddress() {
+      return channel.getAddress();
    }
 
    /**

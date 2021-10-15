@@ -41,7 +41,7 @@ public interface Transport extends Socket {
     *
     * @return this returns the remote client address
     */
-   NetworkAddress getAddress() throws IOException;
+   NetworkAddress getAddress();
    
    /**
     * This is used to acquire the SSL certificate used when the

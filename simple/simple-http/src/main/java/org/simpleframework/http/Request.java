@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
+import org.simpleframework.transport.NetworkAddress;
 
 /**
  * The <code>Request</code> is used to provide an interface to the 
@@ -114,7 +115,7 @@ public interface Request extends RequestHeader {
     * 
     * @return this returns the client address for this request
     */
-   InetSocketAddress getClientAddress();
+   NetworkAddress getClientAddress();
    
    /**
     * This can be used to retrieve the response attributes. These can

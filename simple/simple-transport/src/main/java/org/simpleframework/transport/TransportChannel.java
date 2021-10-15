@@ -104,6 +104,10 @@ public class TransportChannel implements Channel {
    public String getProtocol(){
       return transport.getProtocol();
    }
+
+   public NetworkAddress getAddress() {
+      return transport.getAddress();
+   }
    
    /**
     * This is used to acquire the SSL certificate used for security. 

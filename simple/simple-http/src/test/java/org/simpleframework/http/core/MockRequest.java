@@ -22,6 +22,7 @@ import org.simpleframework.http.parse.ContentDispositionParser;
 import org.simpleframework.http.parse.ContentTypeParser;
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
+import org.simpleframework.transport.NetworkAddress;
 
 public class MockRequest extends RequestMessage implements Request {
    
@@ -184,7 +185,7 @@ public class MockRequest extends RequestMessage implements Request {
       return true;
    }
 
-   public InetSocketAddress getClientAddress() {
+   public NetworkAddress getClientAddress() {
       return null;
    }
 

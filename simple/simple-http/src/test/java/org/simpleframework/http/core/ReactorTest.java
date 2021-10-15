@@ -18,6 +18,7 @@ import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
 import org.simpleframework.transport.ByteCursor;
 import org.simpleframework.transport.ByteWriter;
+import org.simpleframework.transport.NetworkAddress;
 import org.simpleframework.transport.trace.Trace;
 
 public class ReactorTest extends TestCase implements Controller {
@@ -69,7 +70,12 @@ public class ReactorTest extends TestCase implements Controller {
       public String getProtocol(){
          return null;
       }
-      
+
+      @Override
+      public NetworkAddress getAddress() {
+         return null;
+      }
+
       public Trace getTrace() {
          return new MockTrace();
       }      

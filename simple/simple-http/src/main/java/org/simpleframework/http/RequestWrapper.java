@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.simpleframework.transport.Certificate;
 import org.simpleframework.transport.Channel;
+import org.simpleframework.transport.NetworkAddress;
 
 /** 
  * The <code>RequestWrapper</code> object is used so that the original
@@ -405,7 +406,7 @@ public class RequestWrapper implements Request {
     * 
     * @return this returns the client address for this request
     */
-   public InetSocketAddress getClientAddress() {
+   public NetworkAddress getClientAddress() {
       return request.getClientAddress();
    }   
    

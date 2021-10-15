@@ -55,7 +55,7 @@ public class BufferTransport implements Transport {
    }
 
    @Override
-   public NetworkAddress getAddress() throws IOException {
+   public NetworkAddress getAddress() {
       return address;
    }
 
