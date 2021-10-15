@@ -10,19 +10,21 @@ import javax.net.ssl.SSLEngine;
 import org.simpleframework.transport.trace.Trace;
 
 public class BufferTransport implements Transport {
-   
+
+   private final NetworkAddress address;
    private final Transport transport;
    private final ByteBuffer extra;
    private final SSLEngine engine;
    private final byte[] data;
 
-   public BufferTransport(Transport transport, ByteBuffer extra, SSLEngine engine) {
-      this(transport, extra, engine, 512);
+   public BufferTransport(Transport transport, NetworkAddress address, ByteBuffer extra, SSLEngine engine) {
+      this(transport, address, extra, engine, 512);
    }
    
-   public BufferTransport(Transport transport, ByteBuffer extra, SSLEngine engine, int size) {
+   public BufferTransport(Transport transport, NetworkAddress address, ByteBuffer extra, SSLEngine engine, int size) {
       this.data = new byte[size];
       this.transport = transport;
+      this.address = address;
       this.engine = engine;
       this.extra = extra;
    }
@@ -50,6 +52,11 @@ public class BufferTransport implements Transport {
    @Override
    public Map getAttributes() {
       return transport.getAttributes();
+   }
+
+   @Override
+   public NetworkAddress getAddress() throws IOException {
+      return address;
    }
 
    @Override

@@ -1,4 +1,4 @@
-package org.simpleframework.transport;
+package org.simpleframework.transport.probe;
 
 public enum TransportType {
    SECURE,

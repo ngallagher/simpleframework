@@ -13,7 +13,7 @@ public class BufferTransportTest extends TestCase {
       ByteBuffer firstBuffer = ByteBuffer.wrap(firstMessage);
       ByteArrayInputStream stream = new ByteArrayInputStream(secondMessage);
       StreamTransport streamTransport = new StreamTransport(stream, System.out);
-      BufferTransport bufferTransport = new BufferTransport(streamTransport, firstBuffer, null);
+      BufferTransport bufferTransport = new BufferTransport(streamTransport, null, firstBuffer, null);
       TransportCursor cursor = new TransportCursor(bufferTransport);
       byte[] readBuffer = new byte[1024];
       

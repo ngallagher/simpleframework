@@ -60,6 +60,21 @@ public class StreamTransport implements Transport {
       return null;
    }
 
+   @Override
+   public NetworkAddress getAddress() {
+      return new NetworkAddress() {
+         @Override
+         public int getPort() {
+            return 0;
+         }
+
+         @Override
+         public String getAddress() {
+            return "0.0.0.0";
+         }
+      };
+   }
+
    public Certificate getCertificate() {
       return null;
    }

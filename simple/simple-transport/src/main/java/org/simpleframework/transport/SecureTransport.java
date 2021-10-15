@@ -46,6 +46,11 @@ class SecureTransport implements Transport {
    private Certificate certificate;
 
    /**
+    * This represents the network address the client is sending from.
+    */
+   private NetworkAddress address;
+
+   /**
     * This is the transport used to send data over the socket.
     */
    private Transport transport;
@@ -69,7 +74,10 @@ class SecureTransport implements Transport {
     * This is the SSL engine used to encrypt and decrypt data.
     */
    private SSLEngine engine;
-   
+
+   /**
+    * This is the protocol taken from the ALPN data.
+    */
    private String protocol;
    
    /**
@@ -94,12 +102,13 @@ class SecureTransport implements Transport {
     * performed the SSL handshake and is read to used.
     * 
     * @param transport this is the transport to delegate operations to
+    * @param address the remote address the client is connected from
     * @param certificate this is the certificate for the connection     
     * @param input this is the input buffer used to read the data
     * @param swap this is the swap buffer to be used for reading 
     */
-   public SecureTransport(Transport transport, Certificate certificate, ByteBuffer input, ByteBuffer swap, String protocol) {
-      this(transport, certificate, input, swap, protocol, 20480);
+   public SecureTransport(Transport transport, NetworkAddress address, Certificate certificate, ByteBuffer input, ByteBuffer swap, String protocol) {
+      this(transport, address, certificate, input, swap, protocol, 20480);
    }
    
    /**
@@ -109,24 +118,43 @@ class SecureTransport implements Transport {
     * performed the SSL handshake and is read to used.
     * 
     * @param transport this is the transport to delegate operations to
+    * @param address the remote address the client is connected from
     * @param certificate this is the certificate for the connection
     * @param input this is the input buffer used to read the data
     * @param swap this is the swap buffer to be used for reading 
     * @param size this is the size of the buffers to be allocated
     */
-   public SecureTransport(Transport transport, Certificate certificate, ByteBuffer input, ByteBuffer swap, String protocol, int size) {
+   public SecureTransport(Transport transport, NetworkAddress address, Certificate certificate, ByteBuffer input, ByteBuffer swap, String protocol, int size) {
       this.output = ByteBuffer.allocate(size);
       this.engine = transport.getEngine();
       this.trace = transport.getTrace();
       this.certificate = certificate;
       this.transport = transport;
+      this.address = address;
       this.protocol = protocol;
       this.input = input;    
       this.swap = swap;
    }
-   
+
+   /**
+    * This represents the protocol if any taken from the ALPN data on
+    * an SSL connection. If there is no ALPN data then this will be null.
+    *
+    * @return the protocol as seen in the ALPN data
+    */
    public String getProtocol() {
       return protocol;
+   }
+
+   /**
+    * This is the network address the client is connected from. If
+    * there is a PROXY header then the address is extracted from that
+    * header otherwise it is taken from the socket.
+    *
+    * @return the remote client address and port
+    */
+   public NetworkAddress getAddress() {
+      return address;
    }
 
    /**

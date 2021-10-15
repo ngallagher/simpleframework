@@ -21,6 +21,7 @@ package org.simpleframework.transport;
 import static org.simpleframework.transport.TransportEvent.READ;
 
 import java.io.IOException;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Map;
@@ -59,6 +60,11 @@ public class SocketTransport implements Transport {
     * This is the writer that is used to flush the buffer queue.
     */
    private SocketBufferWriter writer;
+
+   /**
+    * This is a wrapper for the socket address.
+    */
+   private SocketAddress address;
 
    /**
     * This is the underlying byte channel used to send the  data.
@@ -122,14 +128,21 @@ public class SocketTransport implements Transport {
     * @param threshold this is the maximum size of the output buffer
     */
    public SocketTransport(Socket socket, Reactor reactor, int buffer, int threshold) throws IOException {
-     this.writer = new SocketBufferWriter(socket, reactor, buffer, threshold);     
+     this.writer = new SocketBufferWriter(socket, reactor, buffer, threshold);
+     this.address = new SocketAddress(socket);
      this.channel = socket.getChannel();
      this.trace = socket.getTrace();
      this.socket = socket;
    }
-   
+
+   @Override
    public String getProtocol() {
       return null;
+   }
+
+   @Override
+   public NetworkAddress getAddress() {
+      return address;
    }
    
    /**
@@ -261,6 +274,40 @@ public class SocketTransport implements Transport {
          writer.flush();
          writer.close();
          closed = true;
+      }
+   }
+
+   private static class SocketAddress implements NetworkAddress {
+
+      private final Socket socket;
+
+      public SocketAddress(Socket socket) {
+         this.socket = socket;
+      }
+
+      @Override
+      public int getPort() {
+         SocketChannel channel = socket.getChannel();
+
+         if(channel != null) {
+            return channel.socket().getPort();
+         }
+         return -1;
+      }
+
+      @Override
+      public String getAddress() {
+         SocketChannel channel = socket.getChannel();
+
+         if(channel != null) {
+            return channel.socket().getInetAddress().getHostAddress();
+         }
+         return "0.0.0.0";
+      }
+
+      @Override
+      public String toString() {
+         return getAddress();
       }
    }
 }

@@ -33,6 +33,15 @@ import java.nio.ByteBuffer;
  * @author Niall Gallagher
  */ 
 public interface Transport extends Socket {
+
+   /**
+    * This returns the remote address the client connected from.
+    * If there is a PROXY header then this address will represent
+    * the address parsed from that proxy header.
+    *
+    * @return this returns the remote client address
+    */
+   NetworkAddress getAddress() throws IOException;
    
    /**
     * This is used to acquire the SSL certificate used when the

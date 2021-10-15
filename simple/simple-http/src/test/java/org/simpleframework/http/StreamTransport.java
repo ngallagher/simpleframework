@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.net.ssl.SSLEngine;
 
 import org.simpleframework.transport.Certificate;
+import org.simpleframework.transport.NetworkAddress;
 import org.simpleframework.transport.Transport;
 import org.simpleframework.transport.trace.Trace;
 
@@ -30,6 +31,21 @@ public class StreamTransport implements Transport {
    
    public String getProtocol() {
       return null;
+   }
+
+   @Override
+   public NetworkAddress getAddress() {
+      return new NetworkAddress() {
+         @Override
+         public int getPort() {
+            return 0;
+         }
+
+         @Override
+         public String getAddress() {
+            return "0.0.0.0";
+         }
+      };
    }
 
    public void close() throws IOException {

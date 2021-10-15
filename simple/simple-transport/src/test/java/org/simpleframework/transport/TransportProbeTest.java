@@ -8,6 +8,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.net.ssl.SSLContext;
 
+import org.simpleframework.transport.probe.TransportProbe;
+import org.simpleframework.transport.probe.TransportType;
+
 import junit.framework.TestCase;
 
 public class TransportProbeTest extends TestCase {
@@ -16,13 +19,13 @@ public class TransportProbeTest extends TestCase {
       TransportProbe probe = new TransportProbe(false);
       TransportType type = null;
       
-      type = probe.update(ByteBuffer.wrap("GET".getBytes("UTF-8")));
+      type = probe.probe(ByteBuffer.wrap("GET".getBytes("UTF-8")));
       assertEquals(type, TransportType.UNKNOWN);
       
-      type = probe.update(ByteBuffer.wrap(" ".getBytes("UTF-8")));
+      type = probe.probe(ByteBuffer.wrap(" ".getBytes("UTF-8")));
       assertEquals(type, TransportType.UNKNOWN);
       
-      type = probe.update(ByteBuffer.wrap("/index.html".getBytes("UTF-8")));
+      type = probe.probe(ByteBuffer.wrap("/index.html".getBytes("UTF-8")));
       assertEquals(type, TransportType.PLAIN);
    }
    
@@ -31,7 +34,7 @@ public class TransportProbeTest extends TestCase {
       byte[] header = new SSLHandshakePeek().peek();
       TransportType type = null;
       
-      type = probe.update(ByteBuffer.wrap(header));
+      type = probe.probe(ByteBuffer.wrap(header));
       assertEquals(type, TransportType.SECURE);
    }
    

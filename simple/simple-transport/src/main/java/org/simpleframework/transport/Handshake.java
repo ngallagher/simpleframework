@@ -40,6 +40,8 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
+import org.simpleframework.transport.probe.TransportProbe;
+import org.simpleframework.transport.probe.TransportType;
 import org.simpleframework.transport.reactor.Reactor;
 import org.simpleframework.transport.trace.Trace;
 
@@ -336,7 +338,7 @@ class Handshake implements Negotiation {
     * @return the next action that should be taken by the handshake
     */
    private PhaseType read() throws IOException {
-      TransportType type = probe.update(input);
+      TransportType type = probe.probe(input);
       
       switch(type){
       case UNKNOWN:
