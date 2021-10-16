@@ -16,7 +16,7 @@ public class TransportProbe {
    private final AtomicReference<TransportType> reference;
    private final ProxyHeaderReader reader;
    private byte[] data;
-   private int count;
+   private int offset;
 
    public TransportProbe(boolean client) {
       this(client, 107);
@@ -38,39 +38,41 @@ public class TransportProbe {
       if(type == UNKNOWN) {
          int limit = buffer.limit();
          int position = buffer.position();
-         int size = Math.min(limit, data.length - count);
+         int size = Math.min(limit, data.length);
+         int count = 0;
 
          if(limit > 0) {
-            buffer.get(data, count, size);
+            buffer.get(data, 0, size);
             buffer.position(position);
             count += size;
          }
-         if(count >= MIN_LENGTH) {
+         if(offset == 0 && count >= MIN_LENGTH) {
             ProxyVersion version = version(data, 0, count);
-            int offset = 0;
 
             if(version == ProxyVersion.UNKNOWN) {
                return reference.get();
             } else if(version == ProxyVersion.V1) {
-               offset = PROXY_V1.length + reader.read(version, data, 0 + PROXY_V1.length, count);
+               offset += PROXY_V1.length;
+               offset += reader.read(version, data, PROXY_V1.length, count - PROXY_V1.length);
             } else if(version == ProxyVersion.V2) {
-               offset = PROXY_V2.length + reader.read(version, data, 0 + PROXY_V2.length, count);
+               offset += PROXY_V2.length;
+               offset += reader.read(version, data, PROXY_V2.length, count - PROXY_V2.length);
             }
-            if(count >= offset + MIN_LENGTH) {
-               byte first = data[offset + 0];
-               byte third = data[offset + 2];
-               byte sixth = data[offset + 5];
+         }
+         if(count > offset + MIN_LENGTH) {
+            byte first = data[offset + 0];
+            byte third = data[offset + 2];
+            byte sixth = data[offset + 5];
 
-               if((first & 0x80) == 0x80 && third == 0x01) { // SSL 2
-                  reference.set(SECURE);
-               } else if(first == 0x16 && sixth == 0x01) { // SSL 3.0 or TLS 1.0, 1.1 and 1.2
-                  reference.set(SECURE);
-               } else {
-                  reference.set(PLAIN);
-               }
-               if(offset > 0) {
-                  buffer.position(position + offset); // how much should you skip
-               }
+            if((first & 0x80) == 0x80 && third == 0x01) { // SSL 2
+               reference.set(SECURE);
+            } else if(first == 0x16 && sixth == 0x01) { // SSL 3.0 or TLS 1.0, 1.1 and 1.2
+               reference.set(SECURE);
+            } else {
+               reference.set(PLAIN);
+            }
+            if(offset > 0) {
+               buffer.position(position + offset); // how much should you skip
             }
          }
       }
@@ -90,7 +92,7 @@ public class TransportProbe {
                return ProxyVersion.V1;
             }
          }
-         if(length >= PROXY_V2.length) {
+         if(length >= PROXY_V2.length) { // not really going to work, assume 1 TCP payload
             while(seek < header.length) {
                if(header[offset + seek] != PROXY_V2[seek++]) {
                   return ProxyVersion.NONE;
