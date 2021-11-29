@@ -144,8 +144,8 @@ class FrameEncoder {
          byte[] data = text.getBytes(charset);
          byte[] message = new byte[data.length + 2]; 
          
-         message[0] = header[0];
-         message[1] = header[1];
+         message[0] = header[0]; // high
+         message[1] = header[1]; // low
          
          for(int i = 0; i < data.length; i++) {
             message[i + 2] = data[i];

@@ -100,17 +100,7 @@ public enum CloseCode {
    /**
     * This is the actual integer value representing the code.
     */
-   public final int code;
-   
-   /**
-    * This is the high order byte for the closure code.
-    */
-   public final int high;
-   
-   /**
-    * This is the low order byte for the closure code.
-    */
-   public final int low;
+   public final short code;
    
    /**
     * Constructor for the <code>CloseCode</code> object. This is used
@@ -120,9 +110,7 @@ public enum CloseCode {
     * @param code this is the code that is to be used
     */
    private CloseCode(int code) {
-      this.high = code & 0x0f;
-      this.low = code & 0xf0;
-      this.code = code;
+      this.code = (short)code;
    }
    
    /**
@@ -130,19 +118,30 @@ public enum CloseCode {
     * contains the high order byte and the low order byte as taken
     * from the pre-defined closure code.
     * 
-    * @return a byte array representing the closure code
+    * @return the closure code used in a terminal frame
     */
    public byte[] getData() {
+      int high = code >>> 8;
+      int low = code & 0xff;
+
       return new byte[] { (byte)high, (byte)low };
    }
-   
-   
-   public static CloseCode resolveCode(int high, int low) {     
+
+   /**
+    * Resolve the close code from the network byte order bytes taken
+    * from a frame. If there is no code resolved then 1005 is used.
+    *
+    * @param high the high byte read in network byte order
+    * @param low the low byte read in network byte order
+    *
+    * @return the close code resolved
+    */
+   public static CloseCode resolveCode(int high, int low) {
+      int value = (high << 8) | (low & 0xff);
+
       for(CloseCode code : values()) {
-         if(code.high == high) {
-            if(code.low == low) {
-               return code;
-            }
+         if(code.code == value) {
+            return code;
          }
       }
       return NO_STATUS_CODE;
